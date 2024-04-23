@@ -1,3 +1,4 @@
+import { Card } from "antd";
 
 const mockedChatAPI = async (prompt: string) => {
   const response = new Promise(
@@ -9,14 +10,20 @@ const mockedChatAPI = async (prompt: string) => {
 }
 
 type ChatBoxProps = {
+  modelName: string,
   prompt?: string,
 };
 
-export default function ChatBox({ prompt }: ChatBoxProps) {
-  console.log(prompt);
+export default function ChatBox({ modelName, prompt }: ChatBoxProps) {
   return (
-    <div className="basis-1/2 border-2 border-teal-300 h-64">
-      <p>{prompt ? mockedChatAPI(prompt) : ''}</p>
-    </div>
-  )
+    <Card
+      title={modelName}
+      bordered={false}
+      style={{
+        width: 300,
+      }}
+    >
+      <p>{prompt ? prompt : ''}</p>
+    </Card>
+  );
 }

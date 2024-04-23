@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 type promptProps = {
   setParentPrompt: Function,
@@ -6,9 +9,9 @@ type promptProps = {
 
 export default function PromptInsert({setParentPrompt}: promptProps) {
   const [prompt, setPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePrompt = (event: any) => {
-    console.log('handlePrompt :>> ', event.target.value);
     setPrompt(event.target.value);
   }
 
@@ -18,9 +21,15 @@ export default function PromptInsert({setParentPrompt}: promptProps) {
   }
 
   return (
-    <div className="flex-row my-5 border-2 border-teal-300">
-      <input className='w-11/12' onChange={handlePrompt} value={prompt}></input>
-      <button className='w-1/12 primary' type='button' onClick={onClickSendBtn}>enter</button>
+    <div className="flex-row my-5">
+      <Search 
+        placeholder="input search loading with enterButton" 
+        onChange={handlePrompt}
+        onSearch={onClickSendBtn}
+        value={prompt}
+        loading={isLoading} 
+        enterButton 
+      />
     </div>
   );
 }

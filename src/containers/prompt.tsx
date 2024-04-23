@@ -10,8 +10,8 @@ export default function Prompt() {
   return (
     <div>
       <div className="flex flex-row">
-        <ChatBox prompt={prompt} />
-        <ChatBox prompt={prompt} />
+        <ChatBox modelName="Model A" prompt={prompt} />
+        <ChatBox modelName="Model B" prompt={prompt} />
       </div>
       <PromptInsert setParentPrompt={setPrompt} />
     </div>
