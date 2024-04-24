@@ -1,9 +1,9 @@
-import Prompt from "@/containers/prompt";
+import ArenaChat from "@/containers/arenaChat";
 
 export default function Home() {
   return (
     <main className="min-h-screen justify-between p-24">
-      <Prompt />
+      <ArenaChat />
     </main>
   );
 }
