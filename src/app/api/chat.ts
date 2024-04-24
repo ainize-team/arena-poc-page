@@ -6,13 +6,19 @@ type RequestType = {
 const mockedChatAPI = async (prompt: string) => {
   const response = new Promise<string>(
     (resolve) => {
-      return setTimeout(() => resolve(`You said '${prompt}'.`), 5000)
+      return setTimeout(() => resolve(`You said '${prompt}'.`), 500)
     }
   )
   return response;
 }
 
-const chat = async ({ path, params }: RequestType) => {
+const getPickedModels = async (): Promise<string[]> => {
+  // TODO(yoojin): implement after connect api
+  console.log('in getPickedModels');
+  return ['gpt4', 'Yi'];
+}
+
+const chat = async ({ path, params }: RequestType): Promise<string> => {
   console.log('path, params :>> ', path, params);
   const {prompt} = params;
   if (!prompt) {
@@ -28,4 +34,7 @@ const chat = async ({ path, params }: RequestType) => {
   return response;
 }
 
-export default chat;
+export {
+  chat,
+  getPickedModels,
+};

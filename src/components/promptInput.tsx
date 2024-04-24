@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Input } from 'antd';
-import chat from "@/app/api/chat";
+import { chat } from "@/app/api/chat";
 
 const { Search } = Input;
 
