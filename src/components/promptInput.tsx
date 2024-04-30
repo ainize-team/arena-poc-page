@@ -8,9 +8,10 @@ const { Search } = Input;
 
 type promptProps = {
   setParentPrompt: Function,
+  disabled?: boolean
 }
 
-export default function PromptInput({setParentPrompt}: promptProps) {
+export default function PromptInput({setParentPrompt, disabled = false}: promptProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +35,8 @@ export default function PromptInput({setParentPrompt}: promptProps) {
       style={{
         paddingTop: 10
       }}
-      enterButton 
+      enterButton
+      disabled={disabled}
     />
   );
 }

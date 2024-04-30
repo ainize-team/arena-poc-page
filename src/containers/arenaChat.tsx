@@ -4,6 +4,7 @@ import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Flex } from "antd";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type ArenaChatProps = {
   modelA: string,
@@ -17,6 +18,8 @@ enum ArenaStatus {
 }
 
 export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
+  const router = useRouter();
+
   const [prompt, setPrompt] = useState('');
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.READY);
   const [modelAName, setModelAName] = useState('');
@@ -39,9 +42,17 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     setStatus(ArenaStatus.END);
   }
 
+  const onClickNextBtn = () => {
+    console.log('in next');
+    setStatus(ArenaStatus.READY);
+    router.refresh();
+  }
+
   const handlePrompt = (prompt: string) => {
-    setPrompt(prompt);
-    setStatus(ArenaStatus.COMPETING);
+    if (status === ArenaStatus.READY) {
+      setPrompt(prompt);
+      setStatus(ArenaStatus.COMPETING);
+    }
   }
 
   return (
@@ -54,8 +65,10 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       <Button onClick={onClickResultBtn} value={'Model B'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
       <Button onClick={onClickResultBtn} value={'Tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
       <Button onClick={onClickResultBtn} value={'Nothing'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
-      <PromptInput setParentPrompt={handlePrompt} />
-      {status === ArenaStatus.END ? (<Button>NextChalenge</Button>) : (<></>) }
+      <PromptInput setParentPrompt={handlePrompt}/>
+      {status === ArenaStatus.END ? (
+        <Button onClick={onClickNextBtn}>NextChalenge</Button>
+        ) : (<></>) }
       
     </div>
   )
