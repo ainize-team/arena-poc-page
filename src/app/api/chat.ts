@@ -12,13 +12,14 @@ const mockedChatAPI = async (prompt: string) => {
   return response;
 }
 
-const getPickedModels = async (): Promise<string[]> => {
-  // TODO(yoojin): implement after connect api
-  console.log('in getPickedModels');
-  return ['gpt4', 'Yi'];
+export const getPickedModels = async (): Promise<string[]> => {
+  const endpoint = `${process.env.SERVER_URL}/battle/init`;
+  const res = await fetch(endpoint);
+  const models = await res.json();
+  return models;
 }
 
-const chat = async ({ path, params }: RequestType): Promise<string> => {
+export const chat = async ({ path, params }: RequestType): Promise<string> => {
   console.log('path, params :>> ', path, params);
   const {prompt} = params;
   if (!prompt) {
@@ -33,8 +34,3 @@ const chat = async ({ path, params }: RequestType): Promise<string> => {
   }
   return response;
 }
-
-export {
-  chat,
-  getPickedModels,
-};

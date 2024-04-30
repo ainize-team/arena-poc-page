@@ -3,7 +3,7 @@
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Flex } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type ArenaChatProps = {
   modelA: string,
@@ -18,10 +18,24 @@ enum ArenaStatus {
 
 export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [prompt, setPrompt] = useState('');
-  const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.READY)
+  const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.READY);
+  const [modelAName, setModelAName] = useState('');
+  const [modelBName, setModelBName] = useState('');
 
-  const onClickReadyBtn = (e: any) => {
-    console.log('e.target.value :>> ', e.target.value);
+  useEffect(() => {
+    switch(status) {
+      case ArenaStatus.READY:
+      case ArenaStatus.COMPETING: 
+        setModelAName('modelA');
+        setModelBName('modelB');
+        break;
+      case ArenaStatus.END:
+        setModelAName(modelA);
+        setModelBName(modelB);
+    }
+  }, [status])
+
+  const onClickResultBtn = (e: any) => {
     setStatus(ArenaStatus.END);
   }
 
@@ -33,13 +47,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   return (
     <div>
       <Flex justify="space-between">
-        <ChatBox modelName="Model A" prompt={prompt} />
-        <ChatBox modelName="Model B" prompt={prompt} />
+        <ChatBox modelName={modelAName} prompt={prompt} />
+        <ChatBox modelName={modelBName} prompt={prompt} />
       </Flex>
-      <Button onClick={onClickReadyBtn} value={'Model A'} disabled={status !== ArenaStatus.COMPETING}>Model A</Button>
-      <Button onClick={onClickReadyBtn} value={'Model B'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
-      <Button onClick={onClickReadyBtn} value={'Tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
-      <Button onClick={onClickReadyBtn} value={'Nothing'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
+      <Button onClick={onClickResultBtn} value={'Model A'} disabled={status !== ArenaStatus.COMPETING}>Model A</Button>
+      <Button onClick={onClickResultBtn} value={'Model B'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
+      <Button onClick={onClickResultBtn} value={'Tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
+      <Button onClick={onClickResultBtn} value={'Nothing'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
       <PromptInput setParentPrompt={handlePrompt} />
       {status === ArenaStatus.END ? (<Button>NextChalenge</Button>) : (<></>) }
       
