@@ -14,7 +14,7 @@ const mockedChatAPI = async (prompt: string) => {
 
 export const getPickedModels = async (): Promise<string[]> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
-  const res = await fetch(endpoint);
+  const res = await fetch(endpoint, {cache: 'no-cache'});
   const models = await res.json();
   return models;
 }
