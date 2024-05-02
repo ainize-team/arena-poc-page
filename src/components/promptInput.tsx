@@ -19,9 +19,8 @@ export default function PromptInput({setParentPrompt, disabled = false}: promptP
     setPrompt(event.target.value);
   }
 
-  const onClickSendBtn = () => {
-    const response = chat({ path: '/mock', params: { prompt } });
-    setParentPrompt(response);
+  const onClickSendBtn = async() => {
+    setParentPrompt(prompt);
     setPrompt('');
   }
 
