@@ -5,6 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Flex } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { chatWithModel } from "@/app/api/chat";
 
 type ArenaChatProps = {
   modelA: string,
@@ -24,6 +25,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.READY);
   const [modelAName, setModelAName] = useState('');
   const [modelBName, setModelBName] = useState('');
+  const [resultA, setResultA] = useState('');
+  const [resultB, setResultB] = useState('');
 
   useEffect(() => {
     switch(status) {
@@ -48,9 +51,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     router.refresh();
   }
 
-  const handlePrompt = (prompt: string) => {
+  const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
       setPrompt(prompt);
+      console.log('on result', prompt);
+      setResultA(await chatWithModel(modelA, prompt));
+      setResultB(await chatWithModel(modelB, prompt));
+  
       setStatus(ArenaStatus.COMPETING);
     }
   }
@@ -58,8 +65,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   return (
     <div>
       <Flex justify="space-between">
-        <ChatBox modelName={modelAName} prompt={prompt} />
-        <ChatBox modelName={modelBName} prompt={prompt} />
+        <ChatBox modelName={modelAName} prompt={resultA} />
+        <ChatBox modelName={modelBName} prompt={resultB} />
       </Flex>
       <Button onClick={onClickResultBtn} value={'Model A'} disabled={status !== ArenaStatus.COMPETING}>Model A</Button>
       <Button onClick={onClickResultBtn} value={'Model B'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
