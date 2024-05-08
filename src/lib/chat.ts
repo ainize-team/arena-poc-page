@@ -1,19 +1,6 @@
 "use server";
 
-type ModelResponse = {
-  role: "user" | "assistant",
-  content: string,
-}
-
-type ChoiceReqBody = {
-  userAddress: string,
-  choice: "model_a" | "model_b" | "tie" | "bad",
-  modelA: string,
-  modelB: string,
-  turn: number,
-  modelAResponse: ModelResponse[],
-  modelBResponse: ModelResponse[],
-}
+import { ChoiceReqBody } from "@/types/types";
 
 export const getPickedModels = async (): Promise<string[]> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;

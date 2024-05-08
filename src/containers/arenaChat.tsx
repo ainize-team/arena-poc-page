@@ -6,16 +6,11 @@ import { Button, Flex } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
+import { ArenaStatus } from "@/types/types";
 
 type ArenaChatProps = {
   modelA: string,
   modelB: string,
-}
-
-enum ArenaStatus {
-  READY = 'READY',
-  COMPETING = 'COMPETING',
-  END = 'END',
 }
 
 export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
@@ -72,7 +67,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       }]
     })
     const reward = await chatReward(battleId);
-    console.log('reward :>> ', reward); // FIXME(yoojin): display this data
+    alert(JSON.stringify(reward)); // FIXME(yoojin): display this data
     setStatus(ArenaStatus.END);
   }
 
