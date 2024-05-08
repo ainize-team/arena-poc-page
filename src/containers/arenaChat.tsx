@@ -41,6 +41,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     }
   }, [status])
 
+  const resetStates = () => {
+    setPrompt('');
+    setStatus(ArenaStatus.READY);
+    setResultA('');
+    setResultB('');
+  }
+
   const onClickResultBtn = async (e: any) => {
     const value = e.target.value; //FIXME(yoojin): undefined
     const battleId = await chatResult({
@@ -70,8 +77,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   }
 
   const onClickNextBtn = () => {
-    console.log('in next');
-    setStatus(ArenaStatus.READY);
+    resetStates();
     router.refresh();
   }
 
