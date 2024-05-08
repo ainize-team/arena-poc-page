@@ -84,7 +84,6 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
       setPrompt(prompt);
-      console.log('on result', prompt);
       setResultA(await chatWithModel(modelA, prompt));
       setResultB(await chatWithModel(modelB, prompt));
   
