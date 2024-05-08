@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Flex } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { chatWithModel } from "@/app/api/chat";
+import { chatResult, chatReward, chatWithModel } from "@/app/api/chat";
 
 type ArenaChatProps = {
   modelA: string,
@@ -41,7 +41,31 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     }
   }, [status])
 
-  const onClickResultBtn = (e: any) => {
+  const onClickResultBtn = async (e: any) => {
+    const value = e.target.value; //FIXME(yoojin): undefined
+    const battleId = await chatResult({
+      userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
+      choice: !value ? "model_a" : value,
+      modelA: modelA,
+      modelB: modelB,
+      turn: 1,
+      modelAResponse: [{
+        role: "user",
+        content: prompt,
+      }, {
+        role: "assistant",
+        content: resultA
+      }],
+      modelBResponse: [{
+        role: "user",
+        content: prompt,
+      }, {
+        role: "assistant",
+        content: resultB,
+      }]
+    })
+    const reward = await chatReward(battleId);
+    console.log('reward :>> ', reward); // FIXME(yoojin): display this data
     setStatus(ArenaStatus.END);
   }
 
@@ -68,10 +92,10 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
         <ChatBox modelName={modelAName} prompt={resultA} />
         <ChatBox modelName={modelBName} prompt={resultB} />
       </Flex>
-      <Button onClick={onClickResultBtn} value={'Model A'} disabled={status !== ArenaStatus.COMPETING}>Model A</Button>
-      <Button onClick={onClickResultBtn} value={'Model B'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
-      <Button onClick={onClickResultBtn} value={'Tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
-      <Button onClick={onClickResultBtn} value={'Nothing'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
+      <Button onClick={onClickResultBtn} value={'model_a'} disabled={status !== ArenaStatus.COMPETING}>Model A</Button>
+      <Button onClick={onClickResultBtn} value={'model_b'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
+      <Button onClick={onClickResultBtn} value={'tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
+      <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
       <PromptInput setParentPrompt={handlePrompt}/>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>NextChalenge</Button>
