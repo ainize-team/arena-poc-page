@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Flex } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { chatResult, chatReward, chatWithModel } from "@/app/api/chat";
+import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
 
 type ArenaChatProps = {
   modelA: string,
