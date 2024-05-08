@@ -13,15 +13,6 @@ type ChoiceReqBody = {
   modelBResponse: ModelResponse[],
 }
 
-const mockedChatAPI = async (prompt: string) => {
-  const response = new Promise<string>(
-    (resolve) => {
-      return setTimeout(() => resolve(`You said "${prompt}".`), 500)
-    }
-  )
-  return response;
-}
-
 export const getPickedModels = async (): Promise<string[]> => {
   const endpoint = `${process.env.NEXT_PUBLIC_SERVER_URL}/battle/init`;
   const res = await fetch(endpoint, {cache: "no-cache"});
