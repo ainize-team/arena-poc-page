@@ -1,7 +1,12 @@
 export enum ArenaStatus {
-  READY = 'READY',
-  INFERENCING = 'INFERENCING',
-  COMPETING = 'COMPETING',
+  READY = "READY",
+  INFERENCING = "INFERENCING",
+  COMPETING = "COMPETING",
   REGISTERING = 'REGISTERING',
-  END = 'END',
+  END = "END",
+}
+
+export enum ArenaMenuKeys {
+  BATTLE = "battle",
+  DASHBOARD = "dashboard",
 }
