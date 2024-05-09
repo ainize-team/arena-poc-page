@@ -2,20 +2,15 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Flex } from "antd";
+import { Button, Flex, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
+import { ArenaStatus } from "@/type";
 
 type ArenaChatProps = {
   modelA: string,
   modelB: string,
-}
-
-enum ArenaStatus {
-  READY = 'READY',
-  COMPETING = 'COMPETING',
-  END = 'END',
 }
 
 export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
@@ -27,6 +22,16 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [modelBName, setModelBName] = useState('');
   const [resultA, setResultA] = useState('');
   const [resultB, setResultB] = useState('');
+  const [api, contextHolder] = notification.useNotification();
+  
+  const openNotification = (rewardData: any) => {
+    console.log(rewardData);
+    api.info({
+      message: `reward Success!`,
+      description:`reward: ${rewardData.reward}AIN`,
+      placement: "topRight",
+    });
+  };
 
   useEffect(() => {
     switch(status) {
@@ -50,30 +55,34 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const onClickResultBtn = async (e: any) => {
     const value = e.target.value; //FIXME(yoojin): undefined
-    const battleId = await chatResult({
-      userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
-      choice: !value ? "model_a" : value,
-      modelA: modelA,
-      modelB: modelB,
-      turn: 1,
-      modelAResponse: [{
-        role: "user",
-        content: prompt,
-      }, {
-        role: "assistant",
-        content: resultA
-      }],
-      modelBResponse: [{
-        role: "user",
-        content: prompt,
-      }, {
-        role: "assistant",
-        content: resultB,
-      }]
-    })
-    const reward = await chatReward(battleId);
-    console.log('reward :>> ', reward); // FIXME(yoojin): display this data
-    setStatus(ArenaStatus.END);
+    try {
+      const battleId = await chatResult({
+        userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
+        choice: !value ? "model_a" : value,
+        modelA: modelA,
+        modelB: modelB,
+        turn: 1,
+        modelAResponse: [{
+          role: "user",
+          content: prompt,
+        }, {
+          role: "assistant",
+          content: resultA
+        }],
+        modelBResponse: [{
+          role: "user",
+          content: prompt,
+        }, {
+          role: "assistant",
+          content: resultB,
+        }]
+      })
+      setStatus(ArenaStatus.END);
+      const reward = chatReward(battleId)
+      openNotification(await reward)
+    } catch (err) {
+      alert(`${err}.\n If the error is repeated, please refresh the page.`);
+    }
   }
 
   const onClickNextBtn = () => {
@@ -83,16 +92,23 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
+      setStatus(ArenaStatus.INFERENCING)
       setPrompt(prompt);
-      setResultA(await chatWithModel(modelA, prompt));
-      setResultB(await chatWithModel(modelB, prompt));
-  
-      setStatus(ArenaStatus.COMPETING);
+      try {
+        setResultA(await chatWithModel(modelA, prompt));
+        setResultB(await chatWithModel(modelB, prompt));
+        setStatus(ArenaStatus.COMPETING);
+      } catch (err) {
+        alert(err);
+        resetStates();
+        router.refresh();
+      }
     }
   }
 
   return (
     <div>
+      {contextHolder}
       <Flex justify="space-between">
         <ChatBox modelName={modelAName} prompt={resultA} />
         <ChatBox modelName={modelBName} prompt={resultB} />
@@ -101,7 +117,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       <Button onClick={onClickResultBtn} value={'model_b'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
       <Button onClick={onClickResultBtn} value={'tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
       <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
-      <PromptInput setParentPrompt={handlePrompt}/>
+      <PromptInput setParentPrompt={handlePrompt} status={status}/>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>NextChallenge</Button>
         ) : (<></>) }

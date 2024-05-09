@@ -17,9 +17,14 @@ type ChoiceReqBody = {
 
 export const getPickedModels = async (): Promise<string[]> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
-  const res = await fetch(endpoint, {cache: "no-cache"});
-  const models = await res.json();
-  return models;
+  try {
+    const res = await fetch(endpoint, {cache: "no-cache"});
+    const models = await res.json();
+    return models;
+  } catch (err) {
+    console.log("Pick Models Error >", err);
+    throw new Error("Failed to pick models.");
+  }
 }
 
 export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<string> => {
@@ -37,11 +42,11 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
   }
   try {
     const res = await fetch(endpoint, params);
-  const result = await res.json();
+    const result = await res.json();
     return result.response;
   } catch (err: any) {
-    console.log("err :>> ", err);
-    return "err";
+    console.log("Inference Error :>> ", err);
+    throw new Error(`Failed to inference. Model: ${modelName}, Prompt: ${prompt}, System prompt: ${systemPrompt}`);
   }
 }
 
@@ -76,8 +81,8 @@ export const chatResult = async ({
     const { battle_id } = await res.json();
     return battle_id;
   } catch (err: any) {
-    console.log("err :>> ", err);
-    return "err";
+    console.log("Get Result Error :>> ", err);
+    throw new Error(`Failed to get battle result. ${JSON.stringify(body)}`);
   }
 }
 
