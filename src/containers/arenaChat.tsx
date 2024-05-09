@@ -56,30 +56,34 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const onClickResultBtn = async (e: any) => {
     const value = e.target.value; //FIXME(yoojin): undefined
-    const battleId = await chatResult({
-      userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
-      choice: !value ? "model_a" : value,
-      modelA: modelA,
-      modelB: modelB,
-      turn: 1,
-      modelAResponse: [{
-        role: "user",
-        content: prompt,
-      }, {
-        role: "assistant",
-        content: resultA
-      }],
-      modelBResponse: [{
-        role: "user",
-        content: prompt,
-      }, {
-        role: "assistant",
-        content: resultB,
-      }]
-    })
-    setStatus(ArenaStatus.END);
-    const reward = chatReward(battleId)
-    openNotification(await reward) // FIXME(yoojin): display this data
+    try {
+      const battleId = await chatResult({
+        userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
+        choice: !value ? "model_a" : value,
+        modelA: modelA,
+        modelB: modelB,
+        turn: 1,
+        modelAResponse: [{
+          role: "user",
+          content: prompt,
+        }, {
+          role: "assistant",
+          content: resultA
+        }],
+        modelBResponse: [{
+          role: "user",
+          content: prompt,
+        }, {
+          role: "assistant",
+          content: resultB,
+        }]
+      })
+      setStatus(ArenaStatus.END);
+      const reward = chatReward(battleId)
+      openNotification(await reward) // FIXME(yoojin): display this data
+    } catch (err) {
+      alert(`${err}.\n If the error is repeated, please refresh the page.`);
+    }
   }
 
   const onClickNextBtn = () => {
@@ -91,9 +95,15 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     if (status === ArenaStatus.READY) {
       setStatus(ArenaStatus.INFERENCING)
       setPrompt(prompt);
-      setResultA(await chatWithModel(modelA, prompt));
-      setResultB(await chatWithModel(modelB, prompt));
-      setStatus(ArenaStatus.COMPETING);
+      try {
+        setResultA(await chatWithModel(modelA, prompt));
+        setResultB(await chatWithModel(modelB, prompt));
+        setStatus(ArenaStatus.COMPETING);
+      } catch (err) {
+        alert(err);
+        resetStates();
+        router.refresh();
+      }
     }
   }
 
