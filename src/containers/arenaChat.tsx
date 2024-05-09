@@ -103,7 +103,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
       <PromptInput setParentPrompt={handlePrompt}/>
       {status === ArenaStatus.END ? (
-        <Button onClick={onClickNextBtn}>NextChalenge</Button>
+        <Button onClick={onClickNextBtn}>NextChallenge</Button>
         ) : (<></>) }
       
     </div>
