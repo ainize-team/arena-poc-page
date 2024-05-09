@@ -1,3 +1,5 @@
+"use server";
+
 type ModelResponse = {
   role: "user" | "assistant",
   content: string,
@@ -13,24 +15,15 @@ type ChoiceReqBody = {
   modelBResponse: ModelResponse[],
 }
 
-const mockedChatAPI = async (prompt: string) => {
-  const response = new Promise<string>(
-    (resolve) => {
-      return setTimeout(() => resolve(`You said "${prompt}".`), 500)
-    }
-  )
-  return response;
-}
-
 export const getPickedModels = async (): Promise<string[]> => {
-  const endpoint = `${process.env.NEXT_PUBLIC_SERVER_URL}/battle/init`;
+  const endpoint = `${process.env.SERVER_URL}/battle/init`;
   const res = await fetch(endpoint, {cache: "no-cache"});
   const models = await res.json();
   return models;
 }
 
 export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<string> => {
-  const endpoint = `${process.env.NEXT_PUBLIC_SERVER_URL}/battle/inference`;
+  const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const params = {
     method: "POST",
     body: JSON.stringify({
@@ -61,7 +54,7 @@ export const chatResult = async ({
   modelAResponse,
   modelBResponse,
  }: ChoiceReqBody) => {
-  const endpoint = `${process.env.NEXT_PUBLIC_SERVER_URL}/battle/result`;
+  const endpoint = `${process.env.SERVER_URL}/battle/result`;
   const body = {
     user_address: userAddress,
     choice,
@@ -78,7 +71,6 @@ export const chatResult = async ({
       "Content-type": "application/json; charset=UTF-8"
     }
   }
-  console.log("params :>> ", params);
   try {
     const res = await fetch(endpoint, params);
     const { battle_id } = await res.json();
@@ -90,7 +82,7 @@ export const chatResult = async ({
 }
 
 export const chatReward = async (battleId: string) => {
-  const endpoint = `${process.env.NEXT_PUBLIC_SERVER_URL}/battle/${battleId}/reward`;
+  const endpoint = `${process.env.SERVER_URL}/battle/${battleId}/reward`;
   const params = {
     method: "POST",
     headers: {

@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Flex } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { chatResult, chatReward, chatWithModel } from "@/app/api/chat";
+import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
 
 type ArenaChatProps = {
   modelA: string,
@@ -41,6 +41,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     }
   }, [status])
 
+  const resetStates = () => {
+    setPrompt('');
+    setStatus(ArenaStatus.READY);
+    setResultA('');
+    setResultB('');
+  }
+
   const onClickResultBtn = async (e: any) => {
     const value = e.target.value; //FIXME(yoojin): undefined
     const battleId = await chatResult({
@@ -70,15 +77,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   }
 
   const onClickNextBtn = () => {
-    console.log('in next');
-    setStatus(ArenaStatus.READY);
+    resetStates();
     router.refresh();
   }
 
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
       setPrompt(prompt);
-      console.log('on result', prompt);
       setResultA(await chatWithModel(modelA, prompt));
       setResultB(await chatWithModel(modelB, prompt));
   
@@ -98,7 +103,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
       <PromptInput setParentPrompt={handlePrompt}/>
       {status === ArenaStatus.END ? (
-        <Button onClick={onClickNextBtn}>NextChalenge</Button>
+        <Button onClick={onClickNextBtn}>NextChallenge</Button>
         ) : (<></>) }
       
     </div>
