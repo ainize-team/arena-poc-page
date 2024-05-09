@@ -1,18 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from 'antd';
+import { ArrowUpOutlined } from "@ant-design/icons";
+import { ArenaStatus } from "@/type";
 
 const { Search } = Input;
 
 type promptProps = {
   setParentPrompt: Function,
+  status: ArenaStatus
   disabled?: boolean
 }
 
-export default function PromptInput({setParentPrompt, disabled = false}: promptProps) {
+export default function PromptInput({setParentPrompt, status, disabled = false}: promptProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() =>{
+    if (status == ArenaStatus.INFERENCING){
+      setIsLoading(true);
+    } else {
+      setIsLoading(false)
+    }
+  },[status])
 
   const handlePrompt = (event: any) => {
     setPrompt(event.target.value);
@@ -23,9 +34,17 @@ export default function PromptInput({setParentPrompt, disabled = false}: promptP
     setPrompt('');
   }
 
+  const loadingBTN= () => {
+    if(isLoading === true){
+      return true
+    } else {
+      return <ArrowUpOutlined />
+    }
+  }
+
   return (
     <Search 
-      placeholder="input search loading with enterButton" 
+      placeholder="Type your prompt and press ENTER" 
       onChange={handlePrompt}
       onSearch={onClickSendBtn}
       value={prompt}
@@ -33,8 +52,8 @@ export default function PromptInput({setParentPrompt, disabled = false}: promptP
       style={{
         paddingTop: 10
       }}
-      enterButton
-      disabled={disabled}
+      enterButton={loadingBTN()}
+      disabled={isLoading}
     />
   );
 }

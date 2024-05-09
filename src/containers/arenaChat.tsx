@@ -2,20 +2,15 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Flex } from "antd";
+import { Button, Flex, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
+import { ArenaStatus } from "@/type";
 
 type ArenaChatProps = {
   modelA: string,
   modelB: string,
-}
-
-enum ArenaStatus {
-  READY = 'READY',
-  COMPETING = 'COMPETING',
-  END = 'END',
 }
 
 export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
@@ -27,6 +22,16 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [modelBName, setModelBName] = useState('');
   const [resultA, setResultA] = useState('');
   const [resultB, setResultB] = useState('');
+  const [api, contextHolder] = notification.useNotification();
+  
+  const openNotification = (rewardData: any) => {
+    console.log(rewardData);
+    api.info({
+      message: `reward Success!`,
+      description:`reward: ${rewardData.reward}AIN`,
+      placement: "topRight",
+    });
+  };
 
   useEffect(() => {
     switch(status) {
@@ -72,9 +77,9 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
           content: resultB,
         }]
       })
-      const reward = await chatReward(battleId);
-      console.log('reward :>> ', reward); // FIXME(yoojin): display this data
       setStatus(ArenaStatus.END);
+      const reward = chatReward(battleId)
+      openNotification(await reward)
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
     }
@@ -87,11 +92,11 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
+      setStatus(ArenaStatus.INFERENCING)
       setPrompt(prompt);
       try {
         setResultA(await chatWithModel(modelA, prompt));
         setResultB(await chatWithModel(modelB, prompt));
-        
         setStatus(ArenaStatus.COMPETING);
       } catch (err) {
         alert(err);
@@ -103,6 +108,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   return (
     <div>
+      {contextHolder}
       <Flex justify="space-between">
         <ChatBox modelName={modelAName} prompt={resultA} />
         <ChatBox modelName={modelBName} prompt={resultB} />
@@ -111,7 +117,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       <Button onClick={onClickResultBtn} value={'model_b'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
       <Button onClick={onClickResultBtn} value={'tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
       <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
-      <PromptInput setParentPrompt={handlePrompt}/>
+      <PromptInput setParentPrompt={handlePrompt} status={status}/>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>NextChallenge</Button>
         ) : (<></>) }
