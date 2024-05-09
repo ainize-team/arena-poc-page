@@ -1,19 +1,12 @@
 import ArenaMenu from "@/components/arenaMenu";
 import Dashboard from "@/containers/dashboard";
+import { ArenaMenuKeys } from "@/type";
 
 export default function Home() {
-  const items = [{
-    key: "battle",
-    label: "Battle",
-  }, {
-    key: "dashboard",
-    label: "Dashboard",
-  }]
-
   return (
     <main className="min-h-screen">
-      <ArenaMenu page='dashboard' />
-      <Dashboard /> {/* FIXME(yoojin): add choice components */}
+      <ArenaMenu page={ArenaMenuKeys.DASHBOARD} />
+      <Dashboard />
     </main>
   );
 }
