@@ -9,13 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ainblockchain/ain-js": "^1.10.0",
     "@ant-design/icons": "^5.3.7",
     "antd": "^5.16.4",
+    "js-cookie": "^3.0.5",
     "next": "14.2.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
