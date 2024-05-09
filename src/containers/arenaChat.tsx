@@ -55,6 +55,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const onClickResultBtn = async (e: any) => {
     const value = e.target.value; //FIXME(yoojin): undefined
+    setStatus(ArenaStatus.REGISTERING)
     try {
       const battleId = await chatResult({
         userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
