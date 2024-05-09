@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
 import { ArenaStatus } from "@/type";
-import { NotificationPlacement } from "antd/es/notification/interface";
 
 type ArenaChatProps = {
   modelA: string,
