@@ -28,7 +28,7 @@ export const getDashboard = async (): Promise<DashboardTableData[]> => {
 const dashboardToTableData = (dashboardData: DashboardResponse) => {
   const tableData: DashboardTableData[] = []; 
   for (const [index, datas] of Object.entries(dashboardData)) {
-    const numIndex = Number(index)
+    const numIndex = Number(index);
     const data: DashboardTableData = {
       key: numIndex,
       rank: numIndex,
