@@ -20,7 +20,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
   useEffect(() =>{
     if (status == ArenaStatus.INFERENCING){
       setIsLoading(true);
-    }else{
+    } else {
       setIsLoading(false)
     }
   },[status])
@@ -37,7 +37,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
   const loadingBTN= () => {
     if(isLoading === true){
       return true
-    }else{
+    } else {
       return <ArrowUpOutlined />
     }
   }

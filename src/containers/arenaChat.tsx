@@ -79,7 +79,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       })
       setStatus(ArenaStatus.END);
       const reward = chatReward(battleId)
-      openNotification(await reward) // FIXME(yoojin): display this data
+      openNotification(await reward)
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
     }
