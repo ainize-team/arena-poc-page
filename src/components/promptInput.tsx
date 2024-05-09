@@ -16,7 +16,7 @@ type promptProps = {
 export default function PromptInput({setParentPrompt, status, disabled = false}: promptProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const promptPlaceHolder =(status:ArenaStatus)=>{
+  const promptPlaceHolder =(status:ArenaStatus) => {
     switch(status){
       case ArenaStatus.NOTCONNECTED:
         return "Connect your AIN wallet first."
@@ -29,10 +29,9 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
       case ArenaStatus.END:
         return "Select next challange first."
     }
-
   }
   useEffect(() =>{
-    if (status == ArenaStatus.INFERENCING ){
+    if (status == ArenaStatus.INFERENCING){
       setIsLoading(true);
     } else {
       setIsLoading(false)
