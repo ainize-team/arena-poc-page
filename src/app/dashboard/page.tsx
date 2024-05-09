@@ -1,12 +1,12 @@
 import ArenaMenu from "@/components/arenaMenu";
-import ServerArena from "@/containers/serverArena";
+import Dashboard from "@/containers/dashboard";
 import { ArenaMenuKeys } from "@/type";
 
 export default function Home() {
-return (
+  return (
     <main className="min-h-screen">
-      <ArenaMenu page={ArenaMenuKeys.BATTLE} />
-      <ServerArena />
+      <ArenaMenu page={ArenaMenuKeys.DASHBOARD} />
+      <Dashboard />
     </main>
   );
 }
