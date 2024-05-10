@@ -18,6 +18,9 @@ const contentStyle: React.CSSProperties = {
 
 const footerStyle: React.CSSProperties = {
   textAlign: 'center',
+  position: "fixed",
+  bottom: 0,
+  width: "100%"
 };
 
 const layoutStyle = {
