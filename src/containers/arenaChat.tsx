@@ -6,7 +6,8 @@ import { Button, Flex, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
-import { ArenaStatus } from "@/type";
+import { ArenaStatus, ChoiceType } from "@/type";
+import ChoiceButton from "@/components/choiceButton";
 
 type ArenaChatProps = {
   modelA: string,
@@ -53,13 +54,12 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     setResultB('');
   }
 
-  const onClickResultBtn = async (e: any) => {
-    const value = e.target.value; //FIXME(yoojin): undefined
+  const onClickChoiceBtn = async (value: ChoiceType) => {
     setStatus(ArenaStatus.REGISTERING)
     try {
       const battleId = await chatResult({
         userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
-        choice: !value ? "model_a" : value,
+        choice: value,
         modelA: modelA,
         modelB: modelB,
         turn: 1,
@@ -114,10 +114,10 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
         <ChatBox modelName={modelAName} prompt={resultA} />
         <ChatBox modelName={modelBName} prompt={resultB} />
       </Flex>
-      <Button onClick={onClickResultBtn} value={'model_a'} disabled={status !== ArenaStatus.COMPETING}>Model A</Button>
-      <Button onClick={onClickResultBtn} value={'model_b'} disabled={status !== ArenaStatus.COMPETING}>Model B</Button>
-      <Button onClick={onClickResultBtn} value={'tie'} disabled={status !== ArenaStatus.COMPETING}>Tie</Button>
-      <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
+      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} />
+      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} />
+      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} />
+      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} />
       <PromptInput setParentPrompt={handlePrompt} status={status}/>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>NextChallenge</Button>
