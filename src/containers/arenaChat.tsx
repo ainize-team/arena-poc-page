@@ -138,8 +138,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       {msgContextHolder}
       <Button onClick={onClickConnectWalletBtn} ><WalletOutlined />{address ? address.slice(0,8)+"..." : "connect wallet"} </Button>
       <Flex justify="space-between">
-        <ChatBox modelName={modelAName} prompt={resultA} />
-        <ChatBox modelName={modelBName} prompt={resultB} />
+        <ChatBox modelName={modelAName} status={status} prompt={resultA} />
+        <ChatBox modelName={modelBName} status={status} prompt={resultB} />
       </Flex>
       <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} />
       <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} />
