@@ -11,8 +11,8 @@ type DashboardResponse = {
 
 type DashboardTableData = {
   key: number,
-  rank: number,
-  elo: number,
+  rank: number | "-",
+  elo: number | "-",
   modelName: string,
   votes: number,
 }
@@ -21,6 +21,7 @@ export const getDashboard = async (): Promise<DashboardTableData[]> => {
   const endpoint = `${process.env.SERVER_URL}/dashboard`;
   const res = await fetch(endpoint, {cache: "no-cache"});
   const dashboard = await res.json();
+  console.log('dashboard :>> ', dashboard);
 
   return dashboardToTableData(dashboard);
 }
@@ -31,8 +32,8 @@ const dashboardToTableData = (dashboardData: DashboardResponse) => {
     const numIndex = Number(index);
     const data: DashboardTableData = {
       key: numIndex,
-      rank: numIndex,
-      elo: datas.elo_score,
+      rank: datas.votes < 100 ? "-" : numIndex,
+      elo: datas.votes < 100 ? "-" : datas.elo_score,
       modelName: datas.model_name,
       votes: datas.votes,
     } 
