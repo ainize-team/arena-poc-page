@@ -1,6 +1,6 @@
 "use client";
 
-import { ArenaMenuKeys } from '@/type';
+import { ArenaMenuKey } from '@/type';
 import { Menu, MenuProps } from 'antd';
 import { useRouter } from "next/navigation";
 
@@ -11,15 +11,15 @@ type ArenaMenuProps = {
 export default function ArenaMenu({ page }: ArenaMenuProps) {
   const router = useRouter();
   const items = [{
-    key: ArenaMenuKeys.BATTLE,
+    key: ArenaMenuKey.BATTLE,
     label: "Battle",
   }, {
-    key: ArenaMenuKeys.DASHBOARD,
+    key: ArenaMenuKey.DASHBOARD,
     label: "Dashboard",
   }]
 
   const onClickMenu: MenuProps["onClick"] = (e: any) => {
-    router.push(`/${e.key !== ArenaMenuKeys.BATTLE ? e.key : ""}`);
+    router.push(`/${e.key !== ArenaMenuKey.BATTLE ? e.key : ""}`);
   }
 
   return (
