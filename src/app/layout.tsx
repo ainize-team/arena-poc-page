@@ -52,7 +52,7 @@ export default function RootLayout({
           <Content style={contentStyle}>
               {children}
           </Content>
-          <Footer style={footerStyle}>© 2024 Powered by AI Network</Footer>
+          <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
         </Layout>
       </body>
     </html>
