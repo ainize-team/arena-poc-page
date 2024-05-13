@@ -7,7 +7,14 @@ export enum ArenaStatus {
   END = "END",
 }
 
-export enum ArenaMenuKeys {
+export enum ArenaMenuKey {
   BATTLE = "battle",
   DASHBOARD = "dashboard",
+}
+
+export enum ChoiceType {
+  MODELA = "model_a",
+  MODELB = "model_b",
+  TIE = "tie",
+  NOTHING = "bad",
 }
