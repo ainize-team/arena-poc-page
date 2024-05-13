@@ -6,7 +6,7 @@ export enum ArenaStatus {
   END = "END",
 }
 
-export enum ArenaMenuKeys {
+export enum ArenaMenuKey {
   BATTLE = "battle",
   DASHBOARD = "dashboard",
 }
