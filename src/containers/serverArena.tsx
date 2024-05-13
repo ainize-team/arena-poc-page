@@ -1,4 +1,4 @@
-import { getPickedModels } from "@/lib/chat";
+import { getPickedModels } from "@/lib/arena";
 import ArenaChat from "./arenaChat";
 
 export default async function ServerArena() {

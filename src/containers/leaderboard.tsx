@@ -1,8 +1,8 @@
 import { Table } from "antd";
-import { getDashboard } from "@/lib/dashboard";
+import { getLeaderboard } from "@/lib/leaderboard";
 
-export default async function Dashboard() {
-  const dashboardData = await getDashboard();
+export default async function Leaderboard() {
+  const dashboardData = await getLeaderboard();
   const columns = [
     {
       title: "Rank",

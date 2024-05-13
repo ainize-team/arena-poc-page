@@ -8,8 +8,8 @@ export enum ArenaStatus {
 }
 
 export enum ArenaMenuKey {
-  BATTLE = "battle",
-  DASHBOARD = "dashboard",
+  ARENA = "arena",
+  LEADERBOARD = "leaderboard",
 }
 
 export enum ChoiceType {

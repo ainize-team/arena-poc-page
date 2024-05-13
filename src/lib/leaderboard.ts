@@ -18,7 +18,7 @@ type DashboardTableData = {
   votes: number,
 }
 
-export const getDashboard = async (): Promise<DashboardTableData[]> => {
+export const getLeaderboard = async (): Promise<DashboardTableData[]> => {
   const endpoint = `${process.env.SERVER_URL}/dashboard`;
   const res = await fetch(endpoint, {cache: "no-cache"});
   const dashboard = await res.json();

@@ -11,15 +11,15 @@ type ArenaMenuProps = {
 export default function ArenaMenu({ page }: ArenaMenuProps) {
   const router = useRouter();
   const items = [{
-    key: ArenaMenuKey.BATTLE,
-    label: "Battle",
+    key: ArenaMenuKey.ARENA,
+    label: "Arena",
   }, {
-    key: ArenaMenuKey.DASHBOARD,
-    label: "Dashboard",
+    key: ArenaMenuKey.LEADERBOARD,
+    label: "Leaderboard",
   }]
 
   const onClickMenu: MenuProps["onClick"] = (e: any) => {
-    router.push(`/${e.key !== ArenaMenuKey.BATTLE ? e.key : ""}`);
+    router.push(`/${e.key !== ArenaMenuKey.ARENA ? e.key : ""}`);
   }
 
   return (
