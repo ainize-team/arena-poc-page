@@ -13,6 +13,10 @@ export default async function Dashboard() {
       dataIndex: "modelName",
       key: "modelName",
     }, {
+      title: "95% CI",
+      dataIndex: "ci",
+      key: "ci",
+    }, {
       title: "ELO Score",
       dataIndex: "elo",
       key: "elo",
