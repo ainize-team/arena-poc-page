@@ -2,11 +2,13 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Flex, notification } from "antd";
+import { Alert, Button, Flex, message, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
 import { ArenaStatus } from "@/type";
+import { requestAddress } from "@/lib/wallet";
+import { WalletOutlined } from "@ant-design/icons";
 
 type ArenaChatProps = {
   modelA: string,
@@ -17,16 +19,18 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const router = useRouter();
 
   const [prompt, setPrompt] = useState('');
-  const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.READY);
+  const [address, setAddress] = useState<string>("");
+  const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [modelAName, setModelAName] = useState('');
   const [modelBName, setModelBName] = useState('');
   const [resultA, setResultA] = useState('');
   const [resultB, setResultB] = useState('');
-  const [api, contextHolder] = notification.useNotification();
+  const [notiApi, notiContextHolder] = notification.useNotification();
+  const [msgApi, msgContextHolder] = message.useMessage();
   
   const openNotification = (rewardData: any) => {
     console.log(rewardData);
-    api.info({
+    notiApi.info({
       message: `reward Success!`,
       description:`reward: ${rewardData.reward}AIN`,
       placement: "topRight",
@@ -46,6 +50,12 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     }
   }, [status])
 
+  useEffect(()=> {
+    if(address !== ""){
+      setStatus(ArenaStatus.READY)
+    }
+  },[address])
+
   const resetStates = () => {
     setPrompt('');
     setStatus(ArenaStatus.READY);
@@ -53,12 +63,27 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     setResultB('');
   }
 
+  const onClickConnectWalletBtn = async (e: any) => {
+    if(address != "") {
+      return
+    }
+    const getAddress = await requestAddress();
+    if(getAddress == undefined){
+        msgApi.open({
+          type: 'error',
+          content: 'Cannot found AIN wallet.',
+        });
+      return
+    }
+    setAddress(getAddress)
+  }
+
   const onClickResultBtn = async (e: any) => {
     const value = e.target.value; //FIXME(yoojin): undefined
     setStatus(ArenaStatus.REGISTERING)
     try {
       const battleId = await chatResult({
-        userAddress: '0x321a3A5FFBb094871310EcA1f3f436335081E0a6', // FIXME(yoojin): change after connecting wallet.
+        userAddress: address, // FIXME(yoojin): change after connecting wallet.
         choice: !value ? "model_a" : value,
         modelA: modelA,
         modelB: modelB,
@@ -109,7 +134,9 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   return (
     <div>
-      {contextHolder}
+      {notiContextHolder}
+      {msgContextHolder}
+      <Button onClick={onClickConnectWalletBtn} ><WalletOutlined />{address ? address.slice(0,8)+"..." : "connect wallet"} </Button>
       <Flex justify="space-between">
         <ChatBox modelName={modelAName} prompt={resultA} />
         <ChatBox modelName={modelBName} prompt={resultB} />
@@ -120,7 +147,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       <Button onClick={onClickResultBtn} value={'bad'} disabled={status !== ArenaStatus.COMPETING}>Nothing</Button>
       <PromptInput setParentPrompt={handlePrompt} status={status}/>
       {status === ArenaStatus.END ? (
-        <Button onClick={onClickNextBtn}>NextChallenge</Button>
+        <Button onClick={onClickNextBtn}>Next Challenge</Button>
         ) : (<></>) }
       
     </div>

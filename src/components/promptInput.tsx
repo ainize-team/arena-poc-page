@@ -16,7 +16,20 @@ type promptProps = {
 export default function PromptInput({setParentPrompt, status, disabled = false}: promptProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+  const promptPlaceHolder =(status:ArenaStatus) => {
+    switch(status){
+      case ArenaStatus.NOTCONNECTED:
+        return "Connect your AIN wallet first."
+      case ArenaStatus.READY:
+        return "Type your prompt and press ENTER."
+      case ArenaStatus.INFERENCING:
+        return "Inferencing... Please wait."
+      case ArenaStatus.COMPETING:
+        return "Select winner first."
+      case ArenaStatus.END:
+        return "Select next challange first."
+    }
+  }
   useEffect(() =>{
     if (status == ArenaStatus.INFERENCING){
       setIsLoading(true);
@@ -44,7 +57,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
 
   return (
     <Search 
-      placeholder="Type your prompt and press ENTER" 
+      placeholder={promptPlaceHolder(status)}
       onChange={handlePrompt}
       onSearch={onClickSendBtn}
       value={prompt}
@@ -53,7 +66,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
         paddingTop: 10
       }}
       enterButton={loadingBTN()}
-      disabled={isLoading}
+      disabled={status !== ArenaStatus.READY}
     />
   );
 }
