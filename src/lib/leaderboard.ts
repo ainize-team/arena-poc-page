@@ -1,5 +1,5 @@
 "use server";
-
+const MINIMUM_VOTE = 10;
 type DashboardResponse = {
   [index: string]: {
     model_name: string,
@@ -22,7 +22,6 @@ export const getLeaderboard = async (): Promise<DashboardTableData[]> => {
   const endpoint = `${process.env.SERVER_URL}/dashboard`;
   const res = await fetch(endpoint, {cache: "no-cache"});
   const dashboard = await res.json();
-
   return dashboardToTableData(dashboard);
 }
 
@@ -33,9 +32,9 @@ const dashboardToTableData = (dashboardData: DashboardResponse) => {
     const ci = datas["95%_CI"];
     const data: DashboardTableData = {
       key: numIndex,
-      rank: datas.votes < 100 ? "-" : numIndex,
-      ci: datas.votes < 100 ? "- / -" : stringifyCI(datas.elo_score, ci),
-      elo: datas.votes < 100 ? "-" : datas.elo_score,
+      rank: datas.votes < MINIMUM_VOTE ? "-" : numIndex,
+      ci: datas.votes < MINIMUM_VOTE ? "- / -" : stringifyCI(datas.elo_score, ci),
+      elo: datas.votes < MINIMUM_VOTE ? "-" : datas.elo_score,
       modelName: datas.model_name,
       votes: datas.votes,
     } 
