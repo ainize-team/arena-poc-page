@@ -2,7 +2,7 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Flex, message, notification } from "antd";
+import { Button, Col, Flex, Modal, Row, Space, message, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
@@ -27,7 +27,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
-  const [msgApi, msgContextHolder] = message.useMessage();
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   
   const openNotification = (rewardData: any) => {
     console.log(rewardData);
@@ -40,6 +41,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   useEffect(() => {
     switch(status) {
+      case ArenaStatus.NOTCONNECTED:
       case ArenaStatus.READY:
       case ArenaStatus.COMPETING: 
         setModelAName("modelA");
@@ -64,16 +66,17 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     setResultB("");
   }
 
+  const handleOk = () => {
+    setModalOpen(false);
+  };
+
   const onClickConnectWalletBtn = async () => {
     if(address !== "") {
       return;
     }
     const getAddress = await requestAddress();
     if(getAddress === undefined){
-        msgApi.open({
-          type: "error",
-          content: "Cannot found AIN wallet.",
-        });
+      setModalOpen(true);
       return;
     }
     setAddress(getAddress)
@@ -133,22 +136,45 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   }
 
   return (
-    <div>
+    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}
-      {msgContextHolder}
+      <Modal
+        open={modalOpen}
+        title="Ain Wallet not found"
+        onOk={handleOk}
+        onCancel={handleOk}
+        footer={[
+          <Button
+            key="link"
+            href="https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl?hl=ko"
+            type="primary"
+            loading={modalLoading}
+            onClick={handleOk}
+          >
+            Install AIN wallet extention
+          </Button>,
+        ]}
+      >
+        <p>You should install AIN wallet first.</p>
+      </Modal>
       <Button onClick={onClickConnectWalletBtn} ><WalletOutlined />{address ? address.slice(0,8)+"..." : "connect wallet"} </Button>
       <Flex justify="space-between">
-        <ChatBox modelName={modelAName} prompt={resultA} />
-        <ChatBox modelName={modelBName} prompt={resultB} />
+        <ChatBox modelName={modelAName} status={status} prompt={resultA} />
+        <ChatBox modelName={modelBName} status={status} prompt={resultB} />
       </Flex>
-      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} />
-      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} />
-      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} />
-      <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} />
+        <Row justify="space-evenly">
+          <Col span={3} />
+          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
+          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
+          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
+          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
+          <Col span={3} />
+        </Row>
       <PromptInput setParentPrompt={handlePrompt} status={status}/>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>Next Challenge</Button>
         ) : (<></>) }
-    </div>
+      <div />
+    </Space>
   )
 }

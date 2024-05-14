@@ -13,7 +13,7 @@ const labels: {[choice: string]: string} = {
   [ChoiceType.MODELA]: "Model A", 
   [ChoiceType.MODELB]: "Model B", 
   [ChoiceType.TIE]: "Tie", 
-  [ChoiceType.NOTHING]: "Nothing", 
+  [ChoiceType.NOTHING]: "Both bad", 
 }
 
 export default function ChoiceButton({value, arenaStatus, onClick}: ChoiceButtonsProps) {
@@ -21,6 +21,6 @@ export default function ChoiceButton({value, arenaStatus, onClick}: ChoiceButton
     onClick(value);
   }
   return (
-      <Button value={value} disabled={arenaStatus !== ArenaStatus.COMPETING} onClick={onClickButton}>{labels[value]}</Button>
+      <Button block value={value} disabled={arenaStatus !== ArenaStatus.COMPETING} onClick={onClickButton}>{labels[value]}</Button>
   );
 }
