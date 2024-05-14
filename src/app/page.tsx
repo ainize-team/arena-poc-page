@@ -5,7 +5,7 @@ import { ArenaMenuKey } from "@/type";
 export default function Home() {
 return (
     <main className="min-h-screen">
-      <ArenaMenu page={ArenaMenuKey.BATTLE} />
+      <ArenaMenu page={ArenaMenuKey.ARENA} />
       <ServerArena />
     </main>
   );
