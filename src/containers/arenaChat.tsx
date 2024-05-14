@@ -41,6 +41,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   useEffect(() => {
     switch(status) {
+      case ArenaStatus.NOTCONNECTED:
       case ArenaStatus.READY:
       case ArenaStatus.COMPETING: 
         setModelAName("modelA");
