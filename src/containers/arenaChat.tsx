@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Flex, Modal, Space, message, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
+import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
 import { ArenaStatus, ChoiceType } from "@/type";
 import { requestAddress } from "@/lib/wallet";
 import { WalletOutlined } from "@ant-design/icons";
