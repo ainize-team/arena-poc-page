@@ -13,7 +13,7 @@ const labels: {[choice: string]: string} = {
   [ChoiceType.MODELA]: "Model A", 
   [ChoiceType.MODELB]: "Model B", 
   [ChoiceType.TIE]: "Tie", 
-  [ChoiceType.NOTHING]: "Nothing", 
+  [ChoiceType.NOTHING]: "Both bad", 
 }
 
 export default function ChoiceButton({value, arenaStatus, onClick}: ChoiceButtonsProps) {

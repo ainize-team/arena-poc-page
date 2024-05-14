@@ -2,7 +2,7 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Flex, Modal, message, notification } from "antd";
+import { Button, Flex, Modal, Space, message, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/chat";
@@ -135,7 +135,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   }
 
   return (
-    <div>
+    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}
       <Modal
         open={modalOpen}
@@ -161,14 +161,16 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
         <ChatBox modelName={modelAName} status={status} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} prompt={resultB} />
       </Flex>
+      <Space>
       <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} />
       <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} />
       <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} />
       <ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} />
+      </Space>
       <PromptInput setParentPrompt={handlePrompt} status={status}/>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>Next Challenge</Button>
         ) : (<></>) }
-    </div>
+    </Space>
   )
 }
