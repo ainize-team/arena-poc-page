@@ -114,6 +114,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
+        // FIXME(yoojin): It can't be async because of SSR I think.
         chatWithModel(modelA, prompt).then(res => setResultA(res));
         chatWithModel(modelB, prompt).then(res => setResultB(res));
       } catch (err) {
