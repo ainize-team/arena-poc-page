@@ -133,15 +133,15 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
         <ChatBox modelName={modelAName} status={status} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} prompt={resultB} />
       </Flex>
-        <Row justify="space-evenly">
-          <Col span={3} />
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
-          <Col span={3} />
-        </Row>
       <PromptInput setParentPrompt={handlePrompt} status={status}/>
+      <Row justify="space-evenly">
+        <Col span={3} />
+        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
+        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
+        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
+        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
+        <Col span={3} />
+      </Row>
       {status === ArenaStatus.END ? (
         <Button onClick={onClickNextBtn}>Next Challenge</Button>
         ) : (<></>) }
