@@ -20,9 +20,9 @@ export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
         height: 500 - 60, // FIXME(yoojin): change height to not constant value.
         overflow: "auto",
       }}>{
-        splitPrompt(prompt).map((line: string) => {
+        splitPrompt(prompt).map((line: string, index: number) => {
           return (
-            <div>
+            <div key={index}>
               <span>{line}</span><br />
             </div>
           );
