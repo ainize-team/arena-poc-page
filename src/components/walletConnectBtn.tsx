@@ -3,14 +3,17 @@
 import { requestAddress } from "@/lib/wallet";
 import { WalletOutlined } from "@ant-design/icons";
 import { Button, Modal, Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { addressAtom } from "@/lib/wallet";
+import { addressAtom, useSsrCompletedState } from "@/lib/wallet";
 
 export default function WalletConnectBtn() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [address, setAddress] = useRecoilState(addressAtom);
+
+  const setSsrCompleted = useSsrCompletedState();
+  useEffect(setSsrCompleted, [setSsrCompleted]);
 
   const onClickConnectWalletBtn = async () => {
     if(address !== "") {
