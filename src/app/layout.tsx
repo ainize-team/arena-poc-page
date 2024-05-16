@@ -2,21 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
 import "./globals.css";
-
-const headerStyle: React.CSSProperties = {
-  textAlign: "center",
-  fontSize: "48px",
-  height: 64,
-  paddingInline: 48,
-  lineHeight: "64px",
-  backgroundColor: "#ffffff",
-};
-
-const contentStyle: React.CSSProperties = {
-  textAlign: "center",
-  minHeight: "80%",
-  height: "80%",
-};
+import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
@@ -49,10 +35,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Layout style={layoutStyle}>
-          <Header style={headerStyle}>AI Network Chatbot Arena</Header>
-          <Content style={contentStyle}>
-              {children}
-          </Content>
+          <RecoilRootWrapper>
+            {children}
+          </RecoilRootWrapper>
           <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
         </Layout>
       </body>

@@ -2,14 +2,14 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Col, Flex, Modal, Row, Space, message, notification } from "antd";
+import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
 import { ArenaStatus, ChoiceType } from "@/type";
-import { requestAddress } from "@/lib/wallet";
-import { WalletOutlined } from "@ant-design/icons";
 import ChoiceButton from "@/components/choiceButton";
+import { useRecoilState } from "recoil";
+import { addressAtom } from "@/lib/wallet";
 
 type ArenaChatProps = {
   modelA: string,
@@ -20,15 +20,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const router = useRouter();
 
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useState<string>("");
+  const [address, setAddress] = useRecoilState (addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [modelAName, setModelAName] = useState("");
   const [modelBName, setModelBName] = useState("");
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
-  const [modalLoading, setModalLoading] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   
   const openNotification = (rewardData: any) => {
     console.log(rewardData);
@@ -54,8 +52,10 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   }, [status])
 
   useEffect(()=> {
-    if(address !== "") {
-      setStatus(ArenaStatus.READY)
+    if (address !== "") {
+      setStatus(ArenaStatus.READY);
+    } else {
+      setStatus(ArenaStatus.NOTCONNECTED);
     }
   }, [address])
 
@@ -64,22 +64,6 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     setStatus(ArenaStatus.READY);
     setResultA("");
     setResultB("");
-  }
-
-  const handleOk = () => {
-    setModalOpen(false);
-  };
-
-  const onClickConnectWalletBtn = async () => {
-    if(address !== "") {
-      return;
-    }
-    const getAddress = await requestAddress();
-    if(getAddress === undefined){
-      setModalOpen(true);
-      return;
-    }
-    setAddress(getAddress)
   }
 
   const onClickChoiceBtn = async (value: ChoiceType) => {
@@ -107,8 +91,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
         }]
       })
       setStatus(ArenaStatus.END);
-      const reward = chatReward(battleId)
-      openNotification(await reward)
+      const reward = chatReward(battleId);
+      openNotification(await reward);
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
     }
@@ -138,26 +122,6 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}
-      <Modal
-        open={modalOpen}
-        title="Ain Wallet not found"
-        onOk={handleOk}
-        onCancel={handleOk}
-        footer={[
-          <Button
-            key="link"
-            href="https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl?hl=ko"
-            type="primary"
-            loading={modalLoading}
-            onClick={handleOk}
-          >
-            Install AIN wallet extention
-          </Button>,
-        ]}
-      >
-        <p>You should install AIN wallet first.</p>
-      </Modal>
-      <Button onClick={onClickConnectWalletBtn} ><WalletOutlined />{address ? address.slice(0,8)+"..." : "connect wallet"} </Button>
       <Flex justify="space-between">
         <ChatBox modelName={modelAName} status={status} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} prompt={resultB} />
