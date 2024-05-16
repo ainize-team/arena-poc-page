@@ -10,8 +10,7 @@ type RecoilRootWrapperProps = {
 
 const contentStyle: React.CSSProperties = {
   textAlign: "center",
-  minHeight: "80%",
-  height: "80%",
+  marginBottom: "80px",
 };
 
 export default function RecoilRootWrapper({ children }: RecoilRootWrapperProps) {
