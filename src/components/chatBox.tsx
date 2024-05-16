@@ -10,7 +10,6 @@ type ChatBoxProps = {
 };
 
 export default function ChatBox({ modelName,status,prompt}: ChatBoxProps) {
-
   function textboxContent(status:ArenaStatus, prompt?: string) {
     if(prompt) {
       return <Paragraph>{prompt}</Paragraph>
@@ -18,6 +17,7 @@ export default function ChatBox({ modelName,status,prompt}: ChatBoxProps) {
       return <Spin tip="Loading" size="large"/>
     }
   }
+
   return (
     <Card
       title={modelName}
@@ -26,7 +26,7 @@ export default function ChatBox({ modelName,status,prompt}: ChatBoxProps) {
       style={{
         textAlign: "left",
         width: "49.9%",
-        height: 500,
+        minHeight: "60vh",
       }}
     >
     {textboxContent(status,prompt)}
