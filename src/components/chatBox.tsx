@@ -39,8 +39,10 @@ export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
       bordered={false}
       style={{
         textAlign: "left",
-        width: "49.9%",
+        width: "47%",
         height: 500,
+        marginLeft: "3px",
+        marginRight: "3px",
       }}
     >
     {textboxContent(status, prompt)}

@@ -129,22 +129,33 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}
-      <Flex justify="space-between">
+      <Flex justify="center" style={{marginTop: "10px"}}>
         <ChatBox modelName={modelAName} status={status} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} prompt={resultB} />
       </Flex>
-      <PromptInput setParentPrompt={handlePrompt} status={status}/>
-      <Row justify="space-evenly">
-        <Col span={3} />
-        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
-        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
-        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
-        <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
-        <Col span={3} />
-      </Row>
-      {status === ArenaStatus.END ? (
-        <Button onClick={onClickNextBtn}>Next Challenge</Button>
-        ) : (<></>) }
+        {status !== ArenaStatus.END ? (
+          <>
+            <PromptInput setParentPrompt={handlePrompt} status={status}/>
+            <Row justify="space-evenly">
+              <Col span={3} />
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
+              <Col span={3} />
+            </Row>
+          </>
+        ) : (
+          <Flex justify="center" style={{width: "100%"}}>
+              <Button 
+                style={{
+                  height: "50px",
+                  width: "60%",
+                }}
+                onClick={onClickNextBtn}
+              >Next Challenge</Button>
+          </Flex>
+        )}
       <div />
     </Space>
   )
