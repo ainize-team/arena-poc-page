@@ -53,7 +53,9 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   useEffect(()=> {
     if (address !== "") {
-      setStatus(ArenaStatus.READY)
+      setStatus(ArenaStatus.READY);
+    } else {
+      setStatus(ArenaStatus.NOTCONNECTED);
     }
   }, [address])
 
