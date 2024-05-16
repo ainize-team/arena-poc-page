@@ -111,6 +111,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
+      if (prompt.trim() === "") return;
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
