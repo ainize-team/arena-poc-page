@@ -4,11 +4,13 @@ import { requestAddress } from "@/lib/wallet";
 import { WalletOutlined } from "@ant-design/icons";
 import { Button, Modal, Space } from "antd";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { addressAtom } from "@/lib/wallet";
 
 export default function WalletConnectBtn() {
-  const [address, setAddress] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
+  const [address, setAddress] = useRecoilState(addressAtom);
 
   const onClickConnectWalletBtn = async () => {
     if(address !== "") {

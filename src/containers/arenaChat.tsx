@@ -2,12 +2,14 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Col, Flex, Modal, Row, Space, message, notification } from "antd";
+import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
 import { ArenaStatus, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
+import { useRecoilState } from "recoil";
+import { addressAtom } from "@/lib/wallet";
 
 type ArenaChatProps = {
   modelA: string,
@@ -18,7 +20,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const router = useRouter();
 
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useState<string>("");
+  const [address, setAddress] = useRecoilState (addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [modelAName, setModelAName] = useState("");
   const [modelBName, setModelBName] = useState("");
@@ -50,7 +52,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   }, [status])
 
   useEffect(()=> {
-    if(address !== "") {
+    if (address !== "") {
       setStatus(ArenaStatus.READY)
     }
   }, [address])
