@@ -16,7 +16,10 @@ export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
 
   function textboxContent(status:ArenaStatus, prompt?: string) {
     if (prompt) {
-      return <Paragraph>{
+      return <Paragraph style={{
+        height: 500 - 60, // FIXME(yoojin): change height to not constant value.
+        overflow: "auto",
+      }}>{
         splitPrompt(prompt).map((line: string) => {
           return (
             <div>
