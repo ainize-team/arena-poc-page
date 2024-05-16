@@ -59,6 +59,12 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     }
   }, [address])
 
+  useEffect(() => {
+    if (resultA !== "" && resultB !== "") {
+      setStatus(ArenaStatus.COMPETING);
+    }
+  }, [resultA, resultB])
+
   const resetStates = () => {
     setPrompt("");
     setStatus(ArenaStatus.READY);
@@ -108,9 +114,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
-        setResultA(await chatWithModel(modelA, prompt));
-        setResultB(await chatWithModel(modelB, prompt));
-        setStatus(ArenaStatus.COMPETING);
+        chatWithModel(modelA, prompt).then(res => setResultA(res));
+        chatWithModel(modelB, prompt).then(res => setResultB(res));
       } catch (err) {
         alert(err);
         resetStates();
