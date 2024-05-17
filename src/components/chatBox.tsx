@@ -9,10 +9,25 @@ type ChatBoxProps = {
   prompt?: string,
 };
 
-export default function ChatBox({ modelName,status,prompt}: ChatBoxProps) {
+export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
+  function splitPrompt(prompt: string): string[] {
+    return prompt.split("\n");
+  }
+
   function textboxContent(status:ArenaStatus, prompt?: string) {
-    if(prompt) {
-      return <Paragraph>{prompt}</Paragraph>
+    if (prompt) {
+      return <Paragraph style={{
+        height: `${60 - 3}vh`, // FIXME(yoojin): change height to not constant value.
+        overflow: "auto",
+      }}>{
+        splitPrompt(prompt).map((line: string, index: number) => {
+          return (
+            <div key={index}>
+              <span>{line}</span><br />
+            </div>
+          );
+        })
+      }</Paragraph>
     } else if (status == ArenaStatus.INFERENCING ) {
       return <Spin tip="Loading" size="large"/>
     }
@@ -25,11 +40,13 @@ export default function ChatBox({ modelName,status,prompt}: ChatBoxProps) {
       bordered={false}
       style={{
         textAlign: "left",
-        width: "49.9%",
+        width: "47%",
         minHeight: "60vh",
+        marginLeft: "3px",
+        marginRight: "3px",
       }}
     >
-    {textboxContent(status,prompt)}
+    {textboxContent(status, prompt)}
     </Card>
   );
 }

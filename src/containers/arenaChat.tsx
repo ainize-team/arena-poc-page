@@ -59,6 +59,12 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
     }
   }, [address])
 
+  useEffect(() => {
+    if (resultA !== "" && resultB !== "") {
+      setStatus(ArenaStatus.COMPETING);
+    }
+  }, [resultA, resultB])
+
   const resetStates = () => {
     setPrompt("");
     setStatus(ArenaStatus.READY);
@@ -105,12 +111,13 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY) {
+      if (prompt.trim() === "") return;
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
-        setResultA(await chatWithModel(modelA, prompt));
-        setResultB(await chatWithModel(modelB, prompt));
-        setStatus(ArenaStatus.COMPETING);
+        // FIXME(yoojin): It can't be async because of SSR I think.
+        chatWithModel(modelA, prompt).then(res => setResultA(res));
+        chatWithModel(modelB, prompt).then(res => setResultB(res));
       } catch (err) {
         alert(err);
         resetStates();
@@ -122,22 +129,33 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}
-      <Flex justify="space-between">
+      <Flex justify="center" style={{marginTop: "10px"}}>
         <ChatBox modelName={modelAName} status={status} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} prompt={resultB} />
       </Flex>
-        <Row justify="space-evenly">
-          <Col span={3} />
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
-          <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
-          <Col span={3} />
-        </Row>
-      <PromptInput setParentPrompt={handlePrompt} status={status}/>
-      {status === ArenaStatus.END ? (
-        <Button onClick={onClickNextBtn}>Next Challenge</Button>
-        ) : (<></>) }
+        {status !== ArenaStatus.END ? (
+          <>
+            <PromptInput setParentPrompt={handlePrompt} status={status}/>
+            <Row justify="space-evenly">
+              <Col span={3} />
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
+              <Col span={3} />
+            </Row>
+          </>
+        ) : (
+          <Flex justify="center" style={{width: "100%"}}>
+              <Button 
+                style={{
+                  height: "50px",
+                  width: "60%",
+                }}
+                onClick={onClickNextBtn}
+              >Next Challenge</Button>
+          </Flex>
+        )}
       <div />
     </Space>
   )
