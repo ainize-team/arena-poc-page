@@ -42,6 +42,10 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
   }
   try {
     const res = await fetch(endpoint, params);
+    if (!res.ok) {
+      console.debug(`Fetch failed. ${res.body}`);
+      return "Inference failed. Please Please select the opposite model."
+    }
     const result = await res.json();
     if (!result.response || result.response === "") {
       console.debug(`result.response was empty. ${result}`);
