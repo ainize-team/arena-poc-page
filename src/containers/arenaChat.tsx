@@ -29,10 +29,9 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [notiApi, notiContextHolder] = notification.useNotification();
   
   const openNotification = (rewardData: any) => {
-    console.log(rewardData);
     notiApi.info({
       message: "Reward Success!",
-      description:`reward: ${rewardData.reward} AIN`,
+      description:`Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
     });
   };
