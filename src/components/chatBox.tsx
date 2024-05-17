@@ -32,6 +32,7 @@ export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
       return <Spin tip="Loading" size="large"/>
     }
   }
+
   return (
     <Card
       title={modelName}
@@ -40,7 +41,7 @@ export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
       style={{
         textAlign: "left",
         width: "47%",
-        height: 500,
+        minHeight: "60vh",
         marginLeft: "3px",
         marginRight: "3px",
       }}

@@ -7,6 +7,7 @@ import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
   position: "fixed",
+  height: "80px",
   bottom: 0,
   width: "100%"
 };
