@@ -98,6 +98,7 @@ export const chatReward = async (battleId: string) => {
   try {
     const res = await fetch(endpoint, params);
     const { score, reward, reason, tx_hash } = await res.json();
+    console.debug('reward data:>> ', score, reward, reason, tx_hash);
     return { score, reward, reason, tx_hash };
   } catch (err: any) {
     console.log("err :>>", err);
