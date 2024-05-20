@@ -49,11 +49,11 @@ export default function WalletConnectBtn() {
             loading={modalLoading}
             onClick={handleOk}
           >
-            Install AIN wallet extention
+            Install AIN wallet
           </Button>,
         ]}
       >
-        <p>You should install AIN wallet first.</p>
+        <p>To receive rewards in the Arena, you need to connect your AIN Wallet.</p>
       </Modal>
     </Space>
   );

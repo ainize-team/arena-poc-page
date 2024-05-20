@@ -42,7 +42,15 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
   }
   try {
     const res = await fetch(endpoint, params);
+    if (!res.ok) {
+      console.debug(`Fetch failed. ${res.body}`);
+      return "Inference failed. Please Please select the opposite model."
+    }
     const result = await res.json();
+    if (!result.response || result.response === "") {
+      console.debug(`result.response was empty. ${result}`);
+      return "Inference failed. Please Please select the opposite model."
+    }
     return result.response;
   } catch (err: any) {
     console.log("Inference Error :>> ", err);
@@ -98,6 +106,7 @@ export const chatReward = async (battleId: string) => {
   try {
     const res = await fetch(endpoint, params);
     const { score, reward, reason, tx_hash } = await res.json();
+    console.debug('reward data:>> ', score, reward, reason, tx_hash);
     return { score, reward, reason, tx_hash };
   } catch (err: any) {
     console.log("err :>>", err);
