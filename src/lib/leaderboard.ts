@@ -15,7 +15,7 @@ type LeaderboardModelData = {
 
 type DashboardTableData = {
   key: number,
-  rank: number | "-",
+  rank: number | "🔥",
   ci: string,
   elo: string,
   modelName: string,
@@ -43,7 +43,7 @@ const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
     const ci = datas["95%_CI"];
     const data: DashboardTableData = {
       key: numIndex,
-      rank: "-",
+      rank: "🔥",
       ci: datas.votes < MINIMUM_VOTE ? "- / -" : stringifyCI(datas.elo_score, ci),
       elo: datas.votes < MINIMUM_VOTE ? "-" : datas.elo_score.toFixed(0),
       modelName: datas.model_name,
@@ -52,8 +52,8 @@ const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
     tableData.push(data);
   }
   tableData.sort((a, b) => {
-    const eloA = a.elo !== "-" ? a.elo : 999999;
-    const eloB = b.elo !== "-" ? b.elo : 999999;
+    const eloA = a.elo !== "-" ? a.elo : -999999;
+    const eloB = b.elo !== "-" ? b.elo : -999999;
     if (eloA < eloB) return 1;
     return -1;
   });
