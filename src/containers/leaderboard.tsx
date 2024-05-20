@@ -1,8 +1,8 @@
-import { Table } from "antd";
+import { Flex, Table } from "antd";
 import { getLeaderboard } from "@/lib/leaderboard";
 
 export default async function Leaderboard() {
-  const dashboardData = await getLeaderboard();
+  const { lastUpdated, tableData } = await getLeaderboard();
   const columns = [
     {
       title: "Rank",
@@ -17,7 +17,7 @@ export default async function Leaderboard() {
       dataIndex: "ci",
       key: "ci",
     }, {
-      title: "ELO Score",
+      title: "Arena Score",
       dataIndex: "elo",
       key: "elo",
     }, {
@@ -29,7 +29,10 @@ export default async function Leaderboard() {
 
   return (
     <div>
-      <Table dataSource={dashboardData} columns={columns}/>
+      <Flex justify="end">
+        <span style={{marginRight: "3px"}}>Last Updated: {lastUpdated}</span>
+      </Flex>
+      <Table dataSource={tableData} columns={columns}/>
     </div>
   )
 }
