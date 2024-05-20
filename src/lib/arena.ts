@@ -1,5 +1,7 @@
 "use server";
 
+import { APIResponse, APIStatus } from "@/type";
+
 type ModelResponse = {
   role: "user" | "assistant",
   content: string,
@@ -27,7 +29,7 @@ export const getPickedModels = async (): Promise<string[]> => {
   }
 }
 
-export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<string> => {
+export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<APIResponse> => {
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const params = {
     method: "POST",
@@ -50,10 +52,16 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
       throw new Error(`Response is empty. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
       
     }
-    return result.response;
+    return {
+      status: APIStatus.SUCCEED,
+      result: result.response,
+    };
   } catch (err: any) {
     console.error("Inference Error :>> ", err);
-    return "Inference failed. Please select the opposite model.";
+    return {
+      status: APIStatus.FAILED,
+      result: "Inference failed. Please select the opposite model."
+    };
   }
 }
 

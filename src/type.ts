@@ -18,3 +18,13 @@ export enum ChoiceType {
   TIE = "tie",
   NOTHING = "bad",
 }
+
+export enum APIStatus {
+  SUCCEED = "succeed",
+  FAILED = "failed",
+}
+
+export type APIResponse = {
+  status: APIStatus,
+  result: any,
+}
