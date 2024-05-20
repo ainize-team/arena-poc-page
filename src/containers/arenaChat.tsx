@@ -6,7 +6,7 @@ import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
-import { ArenaStatus, ChoiceType } from "@/type";
+import { APIStatus, ArenaStatus, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { addressAtom } from "@/lib/wallet";
@@ -26,6 +26,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const [modelBName, setModelBName] = useState("");
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
+  const [modelABtnDisabled, setModelABtnDisabled] = useState(true);
+  const [modelBBtnDisabled, setModelBBtnDisabled] = useState(true);
   const [notiApi, notiContextHolder] = notification.useNotification();
   
   const openNotification = (rewardData: any) => {
@@ -115,8 +117,14 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       setPrompt(prompt);
       try {
         // FIXME(yoojin): It can't be async because of SSR I think.
-        chatWithModel(modelA, prompt).then(res => setResultA(res));
-        chatWithModel(modelB, prompt).then(res => setResultB(res));
+        chatWithModel(modelA, prompt).then(res => {
+          setModelABtnDisabled(res.status !== APIStatus.SUCCEED);
+          setResultA(res.result);
+        });
+        chatWithModel(modelB, prompt).then(res => {
+          setModelBBtnDisabled(res.status !== APIStatus.SUCCEED);
+          setResultB(res.result);
+        });
       } catch (err) {
         alert(err);
         resetStates();
@@ -137,10 +145,10 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
             <PromptInput setParentPrompt={handlePrompt} status={status}/>
             <Row justify="space-evenly">
               <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={modelABtnDisabled}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={modelBBtnDisabled}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={modelABtnDisabled || modelBBtnDisabled}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status}/></Col>
               <Col span={3} />
             </Row>
           </>

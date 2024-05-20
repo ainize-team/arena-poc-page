@@ -7,6 +7,7 @@ type ChoiceButtonsProps = {
   value: ChoiceType,
   arenaStatus: ArenaStatus,
   onClick: Function,
+  disabled?: boolean,
 }
 
 const labels: {[choice: string]: string} = {
@@ -16,11 +17,14 @@ const labels: {[choice: string]: string} = {
   [ChoiceType.NOTHING]: "Both bad", 
 }
 
-export default function ChoiceButton({value, arenaStatus, onClick}: ChoiceButtonsProps) {
+export default function ChoiceButton({value, arenaStatus, onClick, disabled = false}: ChoiceButtonsProps) {
   const onClickButton = () => {
     onClick(value);
   }
   return (
-      <Button block value={value} disabled={arenaStatus !== ArenaStatus.COMPETING} onClick={onClickButton}>{labels[value]}</Button>
+      <Button block value={value} disabled={
+        (arenaStatus !== ArenaStatus.COMPETING) ||
+        disabled
+      } onClick={onClickButton}>{labels[value]}</Button>
   );
 }

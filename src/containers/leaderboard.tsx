@@ -13,13 +13,13 @@ export default async function Leaderboard() {
       dataIndex: "modelName",
       key: "modelName",
     }, {
-      title: "95% CI",
-      dataIndex: "ci",
-      key: "ci",
-    }, {
       title: "Arena Score",
       dataIndex: "elo",
       key: "elo",
+    }, {
+      title: "95% CI",
+      dataIndex: "ci",
+      key: "ci",
     }, {
       title: "Votes",
       dataIndex: "votes",
