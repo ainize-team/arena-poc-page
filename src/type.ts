@@ -24,6 +24,7 @@ export enum APIStatus {
   FAILED = "failed",
 }
 
+// TODO(yoojin): Wrapping all api actions.
 export type APIResponse = {
   status: APIStatus,
   result: any,
