@@ -43,18 +43,17 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
   try {
     const res = await fetch(endpoint, params);
     if (!res.ok) {
-      console.debug(`Fetch failed. ${res.body}`);
-      return "Inference failed. Please Please select the opposite model."
+      throw new Error(`Fetch failed. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
     }
     const result = await res.json();
     if (!result.response || result.response === "") {
-      console.debug(`result.response was empty. ${result}`);
-      return "Inference failed. Please Please select the opposite model."
+      throw new Error(`Response is empty. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
+      
     }
     return result.response;
   } catch (err: any) {
-    console.log("Inference Error :>> ", err);
-    throw new Error(`Failed to inference. Model: ${modelName}, Prompt: ${prompt}, System prompt: ${systemPrompt}`);
+    console.error("Inference Error :>> ", err);
+    return "Inference failed. Please select the opposite model.";
   }
 }
 
