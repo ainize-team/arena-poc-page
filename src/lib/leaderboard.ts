@@ -28,7 +28,7 @@ export const getLeaderboard = async () => {
   const dashboard: DashboardResponse = await res.json();
   // NOTE (yoojin): python timestamp to js timestamp need * 1000
   const lastUpdatedTS = dashboard.last_updated * 1000; 
-  const lastUpdatedString = new Date(lastUpdatedTS);
+  const lastUpdatedString = dateFormat(lastUpdatedTS);
   const tableData = dashboardToTableData(dashboard.leader_board);
   return {
     lastUpdated: lastUpdatedString,
@@ -70,4 +70,20 @@ const stringifyCI = (eloScore: number, ci: Array<number>): string => {
   const lower = Number((ci[0] - eloScore).toFixed(0));
   const upper = Number((ci[1] - eloScore).toFixed(0));
   return `${upper > 0 ? `+${upper}` : upper} / ${lower}`;
+}
+
+function dateFormat(dateTS: number) {
+  const date = new Date(dateTS);
+
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  const monthStr = month >= 10 ? month : "0" + month;
+  const dayStr = day >= 10 ? day : "0" + day;
+  const hourStr = hour >= 10 ? hour : "0" + hour;
+  const minuteStr = minute >= 10 ? minute : "0" + minute;
+
+  return `${date.getFullYear()}-${monthStr}-${dayStr} ${hourStr}:${minuteStr}`;
 }

@@ -30,7 +30,7 @@ export default async function Leaderboard() {
   return (
     <div>
       <Flex justify="end">
-        <span style={{marginRight: "3px"}}>{lastUpdated.toUTCString()}</span>
+        <span style={{marginRight: "3px"}}>Last Updated: {lastUpdated}</span>
       </Flex>
       <Table dataSource={tableData} columns={columns}/>
     </div>
