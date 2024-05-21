@@ -116,14 +116,29 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
-        // FIXME(yoojin): It can't be async because of SSR I think.
-        chatWithModel(modelA, prompt).then(res => {
-          setModelABtnDisabled(res.status !== APIStatus.SUCCEED);
-          setResultA(res.result);
+        fetch("/api/arena/chat", {
+          method: "POST",
+          body: JSON.stringify({
+            modelName: modelA,
+            prompt: prompt,
+          }),
+        }).then(async (res) => {
+          console.log('res :>> ', res);
+          const result = await res.json();
+          setModelABtnDisabled(res.status !== APIStatus.OK);
+          setResultA(result.result);
         });
-        chatWithModel(modelB, prompt).then(res => {
-          setModelBBtnDisabled(res.status !== APIStatus.SUCCEED);
-          setResultB(res.result);
+        fetch("/api/arena/chat", {
+          method: "POST",
+          body: JSON.stringify({
+            modelName: modelB,
+            prompt: prompt,
+          }),
+        }).then(async (res) => {
+          console.log('res :>> ', res);
+          const result = await res.json();
+          setModelBBtnDisabled(res.status !== APIStatus.OK);
+          setResultB(result.result);
         });
       } catch (err) {
         alert(err);

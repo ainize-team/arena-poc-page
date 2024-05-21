@@ -29,7 +29,7 @@ export const getPickedModels = async (): Promise<string[]> => {
   }
 }
 
-export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<APIResponse> => {
+export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<string> => {
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const params = {
     method: "POST",
@@ -42,27 +42,15 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
       "Content-type": "application/json; charset=UTF-8"
     }
   }
-  try {
-    const res = await fetch(endpoint, params);
-    if (!res.ok) {
-      throw new Error(`Fetch failed. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
-    }
-    const result = await res.json();
-    if (!result.response || result.response === "") {
-      throw new Error(`Response is empty. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
-      
-    }
-    return {
-      status: APIStatus.SUCCEED,
-      result: result.response,
-    };
-  } catch (err: any) {
-    console.error("Inference Error :>> ", err);
-    return {
-      status: APIStatus.FAILED,
-      result: "Inference failed. Please select the opposite model."
-    };
+  const res = await fetch(endpoint, params);
+  if (!res.ok) {
+    throw new Error(`Fetch failed. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}\n`);
   }
+  const result = await res.json();
+  if (!result.response || result.response === "") {
+    throw new Error(`Response is empty. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
+  }
+  return result.response;
 }
 
 export const chatResult = async ({ 

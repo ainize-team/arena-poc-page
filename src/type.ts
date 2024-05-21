@@ -20,12 +20,6 @@ export enum ChoiceType {
 }
 
 export enum APIStatus {
-  SUCCEED = "succeed",
-  FAILED = "failed",
-}
-
-// TODO(yoojin): Wrapping all api actions.
-export type APIResponse = {
-  status: APIStatus,
-  result: any,
+  OK = 200,
+  FAILED = 500,
 }
