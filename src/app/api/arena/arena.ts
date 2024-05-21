@@ -1,5 +1,5 @@
 "use server";
-
+// FIXME(yoojin): move all functions to api route!
 type ModelResponse = {
   role: "user" | "assistant",
   content: string,
