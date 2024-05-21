@@ -1,5 +1,8 @@
 import { ArenaStatus } from "@/type";
 import { Card, Typography, Spin } from "antd";
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/a11y-light.css";
 
 const { Paragraph } = Typography;
 
@@ -10,24 +13,16 @@ type ChatBoxProps = {
 };
 
 export default function ChatBox({ modelName, status, prompt}: ChatBoxProps) {
-  function splitPrompt(prompt: string): string[] {
-    return prompt.split("\n");
-  }
-
   function textboxContent(status:ArenaStatus, prompt?: string) {
     if (prompt) {
       return <Paragraph style={{
         height: `${60 - 3}vh`, // FIXME(yoojin): change height to not constant value.
         overflow: "auto",
-      }}>{
-        splitPrompt(prompt).map((line: string, index: number) => {
-          return (
-            <div key={index}>
-              <span>{line}</span><br />
-            </div>
-          );
-        })
-      }</Paragraph>
+      }}>
+        <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+          {prompt}
+        </ReactMarkdown>
+      </Paragraph>
     } else if (status == ArenaStatus.INFERENCING ) {
       return <Spin tip="Loading" size="large"/>
     }
