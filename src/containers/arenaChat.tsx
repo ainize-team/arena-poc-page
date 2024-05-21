@@ -123,10 +123,9 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
             prompt: prompt,
           }),
         }).then(async (res) => {
-          console.log('res :>> ', res);
           const result = await res.json();
           setModelABtnDisabled(res.status !== APIStatus.OK);
-          setResultA(result.result);
+          setResultA(result);
         });
         fetch("/api/arena/chat", {
           method: "POST",
@@ -135,10 +134,9 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
             prompt: prompt,
           }),
         }).then(async (res) => {
-          console.log('res :>> ', res);
           const result = await res.json();
           setModelBBtnDisabled(res.status !== APIStatus.OK);
-          setResultB(result.result);
+          setResultB(result);
         });
       } catch (err) {
         alert(err);
