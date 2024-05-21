@@ -1,4 +1,4 @@
-import { chatWithModel } from "@/lib/arena";
+import { chatWithModel } from "@/app/api/arena/chat/arena";
 import { NextRequest } from "next/server";
 
 const FAILED_INFERENCE_MSG = "Inference failed. Please select the opposite model.";

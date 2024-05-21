@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
+import { chatResult, chatReward, chatWithModel } from "@/app/api/arena/chat/arena";
 import { APIStatus, ArenaStatus, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";

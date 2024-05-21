@@ -1,7 +1,5 @@
 "use server";
 
-import { APIResponse, APIStatus } from "@/type";
-
 type ModelResponse = {
   role: "user" | "assistant",
   content: string,
