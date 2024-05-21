@@ -23,12 +23,14 @@ export default function ArenaMenu({ page }: ArenaMenuProps) {
   }
 
   return (
-    <Menu
-      mode="horizontal"
-      defaultSelectedKeys={[page]}
-      items={items}
-      style={{ flex: 1, minWidth: 0 }}
-      onClick={onClickMenu}
-    />
+    <div style={{background: "#ffffff"}}>
+      <Menu
+        mode="horizontal"
+        defaultSelectedKeys={[page]}
+        items={items}
+        style={{ flex: 1, minWidth: 0, paddingInline: 40,}}
+        onClick={onClickMenu}
+      />
+    </div>
   );
 }
