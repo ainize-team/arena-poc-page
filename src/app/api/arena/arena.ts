@@ -40,13 +40,14 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
       "Content-type": "application/json; charset=UTF-8"
     }
   }
+  const slicedPrompt = prompt.length > 100 ? prompt.slice(0, 97) + `... (${prompt.length})` : prompt;
   const res = await fetch(endpoint, params);
-  if (!res.ok) {
-    throw new Error(`Fetch failed. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}\n`);
-  }
   const result = await res.json();
+  if (!res.ok) {
+    throw new Error(`Fetch failed. model ${modelName}, prompt: ${slicedPrompt}, systemPrompt: ${systemPrompt}\n${result.detail? `Error: ${result.detail}` : ""}`);
+  }
   if (!result.response || result.response === "") {
-    throw new Error(`Response is empty. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
+    throw new Error(`Response is empty. model ${modelName}, prompt: ${slicedPrompt}, systemPrompt: ${systemPrompt}`);
   }
   return result.response;
 }
