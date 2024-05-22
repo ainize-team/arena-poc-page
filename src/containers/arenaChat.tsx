@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { chatResult, chatReward, chatWithModel } from "@/lib/arena";
+import { chatResult, chatReward } from "@/app/api/arena/arena";
 import { APIStatus, ArenaStatus, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
@@ -116,14 +116,27 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
-        // FIXME(yoojin): It can't be async because of SSR I think.
-        chatWithModel(modelA, prompt).then(res => {
-          setModelABtnDisabled(res.status !== APIStatus.SUCCEED);
-          setResultA(res.result);
+        fetch("/api/arena/chat", {
+          method: "POST",
+          body: JSON.stringify({
+            modelName: modelA,
+            prompt: prompt,
+          }),
+        }).then(async (res) => {
+          const result = await res.json();
+          setModelABtnDisabled(res.status !== APIStatus.OK);
+          setResultA(result);
         });
-        chatWithModel(modelB, prompt).then(res => {
-          setModelBBtnDisabled(res.status !== APIStatus.SUCCEED);
-          setResultB(res.result);
+        fetch("/api/arena/chat", {
+          method: "POST",
+          body: JSON.stringify({
+            modelName: modelB,
+            prompt: prompt,
+          }),
+        }).then(async (res) => {
+          const result = await res.json();
+          setModelBBtnDisabled(res.status !== APIStatus.OK);
+          setResultB(result);
         });
       } catch (err) {
         alert(err);

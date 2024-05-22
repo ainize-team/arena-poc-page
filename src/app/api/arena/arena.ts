@@ -1,7 +1,5 @@
 "use server";
-
-import { APIResponse, APIStatus } from "@/type";
-
+// FIXME(yoojin): move all functions to api route!
 type ModelResponse = {
   role: "user" | "assistant",
   content: string,
@@ -29,7 +27,7 @@ export const getPickedModels = async (): Promise<string[]> => {
   }
 }
 
-export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<APIResponse> => {
+export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<string> => {
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const params = {
     method: "POST",
@@ -42,27 +40,16 @@ export const chatWithModel = async (modelName: string, prompt: string, systemPro
       "Content-type": "application/json; charset=UTF-8"
     }
   }
-  try {
-    const res = await fetch(endpoint, params);
-    if (!res.ok) {
-      throw new Error(`Fetch failed. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
-    }
-    const result = await res.json();
-    if (!result.response || result.response === "") {
-      throw new Error(`Response is empty. model ${modelName}, prompt: ${prompt}, systemPrompt: ${systemPrompt}`);
-      
-    }
-    return {
-      status: APIStatus.SUCCEED,
-      result: result.response,
-    };
-  } catch (err: any) {
-    console.error("Inference Error :>> ", err);
-    return {
-      status: APIStatus.FAILED,
-      result: "Inference failed. Please select the opposite model."
-    };
+  const slicedPrompt = prompt.length > 100 ? prompt.slice(0, 97) + `... (${prompt.length})` : prompt;
+  const res = await fetch(endpoint, params);
+  const result = await res.json();
+  if (!res.ok) {
+    throw new Error(`Fetch failed. model ${modelName}, prompt: ${slicedPrompt}, systemPrompt: ${systemPrompt}\n${result.detail? `Error: ${result.detail}` : ""}`);
   }
+  if (!result.response || result.response === "") {
+    throw new Error(`Response is empty. model ${modelName}, prompt: ${slicedPrompt}, systemPrompt: ${systemPrompt}`);
+  }
+  return result.response;
 }
 
 export const chatResult = async ({ 
