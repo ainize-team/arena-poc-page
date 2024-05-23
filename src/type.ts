@@ -23,3 +23,18 @@ export enum APIStatus {
   OK = 200,
   FAILED = 500,
 }
+
+type ModelResponse = {
+  role: "user" | "assistant",
+  content: string,
+}
+
+export type ChatResultReqBody = {
+  userAddress: string,
+  choice: "model_a" | "model_b" | "tie" | "bad",
+  modelA: string,
+  modelB: string,
+  turn: number,
+  modelAResponse: ModelResponse[],
+  modelBResponse: ModelResponse[],
+}

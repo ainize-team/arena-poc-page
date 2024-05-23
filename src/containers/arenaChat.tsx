@@ -6,22 +6,19 @@ import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { chatResult, chatReward } from "@/app/api/arena/arena";
-import { APIStatus, ArenaStatus, ChoiceType } from "@/type";
+import { APIStatus, ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { addressAtom } from "@/lib/wallet";
 
-type ArenaChatProps = {
-  modelA: string,
-  modelB: string,
-}
-
-export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
+export default function ArenaChat() {
   const router = useRouter();
 
   const [prompt, setPrompt] = useState("");
   const [address, setAddress] = useRecoilState (addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
+  const [modelA, setModelA] = useState("");
+  const [modelB, setModelB] = useState("");
   const [modelAName, setModelAName] = useState("");
   const [modelBName, setModelBName] = useState("");
   const [resultA, setResultA] = useState("");
@@ -37,6 +34,23 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
       placement: "topRight",
     });
   };
+
+  const pickAndSetModels = async () => {
+    await fetch("/api/arena/init", {
+      method: "GET",
+    }).then(async (res) => {
+      const result = await res.json();
+      setModelA(result[0]);
+      setModelB(result[1]);
+    });
+  }
+
+  useEffect(() => {
+    const setModels = async () => {
+      await pickAndSetModels();
+    }
+    setModels();
+  }, [])
 
   useEffect(() => {
     switch(status) {
@@ -68,6 +82,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
 
   const resetStates = () => {
     setPrompt("");
+    pickAndSetModels();
     setStatus(ArenaStatus.READY);
     setResultA("");
     setResultB("");
@@ -76,7 +91,7 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
   const onClickChoiceBtn = async (value: ChoiceType) => {
     setStatus(ArenaStatus.REGISTERING);
     try {
-      const battleId = await chatResult({
+      const chatResultParams: ChatResultReqBody = {
         userAddress: address,
         choice: value,
         modelA: modelA,
@@ -96,7 +111,8 @@ export default function ArenaChat({modelA, modelB}: ArenaChatProps) {
           role: "assistant",
           content: resultB,
         }]
-      })
+      }
+      const battleId = await chatResult(chatResultParams)
       setStatus(ArenaStatus.END);
       const reward = chatReward(battleId);
       openNotification(await reward);
