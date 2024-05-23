@@ -38,3 +38,15 @@ export type ChatResultReqBody = {
   modelAResponse: ModelResponse[],
   modelBResponse: ModelResponse[],
 }
+
+export type LeaderboardTableData = {
+  key: number,
+  rank: number | "🔥",
+  ci: string,
+  elo: string,
+  modelName: string,
+  link: string,
+  votes: number,
+  org: string,
+  license: string,
+}

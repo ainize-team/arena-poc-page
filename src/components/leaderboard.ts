@@ -1,6 +1,9 @@
 "use server";
+
+import { LeaderboardTableData } from "@/type";
+
 const MINIMUM_VOTE = 50;
-type DashboardResponse = {
+type LeaderboardResponse = {
   last_updated: number,
   leader_board: LeaderboardModelData[],
 }
@@ -11,21 +14,15 @@ type LeaderboardModelData = {
   elo_score: number,
   "95%_CI": Array<number>,
   votes: number,
-}
-
-type DashboardTableData = {
-  key: number,
-  rank: number | "🔥",
-  ci: string,
-  elo: string,
-  modelName: string,
-  votes: number,
+  link: string,
+  organization: string,
+  license: string,
 }
 
 export const getLeaderboard = async () => {
   const endpoint = `${process.env.SERVER_URL}/dashboard`;
   const res = await fetch(endpoint, {cache: "no-cache"});
-  const dashboard: DashboardResponse = await res.json();
+  const dashboard: LeaderboardResponse = await res.json();
   // NOTE (yoojin): python timestamp to js timestamp need * 1000
   const lastUpdatedTS = dashboard.last_updated * 1000; 
   const lastUpdatedString = dateFormat(lastUpdatedTS);
@@ -37,17 +34,20 @@ export const getLeaderboard = async () => {
 }
 
 const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
-  const tableData: DashboardTableData[] = []; 
+  const tableData: LeaderboardTableData[] = []; 
   for (const [index, datas] of Object.entries(modelDatas)) {
     const numIndex = Number(index);
     const ci = datas["95%_CI"];
-    const data: DashboardTableData = {
+    const data: LeaderboardTableData = {
       key: numIndex,
       rank: "🔥",
       ci: datas.votes < MINIMUM_VOTE ? "- / -" : stringifyCI(datas.elo_score, ci),
       elo: datas.votes < MINIMUM_VOTE ? "-" : datas.elo_score.toFixed(0),
       modelName: datas.model_name,
+      link: datas.link,
       votes: datas.votes,
+      license: datas.license,
+      org: datas.organization,
     } 
     tableData.push(data);
   }
