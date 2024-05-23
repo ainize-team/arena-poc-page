@@ -111,11 +111,16 @@ export default function ArenaChat() {
           role: "assistant",
           content: resultB,
         }]
-      }
-      const battleId = await chatResult(chatResultParams)
+      };
+      const battleId = await (await fetch("/api/arena/result", {
+        method: "POST",
+        body: JSON.stringify(chatResultParams),
+      })).json();
       setStatus(ArenaStatus.END);
-      const reward = chatReward(battleId);
-      openNotification(await reward);
+      const reward = await fetch(`/api/arena/reward/${battleId}`, {
+        method: "GET",
+      });
+      openNotification(await reward.json());
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
     }
