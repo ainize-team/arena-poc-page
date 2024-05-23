@@ -48,7 +48,7 @@ export default function Leaderboard() {
       setTableSourceData(tableData);
     }
     setupLeaderboard();
-  })
+  }, [])
 
   return (
     <div>
