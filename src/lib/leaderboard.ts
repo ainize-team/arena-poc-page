@@ -52,8 +52,8 @@ const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
     tableData.push(data);
   }
   tableData.sort((a, b) => {
-    const eloA = a.elo !== "-" ? a.elo : -999999;
-    const eloB = b.elo !== "-" ? b.elo : -999999;
+    const eloA = a.elo !== "-" ? Number(a.elo) : -999999;
+    const eloB = b.elo !== "-" ? Number(b.elo) : -999999;
     if (eloA < eloB) return 1;
     return -1;
   });
