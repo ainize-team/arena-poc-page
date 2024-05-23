@@ -1,5 +1,5 @@
 import { Flex, Table } from "antd";
-import { getLeaderboard } from "@/lib/leaderboard";
+import { getLeaderboard } from "@/components/leaderboard";
 
 export default async function Leaderboard() {
   const { lastUpdated, tableData } = await getLeaderboard();

@@ -1,33 +1,20 @@
-"use server";
-// FIXME(yoojin): move all functions to api route!
-type ModelResponse = {
-  role: "user" | "assistant",
-  content: string,
-}
-
-type ChoiceReqBody = {
-  userAddress: string,
-  choice: "model_a" | "model_b" | "tie" | "bad",
-  modelA: string,
-  modelB: string,
-  turn: number,
-  modelAResponse: ModelResponse[],
-  modelBResponse: ModelResponse[],
-}
+import { ChatResultReqBody } from "../../../type"
 
 export const getPickedModels = async (): Promise<string[]> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
-  try {
-    const res = await fetch(endpoint, {cache: "no-cache"});
-    const models = await res.json();
-    return models;
-  } catch (err) {
-    console.log("Pick Models Error >", err);
+  const res = await fetch(endpoint, {cache: "no-cache"});
+  if (!res.ok) {
     throw new Error("Failed to pick models.");
   }
+  const models = await res.json();
+  return models;
 }
 
-export const chatWithModel = async (modelName: string, prompt: string, systemPrompt?: string): Promise<string> => {
+export const chatWithModel = async (
+  modelName: string, 
+  prompt: string, 
+  systemPrompt?: string
+): Promise<string> => {
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const params = {
     method: "POST",
@@ -60,7 +47,7 @@ export const chatResult = async ({
   turn,
   modelAResponse,
   modelBResponse,
- }: ChoiceReqBody) => {
+ }: ChatResultReqBody) => {
   const endpoint = `${process.env.SERVER_URL}/battle/result`;
   const body = {
     user_address: userAddress,

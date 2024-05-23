@@ -57,6 +57,7 @@ const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
     if (eloA < eloB) return 1;
     return -1;
   });
+  console.log('tableData :>> ', tableData);
   let count = 1;
   tableData.forEach((data) => {
     if (data.elo !== "-") data.rank = count++;
