@@ -16,6 +16,9 @@ export default function ArenaMenu({ page }: ArenaMenuProps) {
   }, {
     key: ArenaMenuKey.LEADERBOARD,
     label: "Leaderboard",
+  }, {
+    key: ArenaMenuKey.ABOUT,
+    label: "About",
   }]
 
   const onClickMenu: MenuProps["onClick"] = (e: any) => {
