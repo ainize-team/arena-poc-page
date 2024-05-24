@@ -17,7 +17,7 @@ export default function Leaderboard() {
       title: "Model Name",
       dataIndex: "modelName",
       key: "modelName",
-      render: (text, record) => <a href={record.link}>{text}</a>
+      render: (text, record) => <a style={{color:"blue", textDecoration: "underline"}} href={record.link}>{text}</a>
     }, {
       title: "Arena Score",
       dataIndex: "elo",
@@ -52,10 +52,12 @@ export default function Leaderboard() {
 
   return (
     <div>
-      <Flex justify="end">
+      <Flex  style={{width: "94%", margin: "auto", marginTop: "3px"}} justify="center">
+        <Table style={{width: "100%"}} dataSource={tableSourceData} columns={columns}/>
+      </Flex>
+      <Flex style={{width: "94%", margin: "auto"}} justify="end">
         <span style={{marginRight: "3px"}}>Last Updated: {lastUpdated}</span>
       </Flex>
-      <Table dataSource={tableSourceData} columns={columns}/>
     </div>
   )
 }
