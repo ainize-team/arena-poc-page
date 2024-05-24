@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
+import Layout, { Footer } from "antd/lib/layout/layout";
 import "./globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 
