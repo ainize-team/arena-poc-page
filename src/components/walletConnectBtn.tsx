@@ -33,7 +33,7 @@ export default function WalletConnectBtn() {
 
   return (
     <Space>
-      <Button onClick={onClickConnectWalletBtn}>
+      <Button type={address ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
         <WalletOutlined />{address ? address.slice(0,8)+"..." : "connect wallet"} 
       </Button>
       <Modal
