@@ -17,6 +17,7 @@ export default function WalletConnectBtn() {
 
   const onClickConnectWalletBtn = async () => {
     if(address !== "") {
+      setAddress("");
       return;
     }
     const getAddress = await requestAddress();
