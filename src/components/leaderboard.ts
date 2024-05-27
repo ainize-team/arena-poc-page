@@ -60,10 +60,17 @@ const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
   console.log('tableData :>> ', tableData);
   let count = 1;
   tableData.forEach((data) => {
-    if (data.elo !== "-") data.rank = count++;
+    if (data.elo !== "-") data.rank = makeRankText(count++);
   })
 
   return tableData;
+}
+
+const makeRankText = (rank: number) => {
+  if (rank === 1) return `🥇 1`;
+  else if (rank === 2) return `🥈 2`;
+  else if (rank === 3) return `🥉 3`;
+  else return `${rank}`;
 }
 
 const stringifyCI = (eloScore: number, ci: Array<number>): string => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Table, TableProps } from "antd";
+import { Flex, Spin, Table, TableProps } from "antd";
 import { getLeaderboard } from "@/components/leaderboard";
 import { useEffect, useState } from "react";
 import { LeaderboardTableData } from "@/type";
@@ -52,18 +52,21 @@ export default function Leaderboard() {
 
   return (
     <div>
-      <Flex  style={{
+      <div style={{
+        textAlign: "left",
+        display: "flex",
+        paddingInline: "3rem",
+        marginTop: "16px",
+      }}>
+        <span style={{flex: "none"}}>Rankings update every 30 minutes.</span>
+        <span style={{marginLeft: "auto", color: "rgba(0, 0, 0, .5)"}}>Last Updated: {lastUpdated}</span>
+      </div>
+      <Flex style={{
         width: "100%", 
-        marginTop: "6px",
+        marginTop: "12px",
         paddingInline: "3rem",
       }} justify="center">
         <Table style={{width: "100%"}} dataSource={tableSourceData} columns={columns}/>
-      </Flex>
-      <Flex style={{
-        width: "100%",
-        paddingInline: "3rem",
-      }} justify="end">
-        <span style={{marginRight: "3px"}}>Last Updated: {lastUpdated}</span>
       </Flex>
     </div>
   )
