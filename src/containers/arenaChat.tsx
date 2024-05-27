@@ -27,9 +27,11 @@ export default function ArenaChat() {
   const [notiApi, notiContextHolder] = notification.useNotification();
   
   const openNotification = (rewardData: any) => {
+    const isZeroScore = rewardData.score === 0;
     notiApi.info({
-      message: "Reward Success!",
-      description:`Reward: ${rewardData.reward} AIN`,
+      message: isZeroScore ? "0 Score Message!" : "Reward Success!",
+      description:
+        isZeroScore ? "0 Score Description!" : `Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
     });
   };
@@ -144,7 +146,7 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelABtnDisabled(res.status !== APIStatus.OK);
+          setModelABtnDisabled(false);
           setResultA(result);
         });
         fetch("/api/arena/chat", {
@@ -155,7 +157,7 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelBBtnDisabled(res.status !== APIStatus.OK);
+          setModelBBtnDisabled(false);
           setResultB(result);
         });
       } catch (err) {
