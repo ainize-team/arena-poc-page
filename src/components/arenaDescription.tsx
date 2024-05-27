@@ -11,7 +11,7 @@ export default function ArenaDescription() {
     <div style={{
       background: "#ffffff",
       textAlign: "left",
-      paddingInline: 48,
+      paddingInline: "2rem",
       lineHeight: 2.1,
       overflowX: "auto",
     }}>

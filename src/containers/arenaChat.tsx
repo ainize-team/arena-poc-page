@@ -14,7 +14,7 @@ const LeftCardStyle: React.CSSProperties = {
   textAlign: "left",
   width: "100%",
   minHeight: "50vh",
-  marginLeft: 48,
+  marginLeft: "2rem",
   marginRight: "3px",
 }
 const RightCardStyle: React.CSSProperties = {
@@ -22,7 +22,7 @@ const RightCardStyle: React.CSSProperties = {
   width: "100%",
   minHeight: "50vh",
   marginLeft: "3px",
-  marginRight: 48,
+  marginRight: "2rem",
 }
 
 export default function ArenaChat() {
