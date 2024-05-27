@@ -17,7 +17,7 @@ export default function ChatBox({ modelName, status, style, prompt}: ChatBoxProp
   function textboxContent(status: ArenaStatus, prompt?: string) {
     if (prompt) {
       return <Paragraph style={{
-        height: `${50 - 3}vh`, // FIXME(yoojin): change height to not constant value.
+        height: `${40 - 3}vh`, // FIXME(yoojin): change height to not constant value.
         textAlign: "left",
         overflow: "auto",
       }}>

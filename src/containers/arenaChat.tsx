@@ -13,14 +13,14 @@ import { addressAtom } from "@/lib/wallet";
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
   width: "100%",
-  minHeight: "50vh",
+  minHeight: "40vh",
   marginLeft: "2rem",
   marginRight: "3px",
 }
 const RightCardStyle: React.CSSProperties = {
   textAlign: "center",
   width: "100%",
-  minHeight: "50vh",
+  minHeight: "40vh",
   marginLeft: "3px",
   marginRight: "2rem",
 }
