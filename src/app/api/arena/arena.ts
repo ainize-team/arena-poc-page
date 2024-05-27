@@ -65,14 +65,9 @@ export const chatResult = async ({
       "Content-type": "application/json; charset=UTF-8"
     }
   }
-  try {
-    const res = await fetch(endpoint, params);
-    const { battle_id } = await res.json();
-    return battle_id;
-  } catch (err: any) {
-    console.log("Get Result Error :>> ", err);
-    throw new Error(`Failed to get battle result. ${JSON.stringify(body)}`);
-  }
+  const res = await fetch(endpoint, params);
+  const { battle_id } = await res.json();
+  return battle_id;
 }
 
 export const chatReward = async (battleId: string) => {
@@ -83,14 +78,7 @@ export const chatReward = async (battleId: string) => {
       "Content-type": "application/json; charset=UTF-8"
     }
   }
-
-  try {
-    const res = await fetch(endpoint, params);
-    const { score, reward, reason, tx_hash } = await res.json();
-    console.debug('reward data:>> ', score, reward, reason, tx_hash);
-    return { score, reward, reason, tx_hash };
-  } catch (err: any) {
-    console.log("err :>>", err);
-    return "err"
-  }
+  const res = await fetch(endpoint, params);
+  const { score, reward, reason, tx_hash } = await res.json();
+  return { score, reward, reason, tx_hash };
 }
