@@ -13,7 +13,7 @@ export default function ArenaDescription() {
       textAlign: "left",
       paddingTop: "12px",
       paddingBottom: "12px",
-      paddingInline: "2rem",
+      paddingInline: "3rem",
       lineHeight: 1.5,
     }}>
       <ReactMarkdown components={{

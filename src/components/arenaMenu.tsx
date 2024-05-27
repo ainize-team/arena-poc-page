@@ -28,7 +28,7 @@ export default function ArenaMenu({ page }: ArenaMenuProps) {
         mode="horizontal"
         defaultSelectedKeys={[page]}
         items={items}
-        style={{ flex: 1, minWidth: 0, paddingInline: "calc(2rem - 12px)"}}
+        style={{ flex: 1, minWidth: 0, paddingInline: "calc(3rem - 12px)"}}
         onClick={onClickMenu}
       />
     </div>

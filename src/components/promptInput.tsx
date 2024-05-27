@@ -64,7 +64,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
       style={{
         paddingTop: 10,
         width: "100%",
-        paddingInline: "2rem",
+        paddingInline: "3rem",
       }}
       enterButton={loadingBTN()}
       disabled={status !== ArenaStatus.READY}
