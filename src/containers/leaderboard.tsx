@@ -52,10 +52,17 @@ export default function Leaderboard() {
 
   return (
     <div>
-      <Flex  style={{width: "94%", margin: "auto", marginTop: "3px"}} justify="center">
+      <Flex  style={{
+        width: "100%", 
+        marginTop: "6px",
+        paddingInline: 48,
+      }} justify="center">
         <Table style={{width: "100%"}} dataSource={tableSourceData} columns={columns}/>
       </Flex>
-      <Flex style={{width: "94%", margin: "auto"}} justify="end">
+      <Flex style={{
+        width: "100%",
+        paddingInline: 48,
+      }} justify="end">
         <span style={{marginRight: "3px"}}>Last Updated: {lastUpdated}</span>
       </Flex>
     </div>

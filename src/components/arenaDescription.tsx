@@ -11,8 +11,9 @@ export default function ArenaDescription() {
     <div style={{
       background: "#ffffff",
       textAlign: "left",
-      paddingInline: 46,
+      paddingInline: 48,
       lineHeight: 2.1,
+      overflowX: "auto",
     }}>
       <ReactMarkdown>
         {prompt}

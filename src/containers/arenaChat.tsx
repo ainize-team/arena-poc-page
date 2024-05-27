@@ -10,6 +10,21 @@ import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { addressAtom } from "@/lib/wallet";
 
+const LeftCardStyle: React.CSSProperties = {
+  textAlign: "left",
+  width: "100%",
+  minHeight: "50vh",
+  marginLeft: 48,
+  marginRight: "3px",
+}
+const RightCardStyle: React.CSSProperties = {
+  textAlign: "left",
+  width: "100%",
+  minHeight: "50vh",
+  marginLeft: "3px",
+  marginRight: 48,
+}
+
 export default function ArenaChat() {
   const router = useRouter();
 
@@ -172,8 +187,8 @@ export default function ArenaChat() {
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}
       <Flex justify="center" style={{marginTop: "10px"}}>
-        <ChatBox modelName={modelAName} status={status} prompt={resultA} />
-        <ChatBox modelName={modelBName} status={status} prompt={resultB} />
+        <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} prompt={resultA} />
+        <ChatBox modelName={modelBName} status={status} style={RightCardStyle} prompt={resultB} />
       </Flex>
         {status !== ArenaStatus.END ? (
           <>
