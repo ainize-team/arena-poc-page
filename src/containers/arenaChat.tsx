@@ -29,9 +29,9 @@ export default function ArenaChat() {
   const openNotification = (rewardData: any) => {
     const isZeroScore = rewardData.score === 0;
     notiApi.info({
-      message: isZeroScore ? "0 Score Message!" : "Reward Success!",
+      message: isZeroScore ? "Reward failed." : "Reward Success!",
       description:
-        isZeroScore ? "0 Score Description!" : `Reward: ${rewardData.reward} AIN`,
+        isZeroScore ? "Prompt was not meaningful for us. Try different prompt!" : `Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
     });
   };
