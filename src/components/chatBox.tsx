@@ -14,17 +14,18 @@ type ChatBoxProps = {
 };
 
 export default function ChatBox({ modelName, status, style, prompt}: ChatBoxProps) {
-  function textboxContent(status:ArenaStatus, prompt?: string) {
+  function textboxContent(status: ArenaStatus, prompt?: string) {
     if (prompt) {
       return <Paragraph style={{
         height: `${50 - 3}vh`, // FIXME(yoojin): change height to not constant value.
+        textAlign: "left",
         overflow: "auto",
       }}>
         <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
           {prompt}
         </ReactMarkdown>
       </Paragraph>
-    } else if (status == ArenaStatus.INFERENCING ) {
+    } else if (status == ArenaStatus.INFERENCING) {
       return <Spin tip="Loading" size="large"/>
     }
   }

@@ -11,14 +11,14 @@ import { useRecoilState } from "recoil";
 import { addressAtom } from "@/lib/wallet";
 
 const LeftCardStyle: React.CSSProperties = {
-  textAlign: "left",
+  textAlign: "center",
   width: "100%",
   minHeight: "50vh",
   marginLeft: "2rem",
   marginRight: "3px",
 }
 const RightCardStyle: React.CSSProperties = {
-  textAlign: "left",
+  textAlign: "center",
   width: "100%",
   minHeight: "50vh",
   marginLeft: "3px",
@@ -73,8 +73,8 @@ export default function ArenaChat() {
       case ArenaStatus.NOTCONNECTED:
       case ArenaStatus.READY:
       case ArenaStatus.COMPETING: 
-        setModelAName("modelA");
-        setModelBName("modelB");
+        setModelAName("Model A");
+        setModelBName("Model B");
         break;
       case ArenaStatus.END:
         setModelAName(modelA);
