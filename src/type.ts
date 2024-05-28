@@ -41,7 +41,7 @@ export type ChatResultReqBody = {
 
 export type LeaderboardTableData = {
   key: number,
-  rank: number | "🔥",
+  rank: string,
   ci: string,
   elo: string,
   modelName: string,
