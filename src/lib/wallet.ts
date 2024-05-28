@@ -4,11 +4,19 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-export const requestAddress = async () => {
+export const requestAddress = async (): Promise<string | undefined> => {
   const walletExtension: Signer = window.ainetwork;
-  if (walletExtension) {
-    const address = await walletExtension.getAddress();
-    return address
+  try {
+    if (walletExtension) {
+      await walletExtension.signMessage("test");
+      const address = await walletExtension.getAddress();
+      return address;
+    } else {
+      return;
+    }
+  } catch (err: any) {
+    // NOTE(yoojin): If user deny the wallet sign, It throw sign error.
+    return "";
   }
 };
 
