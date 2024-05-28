@@ -34,8 +34,8 @@ export default function WalletConnectBtn() {
 
   return (
     <Space>
-      <Button style={{width: "132px"}}type={address ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
-        <WalletOutlined />{address ? address.slice(0,8)+"..." : "Connect Wallet"} 
+      <Button type={address ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
+        <WalletOutlined />{address ? address.slice(0,8) + "..." : "Connect Wallet"} 
       </Button>
       <Modal
         open={modalOpen}
