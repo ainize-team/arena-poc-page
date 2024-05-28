@@ -4,8 +4,9 @@ import WalletConnectBtn from "./walletConnectBtn";
 
 const headerStyle: React.CSSProperties = {
   textAlign: "left",
+  display: "flex",
   height: 64,
-  paddingInline: 48,
+  paddingInline: "3rem",
   paddingTop: "8px",
   lineHeight: "64px",
   backgroundColor: "#ffffff",
@@ -14,15 +15,16 @@ const headerStyle: React.CSSProperties = {
 export default function ArenaHeader() {
   return (
     <Header style={headerStyle}>
-      <Row>
-        <Col span={22} style={{
-          fontSize: "32px",
-          fontWeight: "bold",
-          }}>AI Network Chatbot Arena</Col>
-        <Col span={2}>
-          <WalletConnectBtn />
-        </Col>
-      </Row>
+      <div style={{
+        flex: "none",
+        fontSize: "32px",
+        fontWeight: "bold",
+        }}>AI Network Chatbot Arena</div>
+      <div style={{
+        marginLeft: "auto",
+      }}>
+        <WalletConnectBtn />
+      </div>
     </Header>
   );
 }
