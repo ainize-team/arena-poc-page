@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
 import "./globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
@@ -42,6 +43,7 @@ export default function RootLayout({
           <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
         </Layout>
       </body>
+      <GoogleAnalytics gaId='G-SGWN161CB0' />
     </html>
   );
 }
