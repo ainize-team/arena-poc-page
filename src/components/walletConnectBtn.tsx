@@ -35,11 +35,11 @@ export default function WalletConnectBtn() {
   return (
     <Space>
       <Button style={{width: "132px"}}type={address ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
-        <WalletOutlined />{address ? address.slice(0,8)+"..." : "connect wallet"} 
+        <WalletOutlined />{address ? address.slice(0,8)+"..." : "Connect Wallet"} 
       </Button>
       <Modal
         open={modalOpen}
-        title="Ain Wallet not found"
+        title="AIN Wallet not found."
         onOk={handleOk}
         onCancel={handleOk}
         footer={[
@@ -50,7 +50,7 @@ export default function WalletConnectBtn() {
             loading={modalLoading}
             onClick={handleOk}
           >
-            Install AIN wallet
+            Install AIN Wallet
           </Button>,
         ]}
       >
