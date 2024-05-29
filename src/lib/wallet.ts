@@ -1,22 +1,25 @@
-import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
 import { atom, useSetRecoilState, AtomEffect } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-export const requestAddress = async (): Promise<string | undefined> => {
-  const walletExtension: Signer = window.ainetwork;
+export const connectWallet = async (): Promise<{
+  address: string,
+  chainId: number,
+} | undefined> => {
+  const walletExtension = window.ainetwork;
+  const { chainId } = await window.ainetwork.getNetwork();
   try {
     if (walletExtension) {
       await walletExtension.signMessage("test");
       const address = await walletExtension.getAddress();
-      return address;
+      return {address, chainId};
     } else {
       return;
     }
   } catch (err: any) {
     // NOTE(yoojin): If user deny the wallet sign, It throw sign error.
-    return "";
+    return { address: "", chainId };
   }
 };
 
