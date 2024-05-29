@@ -20,7 +20,7 @@ export default function ArenaDescription() {
       paddingInline: "3rem",
       lineHeight: 1.5,
     }}>
-      <Flex gap="small" justify="flex-start" style={{ width: 600 }}>
+      <Flex gap="small" justify="flex-start" style={{ width: 600, marginBottom: "8px" }}>
         <div style={{minWidth: 260}}><h3>💰TODAY AIN REWARD REMAIN</h3></div>
         <Progress percent={50} strokeColor={twoColors} size="small" status="active"/>
       </Flex>
