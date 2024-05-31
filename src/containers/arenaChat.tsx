@@ -124,12 +124,12 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
-    if (address !== "") {
+    if (address !== "" && captcha == CaptchaStatus.TRUE) {
       setStatus(ArenaStatus.READY);
     } else {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [address])
+  }, [address,captcha])
 
   useEffect(() => {
     if (resultA !== "" && resultB !== "") {
