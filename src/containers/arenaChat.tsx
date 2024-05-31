@@ -5,10 +5,11 @@ import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { APIStatus, ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
-import { addressAtom } from "@/lib/wallet";
+import { addressAtom } from "@/lib/recoil";
+import useWallet from "@/lib/wallet";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -29,7 +30,7 @@ export default function ArenaChat() {
   const router = useRouter();
 
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useRecoilState (addressAtom);
+  const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
@@ -37,10 +38,14 @@ export default function ArenaChat() {
   const [modelBName, setModelBName] = useState("");
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
-  const [modelABtnDisabled, setModelABtnDisabled] = useState(true);
-  const [modelBBtnDisabled, setModelBBtnDisabled] = useState(true);
   const [notiApi, notiContextHolder] = notification.useNotification();
+  const [isBlocked, setIsBlocked] = useState(false);
   
+  const {
+    isValidChain,
+    setWalletEventHandler,
+  } = useWallet();
+
   const openNotification = (rewardData: any) => {
     const isZeroScore = rewardData.score === 0;
     notiApi.info({
@@ -66,6 +71,7 @@ export default function ArenaChat() {
       await pickAndSetModels();
     }
     setModels();
+    setWalletEventHandler();
   }, [])
 
   useEffect(() => {
@@ -83,6 +89,7 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
+    console.log('useEffect chat address :>> ', address);
     if (address !== "") {
       setStatus(ArenaStatus.READY);
     } else {
@@ -161,7 +168,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelABtnDisabled(false);
           setResultA(result);
         });
         fetch("/api/arena/chat", {
@@ -172,7 +178,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelBBtnDisabled(false);
           setResultB(result);
         });
       } catch (err) {
@@ -192,13 +197,13 @@ export default function ArenaChat() {
       </Flex>
         {status !== ArenaStatus.END ? (
           <>
-            <PromptInput setParentPrompt={handlePrompt} status={status}/>
+            <PromptInput setParentPrompt={handlePrompt} status={status} disabled={!isValidChain}/>
             <Row justify="space-evenly">
               <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={modelABtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={modelBBtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={modelABtnDisabled || modelBBtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status}/></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} disabled={!isValidChain}/></Col>
               <Col span={3} />
             </Row>
           </>

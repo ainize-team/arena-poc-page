@@ -1,58 +1,69 @@
 "use client";
 
-import { connectWallet } from "@/lib/wallet";
+import useWallet  from "@/lib/wallet";
 import { WalletOutlined } from "@ant-design/icons";
-import { Button, Modal, Space } from "antd";
+import { Button, Modal, Space, Tooltip } from "antd";
 import { useEffect, useState } from "react";
+import { addressAtom, useSsrCompletedState } from "@/lib/recoil";
 import { useRecoilState } from "recoil";
-import { addressAtom, useSsrCompletedState } from "@/lib/wallet";
 
 export default function WalletConnectBtn() {
+  const [isConnected, setIsConnected] = useState(false);
   const [noWalletModalOpen, setNoWalletModalOpen] = useState(false);
   const [invalidChainModalOpen, setInvalidChainModalOpen] = useState(false);
-  const [isValidChain, setIsValidChain] = useState(true);
   const [modalLoading, setModalLoading] = useState(false);
-  const [address, setAddress] = useRecoilState(addressAtom);
+  const [address, setAddress] = useRecoilState<string>(addressAtom);
+  
+  const {
+    isWalletExist,
+    setWalletEventHandler,
+    connectWallet, 
+    isValidChain 
+  } = useWallet();
 
   useEffect(() => {
-    window.ainetwork.on("accountChanged", (event: any) => {
-      const { address } = event.detail;
-      setAddress(address);
-    });
-    window.ainetwork.on("networkChanged", (event: any) => {
-      const { chainId } = event.detail;
-      const validChainId = process.env.NODE_ENV === "production" ? 1 : 0;
-      setIsValidChain(chainId === validChainId);
-    })
-  }, [])
+    setWalletEventHandler();
+  }, []);
 
   useEffect(() => {
     if (!isValidChain) {
       setInvalidChainModalOpen(true);
-      setAddress("");
     }
     else 
       setInvalidChainModalOpen(false);
   }, [isValidChain])
 
+  useEffect(() => {
+    if (!isConnected) return;
+    if (address === "") {
+      setIsConnected(false);
+      connectWalletAndSetConnected();
+    }
+  }, [address])
+
   const setSsrCompleted = useSsrCompletedState();
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
+  const connectWalletAndSetConnected = async () => {
+    await connectWallet();
+    setIsConnected(true);
+  }
+
   const onClickConnectWalletBtn = async () => {
-    if (address !== "") {
-      setAddress("");
-      return;
-    }
-    const res = await connectWallet();
-    if (!res || res.address === undefined) {
+    if (!isWalletExist()) {
       setNoWalletModalOpen(true);
       return;
     }
-    if (res.chainId !== (process.env.NODE_ENV === "production" ? 1 : 0)) {
-      setInvalidChainModalOpen(true);
+    if (isConnected) {
+      setIsConnected(false);
+      setAddress("");
       return;
     }
-    setAddress(res.address);
+    if (!isValidChain) {
+      console.log("Is Invalid Chain. do Something");
+      return;
+    }
+    await connectWalletAndSetConnected();
   }
 
   const handleOk = () => {
@@ -62,10 +73,23 @@ export default function WalletConnectBtn() {
       setInvalidChainModalOpen(false);
   };
 
+  const renderWalletButton = () => {
+    let text = "Connect Wallet";
+    if (isConnected)
+      text = address.slice(0,8) + "...";
+
+    if (invalidChainModalOpen) {
+      return (
+        <Tooltip title="Invalid chain text" placement="bottom" open>{text}</Tooltip>
+      )
+    }
+    return text;
+  }
+
   return (
     <Space>
-      <Button type={address ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
-        <WalletOutlined />{address ? address.slice(0,8) + "..." : "Connect Wallet"} 
+      <Button type={isConnected ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
+        <WalletOutlined />{renderWalletButton()} 
       </Button>
       <Modal
         open={noWalletModalOpen}
@@ -85,16 +109,6 @@ export default function WalletConnectBtn() {
         ]}
       >
         <p>To receive rewards in the Arena, you need to connect your AIN Wallet.</p>
-      </Modal>
-      <Modal
-        open={invalidChainModalOpen}
-        title="It's not valid chain. Check your wallet network."
-        onOk={handleOk}
-        onCancel={handleOk}
-      >
-        <p>Change your Wallet Network to {
-        process.env.NODE_ENV === "production" ? "Mainnet" : "Testnet"
-        }</p>
       </Modal>
     </Space>
   );
