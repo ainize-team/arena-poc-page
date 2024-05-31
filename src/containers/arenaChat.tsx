@@ -3,12 +3,15 @@
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { APIStatus, ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { useState, useEffect, FormEvent } from "react";
+import { redirect, useRouter } from "next/navigation";
+import axios from "axios";
+import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { addressAtom } from "@/lib/wallet";
+import test from "node:test";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -27,7 +30,7 @@ const RightCardStyle: React.CSSProperties = {
 
 export default function ArenaChat() {
   const router = useRouter();
-
+  const {executeRecaptcha} = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
   const [address, setAddress] = useRecoilState (addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
@@ -40,7 +43,35 @@ export default function ArenaChat() {
   const [modelABtnDisabled, setModelABtnDisabled] = useState(true);
   const [modelBBtnDisabled, setModelBBtnDisabled] = useState(true);
   const [notiApi, notiContextHolder] = notification.useNotification();
-  
+  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+
+  const testCaptcha = async()=>{
+    if(!executeRecaptcha) {
+      console.log("not available to execute recaptcha");
+      return;
+    }
+    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+    const response = await axios({
+      method: "post",
+      url: "/api/arena/recaptchaSubmit",
+      data: {
+        gRecaptchaToken,
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response?.data?.success === true) {
+      console.log(`Success with score: ${response?.data?.score}`);
+      setCaptcha(CaptchaStatus.TRUE)
+    } else {
+      console.log(`Failure with score: ${response?.data?.score}`);
+      setCaptcha(CaptchaStatus.FALSE)
+    }
+
+  }
   const openNotification = (rewardData: any) => {
     const isZeroScore = rewardData.score === 0;
     notiApi.info({
@@ -61,6 +92,7 @@ export default function ArenaChat() {
     });
   }
 
+
   useEffect(() => {
     const setModels = async () => {
       await pickAndSetModels();
@@ -68,6 +100,15 @@ export default function ArenaChat() {
     setModels();
   }, [])
 
+  useEffect(()=>{
+    testCaptcha();
+  },[executeRecaptcha])
+
+  useEffect(()=>{
+    if(captcha == CaptchaStatus.FALSE){
+      redirect("/leaderboard")
+    }
+  },[captcha])
   useEffect(() => {
     switch(status) {
       case ArenaStatus.NOTCONNECTED:
@@ -217,3 +258,4 @@ export default function ArenaChat() {
     </Space>
   )
 }
+
