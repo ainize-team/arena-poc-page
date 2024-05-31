@@ -48,6 +48,7 @@ export default function ArenaChat() {
       description:
         isZeroScore ? "Prompt was not meaningful for us. Try different prompt!" : `Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
+      duration: 0,
     });
   };
 
