@@ -35,6 +35,11 @@ export default function ChatBox({ modelName, status, style, prompt}: ChatBoxProp
       title={modelName}
       size="small"
       bordered={false}
+      styles={{
+        header: {
+          background: status === ArenaStatus.END ? "#fcee8c" : "#ffffff",
+        }
+      }}
       style={style}
     >
     {textboxContent(status, prompt)}
