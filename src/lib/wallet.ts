@@ -1,33 +1,81 @@
-import { Signer } from "@ainblockchain/ain-js/lib/signer/signer";
-import { atom, useSetRecoilState, AtomEffect } from "recoil";
-import { recoilPersist } from "recoil-persist";
+import { useRecoilState } from "recoil";
+import { addressAtom } from "./recoil";
+import { useEffect, useState } from "react";
 
-const { persistAtom } = recoilPersist();
 
-export const requestAddress = async () => {
-  const walletExtension: Signer = window.ainetwork;
-  if (walletExtension) {
-    const address = await walletExtension.getAddress();
-    return address
+export default function useWallet() {
+  const [walletAddress, setWalletAddress] = useState("");
+  const [address, setAddress] = useRecoilState(addressAtom);
+  const [isValidChain, setIsValidChain] = useState(true);
+
+  const isWalletExist = (): boolean => {
+    if (window.ainetwork) return true;
+    return false;
   }
-};
 
-const ssrCompletedState = atom({
-  key: "SsrCompleted",
-  default: false,
-})
+  useEffect(() => {
+    const walletExtension = window.ainetwork;
+    if (!walletExtension) {
+      setWalletAddress("");
+      return;
+    }
+    const getWalletInfo = async () => {
+      const _address = await walletExtension.getAddress();
+      const _chain = await walletExtension.getNetwork();
+      const chainId = _chain.chainId;
+      const validChain = process.env.NODE_ENV === "production" ? 1 : 0;
+      console.log('_address :>> ', _address);
+      setWalletAddress(_address);
+      setIsValidChain(validChain === chainId);
+    }
+    getWalletInfo();
+  }, [])
 
-export const useSsrCompletedState = () => {
-  const setSsrCompleted = useSetRecoilState(ssrCompletedState)
-  return () => setSsrCompleted(true);
+  useEffect(() => {
+    setAddress("");
+  }, [walletAddress])
+
+  const setWalletEventHandler = () => {
+    window.ainetwork.on("accountChanged", (event: any) => {
+      const _address = event.detail.address;
+      if (address === _address) return;
+      setWalletAddress(_address);
+      setAddress("");
+    });
+    window.ainetwork.on("networkChanged", (event: any) => {
+      const { chainId } = event.detail;
+      const validChainId = process.env.NODE_ENV === "production" ? 1 : 0;
+      setIsValidChain(chainId === validChainId);
+    })
+  };
+
+  const connectWallet = async () => {
+    const walletExtension = window.ainetwork;
+    if (walletExtension) {
+      await walletExtension.signMessage("test");
+      try {
+        console.log('walletAddress :>> ', walletAddress);
+        setAddress(walletAddress);
+        console.log('address :>> ', address);
+      } catch (error) {
+        console.log('Why cant catch~~ ');
+        setAddress("");
+      }
+    } else {
+      setAddress("");
+    }
+  };
+
+  const handleChangedAddress = (_address: string) => {
+    setAddress(_address);
+  }
+
+  return {
+    isWalletExist,
+    connectWallet,
+    isValidChain,
+    handleChangedAddress,
+    setAddress,
+    setWalletEventHandler,
+  };
 }
-
-export const persistAtomEffect = <T>(param: Parameters<AtomEffect<T>>[0]) => {
-  param.getPromise(ssrCompletedState).then(() => persistAtom(param))
-}
-
-export const addressAtom = atom({
-  key: "address",
-  default: "",
-  effects_UNSTABLE: [persistAtomEffect],
-})
