@@ -82,3 +82,10 @@ export const chatReward = async (battleId: string) => {
   const { score, reward, reason, tx_hash } = await res.json();
   return { score, reward, reason, tx_hash };
 }
+
+export const getDailyRewardPercentage = async () => {
+  const endpoint = `${process.env.SERVER_URL}/battle/reward`;
+  const res = await fetch(endpoint, {cache: "no-cache"});
+  const { date, percentage } = await res.json();
+  return { date, percentage }
+}

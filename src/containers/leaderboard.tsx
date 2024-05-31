@@ -4,6 +4,7 @@ import { Flex, Spin, Table, TableProps } from "antd";
 import { getLeaderboard } from "@/components/leaderboard";
 import { useEffect, useState } from "react";
 import { LeaderboardTableData } from "@/type";
+import ScoreTooltip from "@/components/scoreTooltip";
 
 export default function Leaderboard() {
   const [lastUpdated, setLastUpdated] = useState("");
@@ -19,7 +20,7 @@ export default function Leaderboard() {
       key: "modelName",
       render: (text, record) => <a style={{color:"blue", textDecoration: "underline"}} href={record.link}>{text}</a>
     }, {
-      title: "Arena Score",
+      title: () => <ScoreTooltip>Arena Score</ScoreTooltip>,
       dataIndex: "elo",
       key: "elo",
     }, {

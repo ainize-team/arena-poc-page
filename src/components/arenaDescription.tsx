@@ -1,6 +1,6 @@
+import { Flex, Progress, ProgressProps } from "antd";
 import ReactMarkdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
-
+import RewardProgress from "./rewardProgress";
 export default function ArenaDescription() {
   const rules = `### 📜 Rules
   1. Connect your [AIN Wallet](https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl?hl=ko) so that you can get AIN credit for your contribution.
@@ -16,6 +16,7 @@ export default function ArenaDescription() {
       paddingInline: "3rem",
       lineHeight: 1.5,
     }}>
+      <RewardProgress />
       <ReactMarkdown components={{
         a: (props: any) => (
           <a style={{color: "blue"}} {...props} />

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
 import "./globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
+import { getGAId } from "@/constant/constant";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
@@ -42,6 +44,7 @@ export default function RootLayout({
           <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
         </Layout>
       </body>
+      <GoogleAnalytics gaId={getGAId()} />
     </html>
   );
 }

@@ -53,6 +53,7 @@ export default function ArenaChat() {
       description:
         isZeroScore ? "Prompt was not meaningful for us. Try different prompt!" : `Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
+      duration: 0,
     });
   };
 
@@ -139,6 +140,7 @@ export default function ArenaChat() {
         method: "POST",
         body: JSON.stringify(chatResultParams),
       })).json();
+      changeWinnerName(value);
       setStatus(ArenaStatus.END);
       const reward = await fetch(`/api/arena/reward/${battleId}`, {
         method: "GET",
@@ -146,6 +148,24 @@ export default function ArenaChat() {
       openNotification(await reward.json());
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
+    }
+  }
+
+  const changeWinnerName = (winner: ChoiceType) => {
+    const winnerMark = "🎉";
+    switch(winner) {
+      case ChoiceType.MODELA:
+        setModelA(winnerMark + modelA);
+        break;
+      case ChoiceType.MODELB:
+        setModelB(winnerMark + modelB);
+        break;
+      case ChoiceType.TIE:
+        setModelA(winnerMark + modelA);
+        setModelB(winnerMark + modelB);
+        break;
+      case ChoiceType.NOTHING:
+        break;
     }
   }
 
