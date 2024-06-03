@@ -24,7 +24,7 @@ export default function useWallet() {
       const _address = await walletExtension.getAddress();
       const _chain = await walletExtension.getNetwork();
       const chainId = _chain.chainId;
-      const validChain = process.env.NODE_ENV === "production" ? 1 : 0;
+      const validChain = env.APP_ENV === "production" ? 1 : 0;
       console.log('_address :>> ', _address);
       setWalletAddress(_address);
       setIsValidChain(validChain === chainId);
@@ -46,7 +46,7 @@ export default function useWallet() {
     window.ainetwork.on("networkChanged", (event: any) => {
       const { chainId } = event.detail;
       console.log('env :>> ', env);
-      const validChainId = env.NODE_ENV === "production" ? 1 : 0;
+      const validChainId = env.APP_ENV === "production" ? 1 : 0;
       setIsValidChain(chainId === validChainId);
     })
   };

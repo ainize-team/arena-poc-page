@@ -1,5 +1,5 @@
 export const env = {
-  NODE_ENV: process.env.NODE_ENV,
+  APP_ENV: process.env.APP_ENV,
   SERVER_URL: process.env.SERVER_URL,
   NEXT_PUBLIC_MINIMUM_VOTE: process.env.NEXT_PUBLIC_MINIMUM_VOTE,
   CAPTCHA_SECRET_KEY: process.env.CAPCHA_SECRET_KEY,
@@ -7,5 +7,5 @@ export const env = {
 }
 
 export const getGAId = () => {
-  return process.env.NODE_ENV === "production" ? "G-TFVPRQGF0M" : "G-WHKH2Q8EJY"
+  return process.env.APP_ENV === "production" ? "G-TFVPRQGF0M" : "G-WHKH2Q8EJY"
 };
