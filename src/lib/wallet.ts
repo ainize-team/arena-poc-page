@@ -1,6 +1,7 @@
 import { useRecoilState } from "recoil";
 import { addressAtom } from "./recoil";
 import { useEffect, useState } from "react";
+import { PUBLIC_ENV } from "../constant/constant";
 
 
 export default function useWallet() {
@@ -23,8 +24,7 @@ export default function useWallet() {
       const _address = await walletExtension.getAddress();
       const _chain = await walletExtension.getNetwork();
       const chainId = _chain.chainId;
-      const validChain = process.env.NODE_ENV === "production" ? 1 : 0;
-      console.log('_address :>> ', _address);
+      const validChain = PUBLIC_ENV.APP_ENV === "production" ? 1 : 0;
       setWalletAddress(_address);
       setIsValidChain(validChain === chainId);
     }
@@ -44,7 +44,7 @@ export default function useWallet() {
     });
     window.ainetwork.on("networkChanged", (event: any) => {
       const { chainId } = event.detail;
-      const validChainId = process.env.NODE_ENV === "production" ? 1 : 0;
+      const validChainId = PUBLIC_ENV.APP_ENV === "production" ? 1 : 0;
       setIsValidChain(chainId === validChainId);
     })
   };
@@ -54,11 +54,8 @@ export default function useWallet() {
     if (walletExtension) {
       await walletExtension.signMessage("test");
       try {
-        console.log('walletAddress :>> ', walletAddress);
         setAddress(walletAddress);
-        console.log('address :>> ', address);
       } catch (error) {
-        console.log('Why cant catch~~ ');
         setAddress("");
       }
     } else {
