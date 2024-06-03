@@ -12,7 +12,14 @@ export async function GET(
       status: 200,
     });
   } catch (error) {
-    return Response.json("", {
+    const errRes = {
+      reward: 0,
+      score: 0,
+      reason: "",
+      tx_hash: "Something fault. Please retry the chat.",
+    };
+    console.log('errRes :>> ', errRes);
+    return Response.json(errRes, {
       status: 500,
     });
   }
