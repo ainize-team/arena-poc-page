@@ -25,7 +25,6 @@ export default function useWallet() {
       const _chain = await walletExtension.getNetwork();
       const chainId = _chain.chainId;
       const validChain = PUBLIC_ENV.APP_ENV === "production" ? 1 : 0;
-      console.log('_address :>> ', _address);
       setWalletAddress(_address);
       setIsValidChain(validChain === chainId);
     }
@@ -55,11 +54,8 @@ export default function useWallet() {
     if (walletExtension) {
       await walletExtension.signMessage("test");
       try {
-        console.log('walletAddress :>> ', walletAddress);
         setAddress(walletAddress);
-        console.log('address :>> ', address);
       } catch (error) {
-        console.log('Why cant catch~~ ');
         setAddress("");
       }
     } else {

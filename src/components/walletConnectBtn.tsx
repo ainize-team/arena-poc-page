@@ -6,6 +6,7 @@ import { Button, Modal, Space, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { addressAtom, useSsrCompletedState } from "@/lib/recoil";
 import { useRecoilState } from "recoil";
+import { PUBLIC_ENV } from "../constant/constant";
 
 export default function WalletConnectBtn() {
   const [isConnected, setIsConnected] = useState(false);
@@ -60,7 +61,6 @@ export default function WalletConnectBtn() {
       return;
     }
     if (!isValidChain) {
-      console.log("Is Invalid Chain. do Something");
       return;
     }
     await connectWalletAndSetConnected();
@@ -80,7 +80,7 @@ export default function WalletConnectBtn() {
 
     if (invalidChainModalOpen) {
       return (
-        <Tooltip title="Invalid chain text" placement="bottom" open>{text}</Tooltip>
+        <Tooltip title={`Unsupported network (${PUBLIC_ENV.APP_ENV==="production" ? "Mainnet" : "Testnet"}).`} placement="bottom" open>{text}</Tooltip>
       )
     }
     return text;
