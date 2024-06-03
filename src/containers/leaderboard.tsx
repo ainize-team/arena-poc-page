@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Spin, Table, TableProps } from "antd";
+import { Flex, Table, TableProps } from "antd";
 import { getLeaderboard } from "@/components/leaderboard";
 import { useEffect, useState } from "react";
 import { LeaderboardTableData } from "@/type";
