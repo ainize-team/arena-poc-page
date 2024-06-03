@@ -79,11 +79,11 @@ export default function ArenaChat() {
 
   }
   const openNotification = (rewardData: any) => {
-    const isZeroScore = rewardData.score === 0;
+    const isZeroReward = rewardData.reward === 0;
     notiApi.info({
-      message: isZeroScore ? "Reward failed." : "Reward Success!",
+      message: isZeroReward ? "Reward Failed." : "Reward Success!",
       description:
-        isZeroScore ? "Prompt was not meaningful for us. Try different prompt!" : `Reward: ${rewardData.reward} AIN`,
+        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`, // NOTE(yoojin): If the reward is not issued, the reason will be provided via "tx_hash".
       placement: "topRight",
       duration: 0,
     });
@@ -186,7 +186,8 @@ export default function ArenaChat() {
       const reward = await fetch(`/api/arena/reward/${battleId}`, {
         method: "GET",
       });
-      openNotification(await reward.json());
+      const rewardData = await reward.json();
+      openNotification(rewardData);
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
     }

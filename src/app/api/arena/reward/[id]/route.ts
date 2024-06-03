@@ -1,5 +1,6 @@
 import { chatReward } from "@/app/api/arena/arena";
 import { NextRequest } from "next/server";
+import { ZERO_REWARD_MSG } from "@/constant/constant";
 
 export async function GET(
   req: NextRequest, 
@@ -12,7 +13,14 @@ export async function GET(
       status: 200,
     });
   } catch (error) {
-    return Response.json("", {
+    const errRes = {
+      reward: 0,
+      score: 0,
+      reason: "Something fault. Please retry the chat.",
+      tx_hash: ZERO_REWARD_MSG,
+    };
+    console.log('errRes :>> ', errRes);
+    return Response.json(errRes, {
       status: 500,
     });
   }
