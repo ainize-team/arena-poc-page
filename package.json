@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ainblockchain/ain-js": "^1.10.0",
     "@ant-design/icons": "^5.3.7",
     "@next/third-parties": "^14.2.3",
     "antd": "^5.16.4",

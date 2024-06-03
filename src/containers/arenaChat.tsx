@@ -3,15 +3,17 @@
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
 import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { addressAtom } from "@/lib/wallet";
+import { addressAtom } from "@/lib/recoil";
+import useWallet from "@/lib/wallet";
 import test from "node:test";
+import React from "react";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -32,7 +34,7 @@ export default function ArenaChat() {
   const router = useRouter();
   const {executeRecaptcha} = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useRecoilState (addressAtom);
+  const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
@@ -40,10 +42,14 @@ export default function ArenaChat() {
   const [modelBName, setModelBName] = useState("");
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
-  const [modelABtnDisabled, setModelABtnDisabled] = useState(true);
-  const [modelBBtnDisabled, setModelBBtnDisabled] = useState(true);
   const [notiApi, notiContextHolder] = notification.useNotification();
+  const [isBlocked, setIsBlocked] = useState(false);
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+
+  const {
+    isValidChain,
+    setWalletEventHandler,
+  } = useWallet();
 
   const testCaptcha = async()=>{
     if(!executeRecaptcha) {
@@ -79,6 +85,7 @@ export default function ArenaChat() {
       description:
         isZeroScore ? "Prompt was not meaningful for us. Try different prompt!" : `Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
+      duration: 0,
     });
   };
 
@@ -98,6 +105,7 @@ export default function ArenaChat() {
       await pickAndSetModels();
     }
     setModels();
+    setWalletEventHandler();
   }, [])
 
   useEffect(()=>{
@@ -173,6 +181,7 @@ export default function ArenaChat() {
         method: "POST",
         body: JSON.stringify(chatResultParams),
       })).json();
+      changeWinnerName(value);
       setStatus(ArenaStatus.END);
       const reward = await fetch(`/api/arena/reward/${battleId}`, {
         method: "GET",
@@ -180,6 +189,24 @@ export default function ArenaChat() {
       openNotification(await reward.json());
     } catch (err) {
       alert(`${err}.\n If the error is repeated, please refresh the page.`);
+    }
+  }
+
+  const changeWinnerName = (winner: ChoiceType) => {
+    const winnerMark = "🎉";
+    switch(winner) {
+      case ChoiceType.MODELA:
+        setModelA(winnerMark + modelA);
+        break;
+      case ChoiceType.MODELB:
+        setModelB(winnerMark + modelB);
+        break;
+      case ChoiceType.TIE:
+        setModelA(winnerMark + modelA);
+        setModelB(winnerMark + modelB);
+        break;
+      case ChoiceType.NOTHING:
+        break;
     }
   }
 
@@ -202,7 +229,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelABtnDisabled(false);
           setResultA(result);
         });
         fetch("/api/arena/chat", {
@@ -213,7 +239,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelBBtnDisabled(false);
           setResultB(result);
         });
       } catch (err) {
@@ -233,13 +258,13 @@ export default function ArenaChat() {
       </Flex>
         {status !== ArenaStatus.END ? (
           <>
-            <PromptInput setParentPrompt={handlePrompt} status={status}/>
+            <PromptInput setParentPrompt={handlePrompt} status={status} disabled={!isValidChain}/>
             <Row justify="space-evenly">
               <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={modelABtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={modelBBtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={modelABtnDisabled || modelBBtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status}/></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} disabled={!isValidChain}/></Col>
               <Col span={3} />
             </Row>
           </>
