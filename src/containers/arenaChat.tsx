@@ -5,7 +5,7 @@ import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { APIStatus, ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { addressAtom } from "@/lib/wallet";
@@ -46,7 +46,7 @@ export default function ArenaChat() {
     notiApi.info({
       message: isZeroReward ? "Reward Failed." : "Reward Success!",
       description:
-        isZeroReward ? rewardData.tx_hash : `Reward: ${rewardData.reward} AIN`, // NOTE(yoojin): If the reward is not issued, the reason will be provided via "tx_hash".
+        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`, // NOTE(yoojin): If the reward is not issued, the reason will be provided via "tx_hash".
       placement: "topRight",
       duration: 0,
     });
