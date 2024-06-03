@@ -50,3 +50,9 @@ export type LeaderboardTableData = {
   org: string,
   license: string,
 }
+
+export enum CaptchaStatus {
+  YET = "YET",
+  TRUE = "TRUE",
+  FALSE = "FALSE"
+}

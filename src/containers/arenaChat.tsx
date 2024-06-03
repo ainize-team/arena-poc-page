@@ -4,12 +4,16 @@ import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { redirect, useRouter } from "next/navigation";
+import axios from "axios";
+import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { addressAtom } from "@/lib/recoil";
 import useWallet from "@/lib/wallet";
+import test from "node:test";
+import React from "react";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -28,7 +32,7 @@ const RightCardStyle: React.CSSProperties = {
 
 export default function ArenaChat() {
   const router = useRouter();
-
+  const {executeRecaptcha} = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
   const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
@@ -40,12 +44,40 @@ export default function ArenaChat() {
   const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
   const [isBlocked, setIsBlocked] = useState(false);
-  
+  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+
   const {
     isValidChain,
     setWalletEventHandler,
   } = useWallet();
 
+  const testCaptcha = async()=>{
+    if(!executeRecaptcha) {
+      console.log("not available to execute recaptcha");
+      return;
+    }
+    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+    const response = await axios({
+      method: "post",
+      url: "/api/arena/recaptchaSubmit",
+      data: {
+        gRecaptchaToken,
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response?.data?.success === true) {
+      console.log(`Success with score: ${response?.data?.score}`);
+      setCaptcha(CaptchaStatus.TRUE)
+    } else {
+      console.log(`Failure with score: ${response?.data?.score}`);
+      setCaptcha(CaptchaStatus.FALSE)
+    }
+
+  }
   const openNotification = (rewardData: any) => {
     const isZeroScore = rewardData.score === 0;
     notiApi.info({
@@ -67,6 +99,7 @@ export default function ArenaChat() {
     });
   }
 
+
   useEffect(() => {
     const setModels = async () => {
       await pickAndSetModels();
@@ -75,6 +108,15 @@ export default function ArenaChat() {
     setWalletEventHandler();
   }, [])
 
+  useEffect(()=>{
+    testCaptcha();
+  },[executeRecaptcha])
+
+  useEffect(()=>{
+    if(captcha == CaptchaStatus.FALSE){
+      redirect("/leaderboard")
+    }
+  },[captcha])
   useEffect(() => {
     switch(status) {
       case ArenaStatus.NOTCONNECTED:
@@ -90,13 +132,12 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
-    console.log('useEffect chat address :>> ', address);
-    if (address !== "") {
+    if (address !== "" && captcha == CaptchaStatus.TRUE) {
       setStatus(ArenaStatus.READY);
     } else {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [address])
+  }, [address,captcha])
 
   useEffect(() => {
     if (resultA !== "" && resultB !== "") {
@@ -242,3 +283,4 @@ export default function ArenaChat() {
     </Space>
   )
 }
+
