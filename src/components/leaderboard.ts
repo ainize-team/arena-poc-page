@@ -3,7 +3,7 @@
 import { LeaderboardTableData } from "@/type";
 import { PUBLIC_ENV } from "../constant/constant";
 
-const MINIMUM_VOTE = PUBLIC_ENV.MINIMUM_VOTE || 100;
+const MINIMUM_VOTE = Number(PUBLIC_ENV.MINIMUM_VOTE || 100);
 type LeaderboardResponse = {
   last_updated: number,
   leader_board: LeaderboardModelData[],
