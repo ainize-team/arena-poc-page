@@ -4,11 +4,16 @@ import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ArenaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { redirect, useRouter } from "next/navigation";
+import axios from "axios";
+import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
-import { addressAtom } from "@/lib/wallet";
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { addressAtom } from "@/lib/recoil";
+import useWallet from "@/lib/wallet";
+import test from "node:test";
+import React from "react";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -27,9 +32,9 @@ const RightCardStyle: React.CSSProperties = {
 
 export default function ArenaChat() {
   const router = useRouter();
-
+  const {executeRecaptcha} = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useRecoilState (addressAtom);
+  const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
@@ -37,10 +42,42 @@ export default function ArenaChat() {
   const [modelBName, setModelBName] = useState("");
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
-  const [modelABtnDisabled, setModelABtnDisabled] = useState(true);
-  const [modelBBtnDisabled, setModelBBtnDisabled] = useState(true);
   const [notiApi, notiContextHolder] = notification.useNotification();
-  
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+
+  const {
+    isValidChain,
+    setWalletEventHandler,
+  } = useWallet();
+
+  const testCaptcha = async()=>{
+    if(!executeRecaptcha) {
+      console.log("not available to execute recaptcha");
+      return;
+    }
+    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+    const response = await axios({
+      method: "post",
+      url: "/api/arena/recaptchaSubmit",
+      data: {
+        gRecaptchaToken,
+      },
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response?.data?.success === true) {
+      console.log(`Success with score: ${response?.data?.score}`);
+      setCaptcha(CaptchaStatus.TRUE)
+    } else {
+      console.log(`Failure with score: ${response?.data?.score}`);
+      setCaptcha(CaptchaStatus.FALSE)
+    }
+
+  }
   const openNotification = (rewardData: any) => {
     const isZeroReward = rewardData.reward === 0;
     notiApi.info({
@@ -62,13 +99,24 @@ export default function ArenaChat() {
     });
   }
 
+
   useEffect(() => {
     const setModels = async () => {
       await pickAndSetModels();
     }
     setModels();
+    setWalletEventHandler();
   }, [])
 
+  useEffect(()=>{
+    testCaptcha();
+  },[executeRecaptcha])
+
+  useEffect(()=>{
+    if(captcha == CaptchaStatus.FALSE){
+      redirect("/leaderboard")
+    }
+  },[captcha])
   useEffect(() => {
     switch(status) {
       case ArenaStatus.NOTCONNECTED:
@@ -84,12 +132,12 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
-    if (address !== "") {
+    if (address !== "" && captcha == CaptchaStatus.TRUE) {
       setStatus(ArenaStatus.READY);
     } else {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [address])
+  }, [address,captcha])
 
   useEffect(() => {
     if (resultA !== "" && resultB !== "") {
@@ -182,7 +230,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelABtnDisabled(false);
           setResultA(result);
         });
         fetch("/api/arena/chat", {
@@ -193,7 +240,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setModelBBtnDisabled(false);
           setResultB(result);
         });
       } catch (err) {
@@ -213,13 +259,13 @@ export default function ArenaChat() {
       </Flex>
         {status !== ArenaStatus.END ? (
           <>
-            <PromptInput setParentPrompt={handlePrompt} status={status}/>
+            <PromptInput setParentPrompt={handlePrompt} status={status} disabled={!isValidChain}/>
             <Row justify="space-evenly">
               <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={modelABtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={modelBBtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={modelABtnDisabled || modelBBtnDisabled}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status}/></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={!isValidChain}  /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} disabled={!isValidChain}/></Col>
               <Col span={3} />
             </Row>
           </>
@@ -238,3 +284,4 @@ export default function ArenaChat() {
     </Space>
   )
 }
+

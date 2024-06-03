@@ -5,6 +5,7 @@ import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
 import "./globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 import { getGAId } from "@/constant/constant";
+import GoogleCaptchaWrapper from "@/containers/googleCaptchaWrapper";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
@@ -37,12 +38,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <GoogleCaptchaWrapper>
         <Layout style={layoutStyle}>
           <RecoilRootWrapper>
             {children}
           </RecoilRootWrapper>
           <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
         </Layout>
+        </GoogleCaptchaWrapper>
       </body>
       <GoogleAnalytics gaId={getGAId()} />
     </html>
