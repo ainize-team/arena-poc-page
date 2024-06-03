@@ -19,7 +19,7 @@ export default function ArenaHeader() {
         flex: "none",
         fontSize: "32px",
         fontWeight: "bold",
-        }}>AI Network Chatbot Arena</div>
+        }}>AI Network LLM Arena</div>
       <div style={{
         marginLeft: "auto",
       }}>
