@@ -12,7 +12,6 @@ import { useRecoilState } from "recoil";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { addressAtom } from "@/lib/recoil";
 import useWallet from "@/lib/wallet";
-import test from "node:test";
 import React from "react";
 
 const LeftCardStyle: React.CSSProperties = {
@@ -99,8 +98,16 @@ export default function ArenaChat() {
     });
   }
 
+  const isMobile = () => {
+    return /Mobi/i.test(window.navigator.userAgent);
+  };
 
   useEffect(() => {
+    if (isMobile()) {
+      router.push("/leaderboard");
+      return;
+    } 
+
     const setModels = async () => {
       await pickAndSetModels();
     }
