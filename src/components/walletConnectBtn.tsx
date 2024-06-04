@@ -14,7 +14,7 @@ export default function WalletConnectBtn() {
   const [invalidChainModalOpen, setInvalidChainModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [address, setAddress] = useRecoilState<string>(addressAtom);
-  
+  const [isMobile, setIsMobile] = useState(false);
   const {
     isWalletExist,
     setWalletEventHandler,
@@ -23,6 +23,10 @@ export default function WalletConnectBtn() {
   } = useWallet();
 
   useEffect(() => {
+    setIsMobile(/Mobi/i.test(window.navigator.userAgent));
+    if (isMobile) {
+      return;
+    }
     setWalletEventHandler();
   }, []);
 
@@ -88,6 +92,8 @@ export default function WalletConnectBtn() {
 
   return (
     <Space>
+      {!isMobile ? (
+      <>
       <Button type={isConnected ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
         <WalletOutlined />{renderWalletButton()} 
       </Button>
@@ -110,6 +116,7 @@ export default function WalletConnectBtn() {
       >
         <p>To receive rewards in the Arena, you need to connect your AIN Wallet.</p>
       </Modal>
+      </>) : <></>}
     </Space>
   );
 }
