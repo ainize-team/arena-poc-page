@@ -36,13 +36,15 @@ export default function useWallet() {
   }, [walletAddress])
 
   const setWalletEventHandler = () => {
-    window.ainetwork.on("accountChanged", (event: any) => {
+    const walletExtension = window.ainetwork;
+    if (!walletExtension) return;
+    walletExtension.on("accountChanged", (event: any) => {
       const _address = event.detail.address;
       if (address === _address) return;
       setWalletAddress(_address);
       setAddress("");
     });
-    window.ainetwork.on("networkChanged", (event: any) => {
+    walletExtension.on("networkChanged", (event: any) => {
       const { chainId } = event.detail;
       const validChainId = PUBLIC_ENV.APP_ENV === "production" ? 1 : 0;
       setIsValidChain(chainId === validChainId);
