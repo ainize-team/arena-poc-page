@@ -54,14 +54,14 @@ export default function useWallet() {
     if (walletExtension) {
       const date = new Date();
       const signMessage = `arena.ainetwork.ai wants you to sign in with your AINetwork account:\
-    ${walletAddress}\
-    \
-    Please sign-in to use the arena. This is only for login in purposes, it does not cost any gas and does not send any funds, and I accept the Terms of Service.\
-    \
-    URI:https://arena.ainetwork.ai\
-    Version:1\
-    Chain ID: ${process.env.NODE_ENV === "production" ? 1 : 0}\
-    Issued At: ${date.toString()}`
+        ${walletAddress}\
+        \
+        Please sign-in to use the arena. This is only for login in purposes, it does not cost any gas and does not send any funds, and I accept the Terms of Service.\
+        \
+        URI:https://arena.ainetwork.ai\
+        Version:1\
+        Chain ID: ${process.env.NODE_ENV === "production" ? 1 : 0}\
+        Issued At: ${date.toString()}`
       await walletExtension.signMessage(signMessage);
       try {
         console.log('walletAddress :>> ', walletAddress);
