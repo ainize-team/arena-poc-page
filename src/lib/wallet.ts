@@ -32,6 +32,8 @@ export default function useWallet() {
   }, [])
 
   useEffect(() => {
+    // NOTE(yoojin): 페이지 이동시 walletAddress 가 empty로 변경되어 호출됨.
+    if (!walletAddress || address === walletAddress) return;
     setAddress("");
   }, [walletAddress])
 
