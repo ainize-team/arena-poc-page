@@ -1,4 +1,3 @@
-import { Button, Col, Row, Space } from "antd";
 import { Header } from "antd/lib/layout/layout";
 import WalletConnectBtn from "./walletConnectBtn";
 
