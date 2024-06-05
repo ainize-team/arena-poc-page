@@ -59,7 +59,7 @@ export default function useWallet() {
       const date = new Date();
       const signMessage = `arena.ainetwork.ai wants you to sign in with your AI Network account: ${walletAddress}\
         Please sign-in to use the arena. This is only for login in purposes, it does not cost any gas and does not send any funds.\
-        Issued At: ${date.toString()}`
+        Issued At: ${date.toDateString()}`
       await walletExtension.signMessage(signMessage);
       try {
         setAddress(walletAddress);
