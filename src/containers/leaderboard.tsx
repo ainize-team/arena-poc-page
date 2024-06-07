@@ -5,8 +5,10 @@ import { getLeaderboard } from "@/components/leaderboard";
 import { useEffect, useState } from "react";
 import { LeaderboardTableData } from "@/type";
 import ScoreTooltip from "@/components/scoreTooltip";
+import { useRouter } from "next/router";
 
 export default function Leaderboard() {
+  const router = useRouter();
   const [lastUpdated, setLastUpdated] = useState("");
   const [tableSourceData, setTableSourceData] = useState<LeaderboardTableData[]>();
   const columns: TableProps["columns"] = [
@@ -42,7 +44,15 @@ export default function Leaderboard() {
     }
   ]
 
+  const isMobile = () => {
+    return /Mobi/i.test(window.navigator.userAgent);
+  };
+
   useEffect(() => {
+    if (isMobile()) {
+      router.push("/m");
+      return;
+    }
     const setupLeaderboard = async () => {
       const { lastUpdated, tableData } = await getLeaderboard();
       setLastUpdated(lastUpdated);
