@@ -31,7 +31,7 @@ const RightCardStyle: React.CSSProperties = {
 
 export default function ArenaChat() {
   const router = useRouter();
-  const {executeRecaptcha} = useGoogleReCaptcha();
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
   const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
@@ -42,7 +42,6 @@ export default function ArenaChat() {
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
-  const [isBlocked, setIsBlocked] = useState(false);
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
 
   const {
@@ -82,7 +81,7 @@ export default function ArenaChat() {
     notiApi.info({
       message: isZeroReward ? "Reward Failed." : "Reward Success!",
       description:
-        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`, // NOTE(yoojin): If the reward is not issued, the reason will be provided via "tx_hash".
+        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`,
       placement: "topRight",
       duration: 0,
     });
@@ -144,7 +143,7 @@ export default function ArenaChat() {
     } else {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [address,captcha])
+  }, [address, captcha])
 
   useEffect(() => {
     if (resultA !== "" && resultB !== "") {

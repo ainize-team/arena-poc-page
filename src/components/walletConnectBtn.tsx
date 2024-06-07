@@ -28,6 +28,7 @@ export default function WalletConnectBtn() {
       return;
     }
     setWalletEventHandler();
+    if (address) setIsConnected(true);
   }, []);
 
   useEffect(() => {
@@ -39,7 +40,11 @@ export default function WalletConnectBtn() {
   }, [isValidChain])
 
   useEffect(() => {
-    if (!isConnected) return;
+    if (!isConnected) {
+      if (address !== "")
+        setIsConnected(true);
+      return;
+    }
     if (address === "") {
       setIsConnected(false);
       connectWalletAndSetConnected();
