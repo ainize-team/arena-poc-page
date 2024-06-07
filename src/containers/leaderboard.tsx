@@ -5,7 +5,7 @@ import { getLeaderboard } from "@/components/leaderboard";
 import { useEffect, useState } from "react";
 import { LeaderboardTableData } from "@/type";
 import ScoreTooltip from "@/components/scoreTooltip";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Leaderboard() {
   const router = useRouter();
