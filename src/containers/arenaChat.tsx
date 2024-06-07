@@ -103,7 +103,7 @@ export default function ArenaChat() {
 
   useEffect(() => {
     if (isMobile()) {
-      router.push("/leaderboard");
+      router.push("/m");
       return;
     } 
 
