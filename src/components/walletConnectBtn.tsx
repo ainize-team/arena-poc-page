@@ -14,7 +14,7 @@ export default function WalletConnectBtn() {
   const [invalidChainModalOpen, setInvalidChainModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [address, setAddress] = useRecoilState<string>(addressAtom);
-  
+  const [isMobile, setIsMobile] = useState(false);
   const {
     isWalletExist,
     setWalletEventHandler,
@@ -23,6 +23,10 @@ export default function WalletConnectBtn() {
   } = useWallet();
 
   useEffect(() => {
+    setIsMobile(/Mobi/i.test(window.navigator.userAgent));
+    if (isMobile) {
+      return;
+    }
     setWalletEventHandler();
     if (address) setIsConnected(true);
   }, []);
@@ -85,7 +89,7 @@ export default function WalletConnectBtn() {
 
     if (invalidChainModalOpen) {
       return (
-        <Tooltip title={`Unsupported network (${PUBLIC_ENV.APP_ENV==="production" ? "Mainnet" : "Testnet"}).`} placement="bottom" open>{text}</Tooltip>
+        <Tooltip title={`Unsupported network (${PUBLIC_ENV.APP_ENV!=="production" ? "Mainnet" : "Testnet"}).`} placement="bottom" open>{text}</Tooltip>
       )
     }
     return text;
@@ -93,6 +97,8 @@ export default function WalletConnectBtn() {
 
   return (
     <Space>
+      {!isMobile ? (
+      <>
       <Button type={isConnected ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
         <WalletOutlined />{renderWalletButton()} 
       </Button>
@@ -115,6 +121,7 @@ export default function WalletConnectBtn() {
       >
         <p>To receive rewards in the Arena, you need to connect your AIN Wallet.</p>
       </Modal>
+      </>) : <></>}
     </Space>
   );
 }

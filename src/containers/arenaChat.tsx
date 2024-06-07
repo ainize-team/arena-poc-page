@@ -97,8 +97,16 @@ export default function ArenaChat() {
     });
   }
 
+  const isMobile = () => {
+    return /Mobi/i.test(window.navigator.userAgent);
+  };
 
   useEffect(() => {
+    if (isMobile()) {
+      router.push("/m");
+      return;
+    } 
+
     const setModels = async () => {
       await pickAndSetModels();
     }
