@@ -89,7 +89,7 @@ export default function WalletConnectBtn() {
 
     if (invalidChainModalOpen) {
       return (
-        <Tooltip title={`Unsupported network (${PUBLIC_ENV.APP_ENV!=="production" ? "Mainnet" : "Testnet"}).`} placement="bottom" open>{text}</Tooltip>
+        <Tooltip overlay={<>{`Incorrect network selected.`}<br />{`Please switch to ${PUBLIC_ENV.APP_ENV === "production" ? "Mainnet" : "Testnet"}.`}</>} placement="bottom" open>{text}</Tooltip>
       )
     }
     return text;
