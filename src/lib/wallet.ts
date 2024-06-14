@@ -68,9 +68,8 @@ export default function useWallet() {
       }
       try {
         const res = await fetch(`/api/eventDrop/${walletAddress}`);
-        console.log('await res.json() :>> ', await res.json());
       } catch (error) {
-        console.debug(error);
+        return;
       }
     } else {
       setAddress("");
