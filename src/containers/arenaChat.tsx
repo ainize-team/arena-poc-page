@@ -51,7 +51,6 @@ export default function ArenaChat() {
 
   const testCaptcha = async()=>{
     if(!executeRecaptcha) {
-      console.log("not available to execute recaptcha");
       return;
     }
     const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
@@ -68,10 +67,8 @@ export default function ArenaChat() {
     });
 
     if (response?.data?.success === true) {
-      console.log(`Success with score: ${response?.data?.score}`);
       setCaptcha(CaptchaStatus.TRUE)
     } else {
-      console.log(`Failure with score: ${response?.data?.score}`);
       setCaptcha(CaptchaStatus.FALSE)
     }
 

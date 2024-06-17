@@ -6,7 +6,6 @@ export async function POST(req: NextRequest) {
   const chatResultReqBody: ChatResultReqBody = await req.json();
   try {
     const result = await chatResult(chatResultReqBody);
-    console.log('result :>> ', result);
     return Response.json(result, {
       status: 200,
     });

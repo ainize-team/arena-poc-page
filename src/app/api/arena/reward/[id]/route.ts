@@ -8,7 +8,6 @@ export async function GET(
   const battleId = params.id;
   try {
     const result = await chatReward(battleId);
-    console.log('result :>> ', result);
     return Response.json(result, {
       status: 200,
     });
@@ -19,7 +18,6 @@ export async function GET(
       reason: "Something fault. Please retry the chat.",
       tx_hash: ZERO_REWARD_MSG,
     };
-    console.log('errRes :>> ', errRes);
     return Response.json(errRes, {
       status: 500,
     });
