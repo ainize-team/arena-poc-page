@@ -19,7 +19,8 @@ export default function WalletConnectBtn() {
     isWalletExist,
     setWalletEventHandler,
     connectWallet, 
-    isValidChain 
+    isValidChain,
+    getEventReward,
   } = useWallet();
 
   useEffect(() => {
@@ -55,8 +56,12 @@ export default function WalletConnectBtn() {
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
   const connectWalletAndSetConnected = async () => {
-    await connectWallet();
-    setIsConnected(true);
+    const connectedAddress = await connectWallet();
+    if (connectedAddress && connectedAddress !== "") {
+      setIsConnected(true);
+      const reward = await getEventReward(connectedAddress);
+      console.log('reward :>> ', reward);
+    }
   }
 
   const onClickConnectWalletBtn = async () => {
