@@ -68,6 +68,7 @@ export default function WalletConnectBtn() {
 
   const connectWalletAndSetConnected = async () => {
     const res = await connectWallet();
+    console.log('res :>> ', res);
     if (res !== false)
       setIsConnected(true);
   }
