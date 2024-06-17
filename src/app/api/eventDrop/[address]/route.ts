@@ -7,9 +7,13 @@ export async function GET(
   const { address } = params;
   try {
     if (!address) throw new Error("no address");
-    console.log(`Event Check (${address})`);
-    const endpoint = `${process.env.SERVER_URL}/eventDrop/${address}`;
-    await fetch(endpoint);
+    const endpoint = `${process.env.SERVER_URL}/event/user/${address}`;
+    await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    });
     return Response.json("", {
       status: 200,
     });
