@@ -7,7 +7,7 @@ export async function GET(
   const { address } = params;
   try {
     if (!address) throw new Error("no address");
-    const endpoint = `${process.env.SERVER_URL}/event/user/${address}`;
+    const endpoint = `${process.env.SERVER_URL}/event/user/${address}/reward`;
     await fetch(endpoint, {
       method: "POST",
       headers: {
