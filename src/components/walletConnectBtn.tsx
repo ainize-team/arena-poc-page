@@ -75,7 +75,6 @@ export default function WalletConnectBtn() {
     if (connectedAddress && connectedAddress !== "") {
       setIsConnected(true);
       const reward = await getEventReward(connectedAddress);
-      console.log('reward :>> ', reward);
       openNotification(reward);
     }
   }
