@@ -12,7 +12,8 @@ export async function GET(
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8"
-      }
+      },
+      cache: "no-cache",
     });
     return Response.json("", {
       status: 200,
