@@ -72,6 +72,7 @@ export default function useWallet() {
         setAddress(walletAddress);
       } catch (error) {
         setAddress("");
+        return false;
       }
       try {
         const res = await fetch(`/api/eventDrop/${walletAddress}`);
@@ -80,6 +81,7 @@ export default function useWallet() {
       }
     } else {
       setAddress("");
+      return false;
     }
   };
 
