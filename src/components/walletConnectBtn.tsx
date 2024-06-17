@@ -2,7 +2,7 @@
 
 import useWallet  from "@/lib/wallet";
 import { WalletOutlined } from "@ant-design/icons";
-import { Button, Modal, Space, Tooltip } from "antd";
+import { Button, Modal, Space, Tooltip, notification } from "antd";
 import { useEffect, useState } from "react";
 import { addressAtom, useSsrCompletedState } from "@/lib/recoil";
 import { useRecoilState } from "recoil";
@@ -15,6 +15,7 @@ export default function WalletConnectBtn() {
   const [modalLoading, setModalLoading] = useState(false);
   const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [isMobile, setIsMobile] = useState(false);
+  const [notiApi, notiContextHolder] = notification.useNotification();
   const {
     isWalletExist,
     setWalletEventHandler,
@@ -55,12 +56,27 @@ export default function WalletConnectBtn() {
   const setSsrCompleted = useSsrCompletedState();
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
+  const openNotification = (rewardData: { [eventId: string]: { message: string, reward: number } }[]) => {
+    if (rewardData.length === 0) return;
+    for (const events of Object.values(rewardData)) {
+      for (const [eventId, data] of Object.entries(events)) {
+        notiApi.info({
+          message: data.message,
+          description: `Reward: ${data.reward} AIN`,
+          placement: "topRight",
+          duration: 0,
+        });
+      }
+    }
+  };
+
   const connectWalletAndSetConnected = async () => {
     const connectedAddress = await connectWallet();
     if (connectedAddress && connectedAddress !== "") {
       setIsConnected(true);
       const reward = await getEventReward(connectedAddress);
       console.log('reward :>> ', reward);
+      openNotification(reward);
     }
   }
 
@@ -110,6 +126,7 @@ export default function WalletConnectBtn() {
     <Space>
       {!isMobile ? (
       <>
+      {notiContextHolder}
       <Button type={isConnected ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
         <WalletOutlined />{renderWalletButton()} 
       </Button>
