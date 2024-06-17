@@ -34,8 +34,15 @@ export default function useWallet() {
   useEffect(() => {
     // NOTE(yoojin): 페이지 이동시 walletAddress 가 empty로 변경되어 호출됨.
     if (!walletAddress || address === walletAddress) return;
+    console.log('walletAddress, address :>> ', walletAddress, address);
     setAddress("");
   }, [walletAddress])
+
+  const isValidWalletVersion = () => {
+    const walletExtension = window.ainetwork;
+    if (!walletExtension || !walletExtension.on || !walletExtension.getnetwork) return false;
+    return true;
+  }
 
   const setWalletEventHandler = () => {
     const walletExtension = window.ainetwork;
@@ -87,5 +94,6 @@ export default function useWallet() {
     handleChangedAddress,
     setAddress,
     setWalletEventHandler,
+    isValidWalletVersion,
   };
 }

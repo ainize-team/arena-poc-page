@@ -15,7 +15,9 @@ export default function WalletConnectBtn() {
   const [modalLoading, setModalLoading] = useState(false);
   const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [isMobile, setIsMobile] = useState(false);
+  const [isValidWallet, setIsValidWallet] = useState(true);
   const {
+    isValidWalletVersion,
     isWalletExist,
     setWalletEventHandler,
     connectWallet, 
@@ -27,7 +29,11 @@ export default function WalletConnectBtn() {
     if (isMobile) {
       return;
     }
-    setWalletEventHandler();
+    try {
+      setWalletEventHandler();
+    } catch (error) {
+      setIsValidWallet(false);
+    }
     if (address) setIsConnected(true);
   }, []);
 
@@ -122,6 +128,25 @@ export default function WalletConnectBtn() {
             onClick={handleOk}
           >
             Install AIN Wallet
+          </Button>,
+        ]}
+      >
+        <p>To receive rewards in the Arena, you need to connect your AIN Wallet.</p>
+      </Modal>
+      <Modal
+        open={!isValidWallet}
+        title="Invalid AIN Wallet version."
+        onOk={handleOk}
+        onCancel={handleOk}
+        footer={[
+          <Button
+            key="link"
+            href="https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl?hl=ko"
+            type="primary"
+            loading={modalLoading}
+            onClick={handleOk}
+          >
+            Upgrade AIN Wallet
           </Button>,
         ]}
       >
