@@ -36,6 +36,7 @@ export default function WalletConnectBtn() {
       setIsValidWallet(false);
       console.log('error :>> ', error);
     }
+    console.log('address(39) :>> ', address);
     if (address !== "") setIsConnected(true);
   }, []);
 
@@ -49,8 +50,11 @@ export default function WalletConnectBtn() {
 
   useEffect(() => {
     if (!isConnected) {
-      if (address !== "")
+      if (address !== ""){
+        console.log('address(54) :>> ', address);
         setIsConnected(true);
+        
+      }
       return;
     }
     if (address === "") {
