@@ -67,8 +67,9 @@ export default function WalletConnectBtn() {
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
   const connectWalletAndSetConnected = async () => {
-    await connectWallet();
-    setIsConnected(true);
+    const res = await connectWallet();
+    if (res !== false)
+      setIsConnected(true);
   }
 
   const onClickConnectWalletBtn = async () => {
