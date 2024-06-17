@@ -31,8 +31,10 @@ export default function WalletConnectBtn() {
     }
     try {
       setWalletEventHandler();
+      console.log('1 :>> ', 1);
     } catch (error) {
       setIsValidWallet(false);
+      console.log('error :>> ', error);
     }
     if (address) setIsConnected(true);
   }, []);
