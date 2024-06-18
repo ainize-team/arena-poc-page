@@ -8,14 +8,16 @@ export async function GET(
   try {
     if (!address) throw new Error("no address");
     const endpoint = `${process.env.SERVER_URL}/event/user/${address}/reward`;
-    await fetch(endpoint, {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       },
       cache: "no-cache",
     });
-    return Response.json("", {
+    const resData = await res.json();
+    console.log('address, resData :>> ', address, resData);
+    return Response.json(resData, {
       status: 200,
     });
   } catch (error) {
