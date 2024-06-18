@@ -63,13 +63,26 @@ export default function useWallet() {
       await walletExtension.signMessage(signMessage);
       try {
         setAddress(walletAddress);
+        return walletAddress;
       } catch (error) {
         setAddress("");
+        return;
       }
     } else {
       setAddress("");
+      return;
     }
   };
+
+  const getEventReward = async (address: string) => {
+    try {
+      const res = await fetch(`/api/eventDrop/${address}`);
+      const rewardData = await res.json();
+      return rewardData;
+    } catch (error) {
+      return null;
+    }
+  }
 
   const handleChangedAddress = (_address: string) => {
     setAddress(_address);
@@ -82,5 +95,6 @@ export default function useWallet() {
     handleChangedAddress,
     setAddress,
     setWalletEventHandler,
+    getEventReward
   };
 }

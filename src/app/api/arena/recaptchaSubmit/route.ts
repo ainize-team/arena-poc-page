@@ -6,8 +6,6 @@ export async function POST(request: Request, response: Response) {
   const postData = await request.json();
   const { gRecaptchaToken } = postData;
 
-  console.log('secretKey :>> ', secretKey);
-
   let res;
   const formData = `secret=${secretKey}&response=${gRecaptchaToken}`;
   try {
@@ -20,15 +18,12 @@ export async function POST(request: Request, response: Response) {
         },
       }
     );
-    console.log('res :>> ', res);
   } catch (e) {
-    console.log('e :>> ', e);
+    console.error(e);
     return NextResponse.json({ success: false })
   }
 
   if (res && res.data?.success && res.data?.score > 0.5) {
-    console.log("res.data?.score:", res.data?.score);
-
     return NextResponse.json({
       success: true,
       score: res.data.score,
