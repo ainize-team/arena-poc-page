@@ -135,7 +135,8 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
-    if (address !== "" && captcha == CaptchaStatus.TRUE) {
+    resetStates();
+    if (address !== "" && captcha === CaptchaStatus.TRUE) {
       setStatus(ArenaStatus.READY);
     } else {
       setStatus(ArenaStatus.NOTCONNECTED);
