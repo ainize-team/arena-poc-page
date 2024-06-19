@@ -52,8 +52,8 @@ export const chatResult = async ({
   const body = {
     user_address: userAddress,
     choice,
-    model_a_name: modelA,
-    model_b_name: modelB,
+    model_a_name: modelA.replace("🎉", ""),
+    model_b_name: modelB.replace("🎉", ""),
     turn,
     model_a_response: modelAResponse,
     model_b_response: modelBResponse,
