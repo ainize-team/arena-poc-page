@@ -219,7 +219,6 @@ export default function ArenaChat() {
     resetStates();
     const rand = Math.floor(Math.random() * 20);
     if (rand === 19) { 
-      console.log("retest captcha");
       testCaptcha();
     }
     router.refresh();
