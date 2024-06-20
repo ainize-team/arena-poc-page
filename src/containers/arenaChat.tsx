@@ -49,8 +49,8 @@ export default function ArenaChat() {
     setWalletEventHandler,
   } = useWallet();
 
-  const testCaptcha = async()=>{
-    if(!executeRecaptcha) {
+  const testCaptcha = async() => {
+    if (!executeRecaptcha) {
       return;
     }
     const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
@@ -66,13 +66,13 @@ export default function ArenaChat() {
       },
     });
 
-    if (response?.data?.success === true) {
+    if (response.data && response.data.success === true) {
       setCaptcha(CaptchaStatus.TRUE)
     } else {
       setCaptcha(CaptchaStatus.FALSE)
     }
+  };
 
-  }
   const openNotification = (rewardData: any) => {
     const isZeroReward = rewardData.reward === 0;
     notiApi.info({
@@ -217,6 +217,11 @@ export default function ArenaChat() {
 
   const onClickNextBtn = () => {
     resetStates();
+    const rand = Math.floor(Math.random() * 20);
+    if (rand === 19) { 
+      console.log("retest captcha");
+      testCaptcha();
+    }
     router.refresh();
   }
 
