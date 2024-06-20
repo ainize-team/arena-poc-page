@@ -19,7 +19,7 @@ export const chatWithModel = async (
   const params = {
     method: "POST",
     body: JSON.stringify({
-      model_name: modelName,
+      model_name: modelName.replace("🎉", ""),
       user_prompt: prompt,
       system_prompt: systemPrompt,
     }),
