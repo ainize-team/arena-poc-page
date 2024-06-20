@@ -11,6 +11,7 @@ export default function Leaderboard() {
   const router = useRouter();
   const [lastUpdated, setLastUpdated] = useState("");
   const [tableSourceData, setTableSourceData] = useState<LeaderboardTableData[]>();
+  const [isLoading, setIsLoading] = useState(true);
   const columns: TableProps["columns"] = [
     {
       title: "Rank",
@@ -54,9 +55,11 @@ export default function Leaderboard() {
       return;
     }
     const setupLeaderboard = async () => {
+      setIsLoading(true);
       const { lastUpdated, tableData } = await getLeaderboard();
       setLastUpdated(lastUpdated);
       setTableSourceData(tableData);
+      setIsLoading(false);
     }
     setupLeaderboard();
   }, [])
@@ -77,7 +80,7 @@ export default function Leaderboard() {
         marginTop: "12px",
         paddingInline: "3rem",
       }} justify="center">
-        <Table style={{width: "100%"}} dataSource={tableSourceData} columns={columns}/>
+        <Table style={{width: "100%"}} dataSource={tableSourceData} columns={columns} loading={isLoading}/>
       </Flex>
     </div>
   )
