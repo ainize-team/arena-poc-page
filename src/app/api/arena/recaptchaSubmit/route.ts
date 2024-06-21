@@ -29,6 +29,7 @@ export async function POST(request: Request, response: Response) {
       score: res.data.score,
     });
   } else {
-      return NextResponse.json({ success: false });
+    console.debug("Recaptcha failed. res.data >>", res.data);
+    return NextResponse.json({ success: false });
   }
 }
