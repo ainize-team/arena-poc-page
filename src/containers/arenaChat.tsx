@@ -269,7 +269,7 @@ export default function ArenaChat() {
         onCancel={()=>setModalOpen(false)}
       >
         <h3>We will randomly select 10 participants to receive a reward of 100 AIN.</h3>
-        <a href="https://forms.gle/zjs7pH7P9SBC3FTE7"><p style={{color:"blue"}}>👉 https://forms.gle/zjs7pH7P9SBC3FTE7</p></a>
+        <a href="https://bit.ly/arena_survey"><p style={{color:"blue"}}>👉 https://bit.ly/arena_survey</p></a>
       </Modal>
       {notiContextHolder}
       <Flex justify="center" style={{marginTop: "10px"}}>
