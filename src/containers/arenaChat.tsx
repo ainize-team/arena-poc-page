@@ -265,7 +265,10 @@ export default function ArenaChat() {
         title="AI Network's Arena User Survey"
         centered
         open={modalOpen}
-        onOk={() => setModalOpen(false)}
+        onOk={() => {
+          setModalOpen(false)
+          window.location.assign('https://bit.ly/arena_survey')
+        }}
         onCancel={()=>setModalOpen(false)}
       >
         <h3>We will randomly select 10 participants to receive a reward of 100 AIN.</h3>
