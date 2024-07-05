@@ -74,11 +74,9 @@ export default function ArenaChat() {
   };
 
   const openNotification = (rewardData: any) => {
-    const isZeroReward = rewardData.reward === 0;
     notiApi.info({
-      message: isZeroReward ? "Reward Failed." : "Reward Success!",
-      description:
-        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`,
+      message: "Thank you for voting!",
+      description: rewardData.reason,
       placement: "topRight",
       duration: 0,
     });
