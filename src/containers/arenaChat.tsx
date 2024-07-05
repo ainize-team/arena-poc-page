@@ -258,7 +258,7 @@ export default function ArenaChat() {
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      {notiContextHolder}
+      {/* {notiContextHolder} */}
       <Flex justify="center" style={{marginTop: "10px"}}>
         <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} style={RightCardStyle} prompt={resultB} />
