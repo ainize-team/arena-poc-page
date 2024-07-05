@@ -2,7 +2,7 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Col, Flex, Row, Space, notification } from "antd";
+import { Button, Col, Flex, Modal, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
@@ -42,6 +42,7 @@ export default function ArenaChat() {
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
+  const [modalOpen, setModalOpen] = useState(true);
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
 
   const {
@@ -258,7 +259,20 @@ export default function ArenaChat() {
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      {/* {notiContextHolder} */}
+      <Modal
+        title="AI Network's Arena User Survey"
+        centered
+        open={modalOpen}
+        onOk={() => {
+          setModalOpen(false)
+          window.location.assign('https://bit.ly/arena_survey')
+        }}
+        onCancel={()=>setModalOpen(false)}
+      >
+        <h3>We will randomly select 10 participants to receive a reward of 100 AIN.</h3>
+        <a href="https://bit.ly/arena_survey"><p style={{color:"blue"}}>👉 https://bit.ly/arena_survey</p></a>
+      </Modal>
+      {/* {notiContextHolder} */}{/* NOTE(yoojin): hide reward noti. */}
       <Flex justify="center" style={{marginTop: "10px"}}>
         <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} prompt={resultA} />
         <ChatBox modelName={modelBName} status={status} style={RightCardStyle} prompt={resultB} />
