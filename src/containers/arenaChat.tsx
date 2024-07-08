@@ -261,19 +261,6 @@ export default function ArenaChat() {
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      <Modal
-        title="AI Network's Arena User Survey"
-        centered
-        open={modalOpen}
-        onOk={() => {
-          setModalOpen(false)
-          window.location.assign('https://bit.ly/arena_survey')
-        }}
-        onCancel={()=>setModalOpen(false)}
-      >
-        <h3>We will randomly select 10 participants to receive a reward of 100 AIN.</h3>
-        <a href="https://bit.ly/arena_survey"><p style={{color:"blue"}}>👉 https://bit.ly/arena_survey</p></a>
-      </Modal>
       {/* {notiContextHolder} */}{/* NOTE(yoojin): Hide reward noti */}
       <Flex justify="center" style={{marginTop: "10px"}}>
         <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} prompt={resultA} />
