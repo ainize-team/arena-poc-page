@@ -1,6 +1,6 @@
 "use client";
 
-import { ArenaStatus, ChoiceType } from "@/type";
+import { ArenaStatus, ChoiceType } from "@/types/type";
 import { Button } from "antd";
 
 type ChoiceButtonsProps = {

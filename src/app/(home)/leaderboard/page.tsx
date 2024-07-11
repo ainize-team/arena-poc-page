@@ -1,7 +1,7 @@
 import ArenaMenu from "@/components/arenaMenu";
 import MaintenanceMsg from "@/components/maintenance";
 import Leaderboard from "@/containers/leaderboard";
-import { ArenaMenuKey } from "@/type";
+import { ArenaMenuKey } from "@/types/type";
 
 export default function Home() {
   return (

@@ -1,6 +1,6 @@
 "use server";
 
-import { LeaderboardTableData } from "@/type";
+import { LeaderboardTableData } from "@/types/type";
 import { PUBLIC_ENV } from "../constant/constant";
 
 const MINIMUM_VOTE = Number(PUBLIC_ENV.MINIMUM_VOTE || 100);

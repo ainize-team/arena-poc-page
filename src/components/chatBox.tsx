@@ -1,4 +1,4 @@
-import { ArenaStatus } from "@/type";
+import { ArenaStatus } from "@/types/type";
 import { Card, Typography, Spin } from "antd";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
