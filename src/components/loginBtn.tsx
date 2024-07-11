@@ -22,6 +22,19 @@ export default function LoginBtn () {
   return (
     <Space>
       {renderLoginBtn()}
+      <Button onClick={() => {
+        console.log('session.accessToken.token :>> ', session!.accessToken.token);
+        fetch("/api/arena/chat", {
+          method: "POST",
+          headers: {
+            ...(session && { Authorization: `Bearer ${session.accessToken.token}` })
+          },
+          body: JSON.stringify({
+            modelName: "modelA",
+            prompt: "prompt",
+          }),
+        }).then((res) => console.log(res));
+      }}>test</Button>
     </Space>
   )
 }

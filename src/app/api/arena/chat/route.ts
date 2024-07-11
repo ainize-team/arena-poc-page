@@ -4,9 +4,8 @@ import { NextRequest } from "next/server";
 const FAILED_INFERENCE_MSG = "**Abusing Test**\nChoose opposite model to prove you are not an abuser.\nIf both sides are abusing the test, choose a tie.";
 
 export async function POST(req: NextRequest) {
-  const { modelName, prompt, systemPrompt } = await req.json();
   try {
-    const result = await chatWithModel(modelName, prompt, systemPrompt);
+    const result = await chatWithModel(req);
     return Response.json(result, {
       status: 200,
     })

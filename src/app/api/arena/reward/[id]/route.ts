@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { id: string } }) {
   const battleId = params.id;
   try {
-    const result = await chatReward(battleId);
+    const result = await chatReward(battleId, req);
     return Response.json(result, {
       status: 200,
     });

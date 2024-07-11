@@ -1,4 +1,5 @@
-import { ChatResultReqBody } from "../../../type"
+import { NextRequest } from "next/server";
+import { ChatResultReqBody } from "../../../types/type"
 
 export const getPickedModels = async (): Promise<string[]> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
@@ -10,11 +11,8 @@ export const getPickedModels = async (): Promise<string[]> => {
   return models;
 }
 
-export const chatWithModel = async (
-  modelName: string, 
-  prompt: string, 
-  systemPrompt?: string
-): Promise<string> => {
+export const chatWithModel = async (req: NextRequest): Promise<string> => {
+  const { modelName, prompt, systemPrompt } = await req.json();
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const params = {
     method: "POST",
@@ -23,9 +21,7 @@ export const chatWithModel = async (
       user_prompt: prompt,
       system_prompt: systemPrompt,
     }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
+    headers: req.headers
   }
   const slicedPrompt = prompt.length > 100 ? prompt.slice(0, 97) + `... (${prompt.length})` : prompt;
   const res = await fetch(endpoint, params);
@@ -39,15 +35,17 @@ export const chatWithModel = async (
   return result.response;
 }
 
-export const chatResult = async ({ 
-  userAddress,
-  choice,
-  modelA,
-  modelB,
-  turn,
-  modelAResponse,
-  modelBResponse,
- }: ChatResultReqBody) => {
+export const chatResult = async (req: NextRequest) => {
+  console.log('req.headers :>> ', req.headers);
+  const { 
+    userAddress,
+    choice,
+    modelA,
+    modelB,
+    turn,
+    modelAResponse,
+    modelBResponse,
+   }: ChatResultReqBody = await req.json();
   const endpoint = `${process.env.SERVER_URL}/battle/result`;
   const body = {
     user_address: userAddress,
@@ -61,16 +59,14 @@ export const chatResult = async ({
   const params = {
     method: "POST",
     body: JSON.stringify(body),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
+    headers: req.headers
   }
   const res = await fetch(endpoint, params);
   const { battle_id } = await res.json();
   return battle_id;
 }
 
-export const chatReward = async (battleId: string) => {
+export const chatReward = async (battleId:string , req: NextRequest) => {
   const endpoint = `${process.env.SERVER_URL}/battle/${battleId}/reward`;
   const params = {
     method: "POST",

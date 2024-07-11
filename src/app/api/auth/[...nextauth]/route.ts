@@ -23,8 +23,7 @@ const getJWTFromServer = async (accessToken: string) => {
       refreshToken: refresh_token,
     }
   } catch (e) {
-    console.log('res :>> ', res);
-    return res;
+    throw Error("Unauthorized");
   }
 }
 
@@ -43,7 +42,7 @@ const handler = NextAuth({
         const res = await getJWTFromServer(access_token);
         console.log('res :>> ', res);
         token = Object.assign({}, token, { googleAccessToken: access_token });
-        token = Object.assign({}, token, { accessToken: res.access_token });
+        token = Object.assign({}, token, { accessToken: res.accessToken });
       }
       return token;
     },

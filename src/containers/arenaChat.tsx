@@ -6,13 +6,14 @@ import { Button, Col, Flex, Modal, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
-import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/types/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { addressAtom } from "@/lib/recoil";
 import useWallet from "@/lib/wallet";
 import React from "react";
+import { useSession } from "next-auth/react";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -44,6 +45,8 @@ export default function ArenaChat() {
   const [notiApi, notiContextHolder] = notification.useNotification();
   const [modalOpen, setModalOpen] = useState(true);
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+
+  const { data: session } = useSession();
 
   const {
     isValidChain,
@@ -184,6 +187,9 @@ export default function ArenaChat() {
       };
       const battleId = await (await fetch("/api/arena/result", {
         method: "POST",
+        headers: {
+          ...(session && { Authorization: `Bearer ${session.accessToken.token}` })
+        },
         body: JSON.stringify(chatResultParams),
       })).json();
       changeWinnerName(value);
@@ -233,6 +239,9 @@ export default function ArenaChat() {
       try {
         fetch("/api/arena/chat", {
           method: "POST",
+          headers: {
+            ...(session && { Authorization: `Bearer ${session.accessToken.token}` })
+          },
           body: JSON.stringify({
             modelName: modelA,
             prompt: prompt,
@@ -243,6 +252,9 @@ export default function ArenaChat() {
         });
         fetch("/api/arena/chat", {
           method: "POST",
+          headers: {
+            ...(session && { Authorization: `Bearer ${session.accessToken.token}` })
+          },
           body: JSON.stringify({
             modelName: modelB,
             prompt: prompt,
