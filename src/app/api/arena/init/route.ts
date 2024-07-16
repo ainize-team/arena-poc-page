@@ -1,13 +1,14 @@
 import { getPickedModels } from "@/app/api/arena/arena";
+import { NextRequest } from "next/server";
 
-export async function GET() {
+export async function POST(req: NextRequest) {
   try {
-    const result = await getPickedModels();
-    console.debug('Picked :>> ', result);
-    return Response.json(result, {
+    const battleId = await getPickedModels(req);
+    return Response.json(battleId, {
       status: 200,
     })
   } catch (error) {
+    console.log(error)
     return Response.json("", {
       status: 500,
     });

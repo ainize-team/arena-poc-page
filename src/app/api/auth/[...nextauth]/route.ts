@@ -16,14 +16,14 @@ const getJWTFromServer = async (accessToken: string) => {
   const res = await fetch(endpoint, params);
   try {
     const { access_token, refresh_token } = await res.json();
-    access_token.expire = access_token.expire * JS_PYTHON_TIMESTAMP_GAP;
-    refresh_token.expire = access_token.expire * JS_PYTHON_TIMESTAMP_GAP;
+    access_token.expire = access_token.expire * 1000000; // FIXME(yoojin): change to JS_PYTHON_TIMESTAMP_GAP in constants
+    refresh_token.expire = refresh_token.expire * 1000000;
     return {
       accessToken: access_token,
       refreshToken: refresh_token,
     }
   } catch (e) {
-    throw Error("Unauthorized");
+    throw Error(`Unauthorized: ${e}`);
   }
 }
 
@@ -35,14 +35,17 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, session }) {
       console.log("jwt called.");
       if (account?.access_token) {
         const { access_token } = account;
-        const res = await getJWTFromServer(access_token);
-        console.log('res :>> ', res);
-        token = Object.assign({}, token, { googleAccessToken: access_token });
-        token = Object.assign({}, token, { accessToken: res.accessToken });
+        try {
+          const res = await getJWTFromServer(access_token);
+          console.log('res :>> ', res);
+          token = Object.assign({}, token, { googleAccessToken: access_token });
+          token = Object.assign({}, token, { accessToken: res.accessToken });
+        }
+        catch (e) {console.log('e :>> ', e);}
       }
       return token;
     },
