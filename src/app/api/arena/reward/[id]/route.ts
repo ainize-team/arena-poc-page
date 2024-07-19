@@ -2,12 +2,10 @@ import { chatReward } from "@/app/api/arena/arena";
 import { NextRequest } from "next/server";
 import { ZERO_REWARD_MSG } from "@/constant/constant";
 
-export async function GET(
-  req: NextRequest, 
-  { params }: { params: { id: string } }) {
-  const battleId = params.id;
+export async function POST(
+  req: NextRequest, ) {
   try {
-    const result = await chatReward(battleId, req);
+    const result = await chatReward(req);
     return Response.json(result, {
       status: 200,
     });

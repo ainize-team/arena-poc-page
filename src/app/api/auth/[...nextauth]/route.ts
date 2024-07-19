@@ -41,18 +41,19 @@ const handler = NextAuth({
         const { access_token } = account;
         try {
           const res = await getJWTFromServer(access_token);
-          console.log('res :>> ', res);
-          token = Object.assign({}, token, { googleAccessToken: access_token });
+          token = Object.assign({}, token, { refreshToken: res.refreshToken });
           token = Object.assign({}, token, { accessToken: res.accessToken });
         }
-        catch (e) {console.log('e :>> ', e);}
+        catch (e) {
+          console.log('e :>> ', e);
+        }
       }
       return token;
     },
     async session({ session, token }) {
       if (session) {
         session = Object.assign({}, session, {
-          googleAccessToken: token.googleAccessToken,
+          refreshToken: token.refreshToken,
         });
         session = Object.assign({}, session, {
           accessToken: token.accessToken,

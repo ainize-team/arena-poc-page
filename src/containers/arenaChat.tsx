@@ -14,6 +14,7 @@ import { addressAtom } from "@/lib/recoil";
 import useWallet from "@/lib/wallet";
 import React from "react";
 import { useSession } from "next-auth/react";
+import { authFetch } from "@/lib/auth";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -173,7 +174,7 @@ export default function ArenaChat() {
     console.log('models :>> ', models);
     changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
     setStatus(ArenaStatus.END);
-    const reward = await (await fetch(`/api/arena/reward/${battleId}`, {
+    const reward = await (await fetch(`/api/arena/reward`, {
       method: "POST",
       body: JSON.stringify({battleId})
     })).json();
@@ -218,7 +219,7 @@ export default function ArenaChat() {
       setPrompt(prompt);
       console.log('battleId :>> ', battleId);
       try {
-        fetch("/api/arena/chat", {
+        authFetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
             battleId,
@@ -229,7 +230,7 @@ export default function ArenaChat() {
           const result = await res.json();
           setResultA(result);
         });
-        fetch("/api/arena/chat", {
+        authFetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
             battleId, 
