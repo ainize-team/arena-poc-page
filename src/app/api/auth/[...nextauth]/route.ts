@@ -16,8 +16,8 @@ const getJWTFromServer = async (accessToken: string) => {
   const res = await fetch(endpoint, params);
   try {
     const { access_token, refresh_token } = await res.json();
-    access_token.expire = access_token.expire * 1000000; // FIXME(yoojin): change to JS_PYTHON_TIMESTAMP_GAP in constants
-    refresh_token.expire = refresh_token.expire * 1000000;
+    access_token.expire = Math.round(access_token.expire * 1000); // FIXME(yoojin): change to JS_PYTHON_TIMESTAMP_GAP in constants
+    refresh_token.expire = Math.round(refresh_token.expire * 1000);
     return {
       accessToken: access_token,
       refreshToken: refresh_token,
@@ -34,6 +34,9 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  session: {
+    maxAge: 24 * 60 * 60 // 1 day
+  },
   callbacks: {
     async jwt({ token, account, session }) {
       console.log("jwt called.");

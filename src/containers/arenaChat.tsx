@@ -90,7 +90,7 @@ export default function ArenaChat() {
   };
 
   const pickAndSetModels = async () => {
-    await fetch("/api/arena/init", {
+    await authFetch("/api/arena/init", {
       method: "POST",
     }).then(async (res) => {
       try {
@@ -167,14 +167,14 @@ export default function ArenaChat() {
       battleId,
       choice: value,
     }
-    const models = await (await fetch("/api/arena/result", {
+    const models = await (await authFetch("/api/arena/result", {
       method: "POST",
       body: JSON.stringify(reqBody),
     })).json();
     console.log('models :>> ', models);
     changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
     setStatus(ArenaStatus.END);
-    const reward = await (await fetch(`/api/arena/reward`, {
+    const reward = await (await authFetch(`/api/arena/reward`, {
       method: "POST",
       body: JSON.stringify({battleId})
     })).json();
