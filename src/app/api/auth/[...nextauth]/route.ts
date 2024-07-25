@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google"
 
 const getJWTFromServer = async (accessToken: string) => {
   const endpoint = `${process.env.SERVER_URL}/auth/login`;
+  console.log("get Token");
   const params = {
     method: "POST",
     body: JSON.stringify({
@@ -38,28 +39,41 @@ const handler = NextAuth({
     maxAge: 24 * 60 * 60 // 1 day
   },
   callbacks: {
-    async jwt({ token, account, session }) {
-      console.log("jwt called.");
+    async jwt({ token, account }) {
       if (account?.access_token) {
-        const { access_token } = account;
-        try {
-          const res = await getJWTFromServer(access_token);
-          token = Object.assign({}, token, { refreshToken: res.refreshToken });
-          token = Object.assign({}, token, { accessToken: res.accessToken });
+        const curMs = new Date().getMilliseconds();
+        if (!token.refreshToken || token.refreshToken.expire < curMs - (60 * 1000)) {
+          console.log("get JWT");
+          const { refreshToken, accessToken } = await getJWTFromServer(account?.access_token);
+          token = Object.assign({}, token, {
+            refreshToken: refreshToken,
+          });
+          token = Object.assign({}, token, {
+            accessToken: accessToken,
+          });
         }
-        catch (e) {
-          console.log('e :>> ', e);
+        if (!token.accessToken || token.accessToken.expire < curMs - (60 * 1000)) {
+          console.log("refresh");
+          const refreshRes = await fetch("/api/auth/refresh", {
+            method: "POST",
+            headers: {
+              Cookie: `refresh_token=${token.refreshToken.token};`
+            }
+          });
+          const newAccessToken = await refreshRes.json();
+          token = Object.assign({}, token, { accessToken: newAccessToken });
         }
       }
       return token;
     },
     async session({ session, token }) {
       if (session) {
+        const { refreshToken, accessToken } = token;
         session = Object.assign({}, session, {
-          refreshToken: token.refreshToken,
+          refreshToken: refreshToken,
         });
         session = Object.assign({}, session, {
-          accessToken: token.accessToken,
+          accessToken: accessToken,
         });
       }
       return session;
