@@ -18,7 +18,7 @@ export default function LoginBtn () {
           expires: new Date(session.refreshToken.expire)
         })
       } else {
-        signOut();
+        signIn();
         return;
       }
     }
