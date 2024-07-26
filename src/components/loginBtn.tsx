@@ -3,7 +3,7 @@
 import { WalletOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { setCookie, getCookie, deleteCookie } from "cookies-next";
+import { setCookie, getCookie, deleteCookie, getCookies } from "cookies-next";
 import { useEffect } from "react";
 import { checkCookies } from "@/lib/auth";
 
@@ -11,17 +11,23 @@ export default function LoginBtn () {
   const { data: session } = useSession();
 
   useEffect(() => {
-    if (session?.accessToken) {
-      console.log('getCookies :>> ', getCookie("access_token"));
-      console.log('accessToken :>> ', session.accessToken);
-      setCookie("access_token", session.accessToken.token, {
-        expires: new Date(session.accessToken.expire)
-      });
+    const { access_token, refresh_token } = getCookies();
+    if (!refresh_token) {
+      if (session?.refreshToken) {
+        setCookie("refresh_token", session.refreshToken.token, {
+          expires: new Date(session.refreshToken.expire)
+        })
+      } else {
+        signOut();
+        return;
+      }
     }
-    if (session?.refreshToken) {
-      setCookie("refresh_token", session.refreshToken.token, {
-        expires: new Date(session.refreshToken.expire)
-      })
+    if (!access_token) {
+      if (session?.accessToken) {
+        setCookie("access_token", session.accessToken.token, {
+          expires: new Date(session.accessToken.expire)
+        });
+      }
     }
   }, [session])
 

@@ -36,32 +36,41 @@ const handler = NextAuth({
     }),
   ],
   session: {
-    maxAge: 24 * 60 * 60 // 1 day
+    maxAge: 24 * 60 * 60, // 1 day
+    updateAge: 14 * 60 // 14 min
   },
   callbacks: {
     async jwt({ token, account }) {
-      if (account?.access_token) {
-        const curMs = new Date().getMilliseconds();
+      const googleAccessToken = account?.access_token || token.googleAccessToken;
+      if (googleAccessToken) {
+        console.log("googleAccessToken :>>", googleAccessToken)
+        token = Object.assign({}, token, {
+          googleAccessToken: googleAccessToken
+        })
+        const curMs = Date.now();
         if (!token.refreshToken || token.refreshToken.expire < curMs - (60 * 1000)) {
-          console.log("get JWT");
-          const { refreshToken, accessToken } = await getJWTFromServer(account?.access_token);
+          console.log("relogin");
+          const { refreshToken, accessToken } = await getJWTFromServer(googleAccessToken);
           token = Object.assign({}, token, {
             refreshToken: refreshToken,
           });
           token = Object.assign({}, token, {
             accessToken: accessToken,
           });
+          return token;
         }
+        console.log('token.accessToken.expire, curMs :>> ', token.accessToken.expire, curMs);
         if (!token.accessToken || token.accessToken.expire < curMs - (60 * 1000)) {
           console.log("refresh");
-          const refreshRes = await fetch("/api/auth/refresh", {
-            method: "POST",
-            headers: {
-              Cookie: `refresh_token=${token.refreshToken.token};`
-            }
+          const endpoint = `${process.env.SERVER_URL}/auth/refresh`;
+          const result = await fetch(endpoint, {
+            method: "GET",
+            headers: { Cookie: `refresh_token=${token.refreshToken.token};` }
           });
-          const newAccessToken = await refreshRes.json();
-          token = Object.assign({}, token, { accessToken: newAccessToken });
+          const refreshResult = await result.json();
+          const { access_token } = refreshResult;
+          access_token.expire = Math.round(access_token.expire * 1000);
+          token = Object.assign({}, token, { accessToken: access_token });
         }
       }
       return token;

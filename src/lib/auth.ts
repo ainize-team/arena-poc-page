@@ -2,7 +2,7 @@ import { getCookies, setCookie } from "cookies-next";
 import { signIn } from "next-auth/react";
 
 export const authFetch = async (url: string | URL, requestInit: RequestInit) => {
-  await checkCookies();
+  // await checkCookies();
   return fetch(url, requestInit);
 }
 
