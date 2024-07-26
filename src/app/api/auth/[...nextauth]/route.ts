@@ -35,6 +35,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET || "",
   session: {
     maxAge: 24 * 60 * 60, // 1 day
     updateAge: 14 * 60 // 14 min
