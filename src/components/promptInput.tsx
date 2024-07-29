@@ -21,17 +21,16 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
       case ArenaStatus.NOTCONNECTED:
         return "Connect your AIN wallet first.";
       case ArenaStatus.READY:
+      case ArenaStatus.COMPETING:
         return "Type your prompt and press ENTER.";
       case ArenaStatus.INFERENCING:
         return "Inferencing... Please wait.";
-      case ArenaStatus.COMPETING:
-        return "Select winner first.";
       case ArenaStatus.END:
         return "Select next challange first.";
     }
   }
   useEffect(() =>{
-    if (status == ArenaStatus.INFERENCING){
+    if (status === ArenaStatus.INFERENCING){
       setIsLoading(true);
     } else {
       setIsLoading(false);
@@ -67,7 +66,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
         paddingInline: "3rem",
       }}
       enterButton={loadingBTN()}
-      disabled={(status !== ArenaStatus.READY) || disabled}
+      disabled={(status !== ArenaStatus.READY && status !== ArenaStatus.COMPETING) || disabled}
     />
   );
 }

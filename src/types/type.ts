@@ -36,6 +36,11 @@ export type LeaderboardTableData = {
   license: string,
 }
 
+export type Chat = {
+  text: string,
+  type: "user" | "assistant",
+}
+
 export enum CaptchaStatus {
   YET = "YET",
   TRUE = "TRUE",

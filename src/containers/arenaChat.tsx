@@ -6,7 +6,7 @@ import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
-import { ArenaStatus, CaptchaStatus, ChoiceType } from "@/types/type";
+import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/types/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
@@ -35,17 +35,17 @@ export default function ArenaChat() {
   const router = useRouter();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
   const [battleId, setBattleId] = useState<string>("");
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
   const [modelAName, setModelAName] = useState("");
   const [modelBName, setModelBName] = useState("");
-  const [resultA, setResultA] = useState("");
-  const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
-  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);
+  const [modelAChatList, setModelAChatList] = useState<Chat[]>([]);
+  const [modelBChatList, setModelBChatList] = useState<Chat[]>([]);
+  const [turn, setTurn] = useState(0);
 
   const { data: session } = useSession();
 
@@ -150,17 +150,18 @@ export default function ArenaChat() {
   }, [captcha])
 
   useEffect(() => {
-    if (resultA !== "" && resultB !== "") {
+    console.log('turn, modelAChatList.length, modelBChatList.length :>> ', turn, modelAChatList.length, modelBChatList.length);
+    if (turn > 0 && modelAChatList.length / 2 === turn && modelBChatList.length / 2 === turn) {
       setStatus(ArenaStatus.COMPETING);
     }
-  }, [resultA, resultB])
+  }, [modelAChatList.length, modelBChatList.length])
 
   const resetStates = () => {
     setPrompt("");
     pickAndSetModels();
+    setModelAChatList([]);
+    setModelBChatList([]);
     setStatus(ArenaStatus.READY);
-    setResultA("");
-    setResultB("");
   }
 
   const onClickChoiceBtn = async (value: ChoiceType) => {
@@ -213,10 +214,17 @@ export default function ArenaChat() {
   }
 
   const handlePrompt = async (prompt: string) => {
-    if (status === ArenaStatus.READY) {
+    if (status === ArenaStatus.READY || status === ArenaStatus.COMPETING) {
       if (prompt.trim() === "") return;
       setStatus(ArenaStatus.INFERENCING);
+      setTurn(turn + 1);
       setPrompt(prompt);
+      const userChat: Chat = {
+        text: prompt,
+        type: "user"
+      }
+      modelAChatList.push(userChat);
+      modelBChatList.push(userChat);
       try {
         authFetch("/api/arena/chat", {
           method: "POST",
@@ -227,7 +235,10 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setResultA(result);
+          modelAChatList.push({
+            text: result,
+            type: "assistant"
+          });
         });
         authFetch("/api/arena/chat", {
           method: "POST",
@@ -238,7 +249,10 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setResultB(result);
+          modelBChatList.push({
+            text: result,
+            type: "assistant"
+          });
         });
       } catch (err) {
         alert(err);
@@ -252,18 +266,18 @@ export default function ArenaChat() {
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {/* {notiContextHolder} */}{/* NOTE(yoojin): Hide reward noti */}
       <Flex justify="center" style={{marginTop: "10px"}}>
-        <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} prompt={resultA} />
-        <ChatBox modelName={modelBName} status={status} style={RightCardStyle} prompt={resultB} />
+        <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} chatList={modelAChatList} />
+        <ChatBox modelName={modelBName} status={status} style={RightCardStyle} chatList={modelBChatList} />
       </Flex>
         {status !== ArenaStatus.END ? (
           <>
-            <PromptInput setParentPrompt={handlePrompt} status={status} disabled={!isValidChain}/>
+            <PromptInput setParentPrompt={handlePrompt} status={status} />
             <Row justify="space-evenly">
               <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={!isValidChain}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={!isValidChain}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={!isValidChain}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} disabled={!isValidChain}/></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
+              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
               <Col span={3} />
             </Row>
           </>
