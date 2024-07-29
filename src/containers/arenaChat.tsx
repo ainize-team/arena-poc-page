@@ -138,11 +138,9 @@ export default function ArenaChat() {
 
   useEffect(()=> {
     if (status === ArenaStatus.NOTCONNECTED && captcha === CaptchaStatus.TRUE) {
-      console.log("reset!", session !== undefined, status, captcha);
       setStatus(ArenaStatus.READY);
       resetStates();
     } else {
-      console.log("not connected", session !== undefined, status, captcha);
       setStatus(ArenaStatus.NOTCONNECTED);
     }
   }, [captcha])
@@ -171,14 +169,12 @@ export default function ArenaChat() {
       method: "POST",
       body: JSON.stringify(reqBody),
     })).json();
-    console.log('models :>> ', models);
     changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
     setStatus(ArenaStatus.END);
     const reward = await (await authFetch(`/api/arena/reward`, {
       method: "POST",
       body: JSON.stringify({battleId})
     })).json();
-    console.log('reward :>> ', reward);
     // openNotification(rewardData);
   }
 
@@ -217,7 +213,6 @@ export default function ArenaChat() {
       if (prompt.trim() === "") return;
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
-      console.log('battleId :>> ', battleId);
       try {
         authFetch("/api/arena/chat", {
           method: "POST",

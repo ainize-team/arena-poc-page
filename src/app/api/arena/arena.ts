@@ -17,7 +17,6 @@ export const getPickedModels = async (req: NextRequest): Promise<string> => {
 }
 
 export const chatWithModel = async (req: NextRequest): Promise<string> => {
-  console.log("in chat with model");
   const { modelName, prompt, battleId } = await req.json();
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
   const accessToken = req.cookies.get("access_token")?.value;

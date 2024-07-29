@@ -11,9 +11,7 @@ const refreshToken = async () => {
     method: "POST"
   });
   const accessToken = await res.json();
-  console.log('accessToken :>> ', accessToken);
   if (!accessToken.token) {
-    console.log('in refresh, accessToken :>> ', accessToken);
     throw new Error("Failed to fetch jwt.");
   }
   setCookie("access_token", accessToken.token, {
@@ -25,10 +23,8 @@ const refreshToken = async () => {
 export const checkCookies = async () => {
   const {access_token, refresh_token} = getCookies();
   if (!access_token) {
-    console.log("no access");
     if (!refresh_token) {
       await signIn();
-      console.log("no refresh");
     } else {
       await refreshToken();
     }

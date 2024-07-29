@@ -17,9 +17,6 @@ export default function LoginBtn () {
         setCookie("refresh_token", session.refreshToken.token, {
           expires: new Date(session.refreshToken.expire)
         })
-      } else {
-        signIn();
-        return;
       }
     }
     if (!access_token) {
