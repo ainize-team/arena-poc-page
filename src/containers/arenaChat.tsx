@@ -2,7 +2,7 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Col, Flex, Modal, Row, Space, notification } from "antd";
+import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
@@ -137,7 +137,11 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
-    if (status === ArenaStatus.NOTCONNECTED && captcha === CaptchaStatus.TRUE) {
+    if (
+      status === ArenaStatus.NOTCONNECTED && 
+      captcha === CaptchaStatus.TRUE &&
+      session
+    ) {
       setStatus(ArenaStatus.READY);
       resetStates();
     } else {
