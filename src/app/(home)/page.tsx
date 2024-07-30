@@ -3,6 +3,7 @@ import ArenaMenu from "@/components/arenaMenu";
 import ArenaChat from "@/containers/arenaChat";
 import { ArenaMenuKey } from "@/type";
 import MaintenanceMsg from "@/components/maintenance";
+import { Analytics } from "@vercel/analytics/react"
 
 export default function Home() {
 return (
@@ -15,6 +16,7 @@ return (
           <ArenaChat />
         </> 
       }
+      <Analytics />
     </main>
   );
 }
