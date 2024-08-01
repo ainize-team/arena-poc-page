@@ -158,6 +158,7 @@ export default function ArenaChat() {
 
   const resetStates = () => {
     setPrompt("");
+    setTurn(0);
     pickAndSetModels();
     setModelAChatList([]);
     setModelBChatList([]);
@@ -223,8 +224,14 @@ export default function ArenaChat() {
         text: prompt,
         type: "user"
       }
-      modelAChatList.push(userChat);
-      modelBChatList.push(userChat);
+      setModelAChatList([
+        ...modelAChatList,
+        userChat,
+      ]);
+      setModelBChatList([
+        ...modelBChatList,
+        userChat,
+      ]);
       try {
         authFetch("/api/arena/chat", {
           method: "POST",
@@ -235,10 +242,14 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          modelAChatList.push({
-            text: result,
-            type: "assistant"
-          });
+          console.log('modelAChatList :>> ', modelAChatList);
+          setModelAChatList((prev) => [
+            ...prev,
+            {
+              text: result,
+              type: "assistant"
+            }
+          ]);
         });
         authFetch("/api/arena/chat", {
           method: "POST",
@@ -249,10 +260,13 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          modelBChatList.push({
-            text: result,
-            type: "assistant"
-          });
+          setModelBChatList((prev) => [
+            ...prev,
+            {
+              text: result,
+              type: "assistant"
+            }
+          ]);
         });
       } catch (err) {
         alert(err);
