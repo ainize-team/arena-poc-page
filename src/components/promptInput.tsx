@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Input } from 'antd';
 import { ArrowUpOutlined } from "@ant-design/icons";
-import { ArenaStatus } from "@/type";
+import { ArenaStatus } from "@/types/type";
 
 const { Search } = Input;
 

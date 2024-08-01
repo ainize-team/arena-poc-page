@@ -6,6 +6,7 @@ import "../globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 import { getGAId } from "@/constant/constant";
 import GoogleCaptchaWrapper from "@/containers/googleCaptchaWrapper";
+import AuthContext from "@/containers/AuthContext";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
@@ -37,16 +38,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <GoogleCaptchaWrapper>
-        <Layout style={layoutStyle}>
-          <RecoilRootWrapper>
-            {children}
-          </RecoilRootWrapper>
-          <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
-        </Layout>
-        </GoogleCaptchaWrapper>
-      </body>
+      <AuthContext>
+        <body className={inter.className}>
+          <GoogleCaptchaWrapper>
+          <Layout style={layoutStyle}>
+            <RecoilRootWrapper>
+              {children}
+            </RecoilRootWrapper>
+            <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
+          </Layout>
+          </GoogleCaptchaWrapper>
+        </body>
+      </AuthContext>
       <GoogleAnalytics gaId={getGAId()} />
     </html>
   );

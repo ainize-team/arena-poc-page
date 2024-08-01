@@ -2,17 +2,19 @@
 
 import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
-import { Button, Col, Flex, Modal, Row, Space, notification } from "antd";
+import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
-import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
+import { ArenaStatus, CaptchaStatus, ChoiceType } from "@/types/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useRecoilState } from "recoil";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { addressAtom } from "@/lib/recoil";
 import useWallet from "@/lib/wallet";
 import React from "react";
+import { useSession } from "next-auth/react";
+import { authFetch } from "@/lib/auth";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -35,6 +37,7 @@ export default function ArenaChat() {
   const [prompt, setPrompt] = useState("");
   const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
+  const [battleId, setBattleId] = useState<string>("");
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
   const [modelAName, setModelAName] = useState("");
@@ -42,8 +45,9 @@ export default function ArenaChat() {
   const [resultA, setResultA] = useState("");
   const [resultB, setResultB] = useState("");
   const [notiApi, notiContextHolder] = notification.useNotification();
-  const [modalOpen, setModalOpen] = useState(true);
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+
+  const { data: session } = useSession();
 
   const {
     isValidChain,
@@ -86,12 +90,15 @@ export default function ArenaChat() {
   };
 
   const pickAndSetModels = async () => {
-    await fetch("/api/arena/init", {
-      method: "GET",
+    await authFetch("/api/arena/init", {
+      method: "POST",
     }).then(async (res) => {
-      const result = await res.json();
-      setModelA(result[0]);
-      setModelB(result[1]);
+      try {
+        const result = await res.json();
+        setBattleId(result);
+      } catch (e) {
+        console.log('e :>> ', e);
+      }
     });
   }
 
@@ -103,13 +110,7 @@ export default function ArenaChat() {
     if (isMobile()) {
       router.push("/m");
       return;
-    } 
-
-    const setModels = async () => {
-      await pickAndSetModels();
     }
-    setModels();
-    setWalletEventHandler();
   }, [])
 
   useEffect(()=>{
@@ -136,13 +137,17 @@ export default function ArenaChat() {
   }, [status])
 
   useEffect(()=> {
-    resetStates();
-    if (address !== "" && captcha === CaptchaStatus.TRUE) {
+    if (
+      status === ArenaStatus.NOTCONNECTED && 
+      captcha === CaptchaStatus.TRUE &&
+      session
+    ) {
       setStatus(ArenaStatus.READY);
+      resetStates();
     } else {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [address, captcha])
+  }, [captcha])
 
   useEffect(() => {
     if (resultA !== "" && resultB !== "") {
@@ -160,46 +165,28 @@ export default function ArenaChat() {
 
   const onClickChoiceBtn = async (value: ChoiceType) => {
     setStatus(ArenaStatus.REGISTERING);
-    try {
-      const chatResultParams: ChatResultReqBody = {
-        userAddress: address,
-        choice: value,
-        modelA: modelA,
-        modelB: modelB,
-        turn: 1,
-        modelAResponse: [{
-          role: "user",
-          content: prompt,
-        }, {
-          role: "assistant",
-          content: resultA
-        }],
-        modelBResponse: [{
-          role: "user",
-          content: prompt,
-        }, {
-          role: "assistant",
-          content: resultB,
-        }]
-      };
-      const battleId = await (await fetch("/api/arena/result", {
-        method: "POST",
-        body: JSON.stringify(chatResultParams),
-      })).json();
-      changeWinnerName(value);
-      setStatus(ArenaStatus.END);
-      const reward = await fetch(`/api/arena/reward/${battleId}`, {
-        method: "GET",
-      });
-      const rewardData = await reward.json();
-      openNotification(rewardData);
-    } catch (err) {
-      alert(`${err}.\n If the error is repeated, please refresh the page.`);
+    const reqBody = {
+      battleId,
+      choice: value,
     }
+    const models = await (await authFetch("/api/arena/result", {
+      method: "POST",
+      body: JSON.stringify(reqBody),
+    })).json();
+    changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
+    setStatus(ArenaStatus.END);
+    const reward = await (await authFetch(`/api/arena/reward`, {
+      method: "POST",
+      body: JSON.stringify({battleId})
+    })).json();
+    // openNotification(rewardData);
   }
 
-  const changeWinnerName = (winner: ChoiceType) => {
+  const changeWinnerName = (winner: ChoiceType, modelA: string, modelB: string) => {
     const winnerMark = "🎉";
+    setModelA(modelA);
+    setModelB(modelB);
+    
     switch(winner) {
       case ChoiceType.MODELA:
         setModelA(winnerMark + modelA);
@@ -231,20 +218,22 @@ export default function ArenaChat() {
       setStatus(ArenaStatus.INFERENCING);
       setPrompt(prompt);
       try {
-        fetch("/api/arena/chat", {
+        authFetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
-            modelName: modelA,
+            battleId,
+            modelName: "model_a",
             prompt: prompt,
           }),
         }).then(async (res) => {
           const result = await res.json();
           setResultA(result);
         });
-        fetch("/api/arena/chat", {
+        authFetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
-            modelName: modelB,
+            battleId, 
+            modelName: "model_b",
             prompt: prompt,
           }),
         }).then(async (res) => {

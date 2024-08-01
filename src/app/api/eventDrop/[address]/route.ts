@@ -16,7 +16,6 @@ export async function GET(
       cache: "no-cache",
     });
     const resData = await res.json();
-    console.log('address, resData :>> ', address, resData);
     return Response.json(resData, {
       status: 200,
     });

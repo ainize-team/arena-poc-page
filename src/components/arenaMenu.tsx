@@ -1,6 +1,6 @@
 "use client";
 
-import { ArenaMenuKey } from '@/type';
+import { ArenaMenuKey } from '@/types/type';
 import { Menu, MenuProps } from 'antd';
 import { useRouter } from "next/navigation";
 

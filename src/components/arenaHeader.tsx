@@ -1,5 +1,6 @@
 import { Header } from "antd/lib/layout/layout";
 import WalletConnectBtn from "./walletConnectBtn";
+import LoginBtn from "./loginBtn";
 
 const headerStyle: React.CSSProperties = {
   textAlign: "left",
@@ -22,7 +23,7 @@ export default function ArenaHeader() {
       <div style={{
         marginLeft: "auto",
       }}>
-        <WalletConnectBtn />
+        <LoginBtn />
       </div>
     </Header>
   );

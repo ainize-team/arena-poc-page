@@ -6,6 +6,8 @@ export const PUBLIC_ENV = {
 
 export const ZERO_REWARD_MSG = "NO TX FOR 0 REWARD";
 
+export const JS_PYTHON_TIMESTAMP_GAP = 1000;
+
 export const getGAId = () => {
   return PUBLIC_ENV.APP_ENV === "production" ? "G-TFVPRQGF0M" : "G-WHKH2Q8EJY"
 };

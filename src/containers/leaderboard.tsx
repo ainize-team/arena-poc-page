@@ -3,7 +3,7 @@
 import { Flex, Table, TableProps } from "antd";
 import { getLeaderboard } from "@/components/leaderboard";
 import { useEffect, useState } from "react";
-import { LeaderboardTableData } from "@/type";
+import { LeaderboardTableData } from "@/types/type";
 import ScoreTooltip from "@/components/scoreTooltip";
 import { useRouter } from "next/navigation";
 
