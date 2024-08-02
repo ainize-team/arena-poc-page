@@ -6,7 +6,10 @@ export const getPickedModels = async (req: NextRequest): Promise<string> => {
   const res = await fetch(endpoint, {
     method: "POST",
     cache: "no-cache",
-    headers: { Cookie: `access_token=${accessToken?.value};` }
+    headers: { 
+      Cookie: `access_token=${accessToken?.value};`,
+      "x-api-key": process.env.SERVER_API_KEY!
+    }
   });
   const result = await res.json();
   const battleId = result.battle_id;
@@ -29,7 +32,8 @@ export const chatWithModel = async (req: NextRequest): Promise<string> => {
     }),
     headers: { 
       "Content-type": "application/json;",
-      Cookie: `access_token=${accessToken};`
+      Cookie: `access_token=${accessToken};`,
+      "x-api-key": process.env.SERVER_API_KEY!
     }
   }
   const slicedPrompt = prompt.length > 100 ? prompt.slice(0, 97) + `... (${prompt.length})` : prompt;
@@ -60,7 +64,8 @@ export const chatResult = async (req: NextRequest): Promise<string[]> => {
     body: JSON.stringify(body),
     headers: { 
       "Content-type": "application/json;",
-      Cookie: `access_token=${accessToken};` 
+      Cookie: `access_token=${accessToken};`,
+      "x-api-key": process.env.SERVER_API_KEY!
     }
   }
   const res = await fetch(endpoint, params);
@@ -77,7 +82,8 @@ export const chatReward = async (req: NextRequest) => {
     body: JSON.stringify({ battle_id: battleId }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      Cookie: `access_token=${accessToken};`
+      Cookie: `access_token=${accessToken};`,
+      "x-api-key": process.env.SERVER_API_KEY!
     }
   }
   const res = await fetch(endpoint, params);

@@ -11,7 +11,8 @@ const getJWTFromServer = async (accessToken: string) => {
       google_access_token: accessToken
     }),
     headers: {
-      "Content-type": "application/json; charset=UTF-8"
+      "Content-type": "application/json; charset=UTF-8",
+      "x-api-key": process.env.SERVER_API_KEY!
     }
   }
   const res = await fetch(endpoint, params);
