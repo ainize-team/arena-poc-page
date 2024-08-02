@@ -1,8 +1,8 @@
-import { ArenaStatus } from "@/types/type";
+import { ArenaStatus, Chat } from "@/types/type";
 import { Card, Typography, Spin } from "antd";
-import ReactMarkdown from "react-markdown";
-import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/a11y-light.css";
+import TextBox from "./text";
+import { useEffect, useRef } from "react";
 
 const { Paragraph } = Typography;
 
@@ -10,20 +10,35 @@ type ChatBoxProps = {
   modelName: string,
   status: ArenaStatus
   style: React.CSSProperties,
-  prompt?: string,
+  chatList: Chat[],
 };
 
-export default function ChatBox({ modelName, status, style, prompt}: ChatBoxProps) {
-  function textboxContent(status: ArenaStatus, prompt?: string) {
-    if (prompt) {
-      return <Paragraph style={{
-        height: `${40 - 3}vh`, // FIXME(yoojin): change height to not constant value.
-        textAlign: "left",
-        overflow: "auto",
-      }}>
-        <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
-          {prompt}
-        </ReactMarkdown>
+export default function ChatBox({ modelName, status, style, chatList}: ChatBoxProps) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatList])
+
+  const scrollToBottom = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }
+  function textboxContent() {
+    if (chatList.length > 0) {
+      return <Paragraph 
+        ref={scrollRef}
+        style={{
+          height: `${40 - 3}vh`, // FIXME(yoojin): change height to not constant value.
+          textAlign: "left",
+          overflow: "auto",
+        }
+      }>
+        {
+          chatList.map((_chat: Chat, index) => 
+           <TextBox key={index} chat={_chat} />
+          )  
+        }
       </Paragraph>
     } else if (status == ArenaStatus.INFERENCING) {
       return <Spin tip="Loading" size="large"/>
@@ -42,7 +57,7 @@ export default function ChatBox({ modelName, status, style, prompt}: ChatBoxProp
       }}
       style={style}
     >
-    {textboxContent(status, prompt)}
+    {textboxContent()}
     </Card>
   );
 }
