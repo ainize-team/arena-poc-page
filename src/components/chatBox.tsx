@@ -35,8 +35,8 @@ export default function ChatBox({ modelName, status, style, chatList}: ChatBoxPr
         }
       }>
         {
-          chatList.map((_chat: Chat) => 
-           <TextBox chat={_chat} />
+          chatList.map((_chat: Chat, index) => 
+           <TextBox key={index} chat={_chat} />
           )  
         }
       </Paragraph>
