@@ -47,13 +47,11 @@ const handler = NextAuth({
     async jwt({ token, account }) {
       const googleAccessToken = account?.access_token || token.googleAccessToken;
       if (googleAccessToken) {
-        console.log("googleAccessToken :>>", googleAccessToken)
         token = Object.assign({}, token, {
           googleAccessToken: googleAccessToken
         })
         const curMs = Date.now();
         if (!token.refreshToken || token.refreshToken.expire < curMs - (60 * ONE_SEC_AS_TIMESTAMP)) {
-          console.log("relogin");
           const { refreshToken, accessToken } = await getJWTFromServer(googleAccessToken);
           token = Object.assign({}, token, {
             refreshToken: refreshToken,
@@ -63,13 +61,14 @@ const handler = NextAuth({
           });
           return token;
         }
-        console.log('token.accessToken.expire, curMs :>> ', token.accessToken.expire, curMs);
         if (!token.accessToken || token.accessToken.expire < curMs - (60 * ONE_SEC_AS_TIMESTAMP)) {
-          console.log("refresh");
           const endpoint = `${process.env.SERVER_URL}/auth/refresh`;
           const result = await fetch(endpoint, {
             method: "GET",
-            headers: { Cookie: `refresh_token=${token.refreshToken.token};` }
+            headers: { 
+              Cookie: `refresh_token=${token.refreshToken.token};`,
+              "x-api-key": process.env.SERVER_API_KEY!
+            }
           });
           const refreshResult = await result.json();
           const { access_token } = refreshResult;

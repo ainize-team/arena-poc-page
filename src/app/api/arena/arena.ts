@@ -87,8 +87,8 @@ export const chatReward = async (req: NextRequest) => {
     }
   }
   const res = await fetch(endpoint, params);
-  const { score, reward, reason, tx_hash } = await res.json();
-  return { score, reward, reason, tx_hash };
+  const rewardData = await res.json();
+  return rewardData;
 }
 
 export const getDailyRewardPercentage = async () => {
