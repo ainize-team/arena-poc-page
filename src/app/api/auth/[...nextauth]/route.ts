@@ -1,6 +1,8 @@
-import { JS_PYTHON_TIMESTAMP_GAP } from "@/constant/constant";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google"
+
+const ONE_SEC_AS_TIMESTAMP = 1000;
+const JS_PYTHON_TIMESTAMP_GAP = 1000;
 
 const getJWTFromServer = async (accessToken: string) => {
   const endpoint = `${process.env.SERVER_URL}/auth/login`;
@@ -18,8 +20,8 @@ const getJWTFromServer = async (accessToken: string) => {
   const res = await fetch(endpoint, params);
   try {
     const { access_token, refresh_token } = await res.json();
-    access_token.expire = Math.round(access_token.expire * 1000); // FIXME(yoojin): change to JS_PYTHON_TIMESTAMP_GAP in constants
-    refresh_token.expire = Math.round(refresh_token.expire * 1000);
+    access_token.expire = Math.round(access_token.expire * JS_PYTHON_TIMESTAMP_GAP); // FIXME(yoojin): change to JS_PYTHON_TIMESTAMP_GAP in constants
+    refresh_token.expire = Math.round(refresh_token.expire * JS_PYTHON_TIMESTAMP_GAP);
     return {
       accessToken: access_token,
       refreshToken: refresh_token,
@@ -50,7 +52,7 @@ const handler = NextAuth({
           googleAccessToken: googleAccessToken
         })
         const curMs = Date.now();
-        if (!token.refreshToken || token.refreshToken.expire < curMs - (60 * 1000)) {
+        if (!token.refreshToken || token.refreshToken.expire < curMs - (60 * ONE_SEC_AS_TIMESTAMP)) {
           console.log("relogin");
           const { refreshToken, accessToken } = await getJWTFromServer(googleAccessToken);
           token = Object.assign({}, token, {
@@ -62,7 +64,7 @@ const handler = NextAuth({
           return token;
         }
         console.log('token.accessToken.expire, curMs :>> ', token.accessToken.expire, curMs);
-        if (!token.accessToken || token.accessToken.expire < curMs - (60 * 1000)) {
+        if (!token.accessToken || token.accessToken.expire < curMs - (60 * ONE_SEC_AS_TIMESTAMP)) {
           console.log("refresh");
           const endpoint = `${process.env.SERVER_URL}/auth/refresh`;
           const result = await fetch(endpoint, {
@@ -71,7 +73,7 @@ const handler = NextAuth({
           });
           const refreshResult = await result.json();
           const { access_token } = refreshResult;
-          access_token.expire = Math.round(access_token.expire * 1000);
+          access_token.expire = Math.round(access_token.expire * JS_PYTHON_TIMESTAMP_GAP);
           token = Object.assign({}, token, { accessToken: access_token });
         }
       }
