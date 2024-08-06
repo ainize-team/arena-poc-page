@@ -1,7 +1,7 @@
 import { chatWithModel } from "@/app/api/arena/arena";
 import { NextRequest } from "next/server";
 
-const FAILED_INFERENCE_MSG = "**Abusing Test**\nChoose opposite model to prove you are not an abuser.\nIf both sides are abusing the test, choose a tie.";
+const FAILED_INFERENCE_MSG = "An error occurred during inference. Please refresh this page and try again.";
 
 export async function POST(req: NextRequest) {
   try {

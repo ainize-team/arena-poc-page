@@ -1,9 +1,9 @@
-import { getPickedModels } from "@/app/api/arena/arena";
+import { battleInit } from "@/app/api/arena/arena";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const battleId = await getPickedModels(req);
+    const battleId = await battleInit(req);
     return Response.json(battleId, {
       status: 200,
     })

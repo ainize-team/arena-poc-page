@@ -43,6 +43,7 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
 
   const onClickSendBtn = async () => {
     setParentPrompt(prompt);
+    setPrompt("");
   }
 
   const loadingBTN= () => {

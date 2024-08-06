@@ -1,12 +1,14 @@
 import { Chat } from "@/types/type";
+import { Spin } from "antd";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 
 type Props = {
   chat: Chat
+  isLoading?: boolean
 }
 
-export default function TextBox({ chat }: Props) {
+export default function TextBox({ chat, isLoading = false }: Props) {
   return (
     <div style={{
       marginLeft: chat.type === "user" ? "auto" : undefined,
@@ -17,9 +19,13 @@ export default function TextBox({ chat }: Props) {
       padding: "2px",
       marginTop: "10px"
     }}>
-      <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
-        {chat.text}
-      </ReactMarkdown>
+      {
+        isLoading ? 
+        <Spin tip="Loading" size="large"/> : 
+        <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+          {chat.text}
+        </ReactMarkdown>
+      }
     </div>
   )
 }

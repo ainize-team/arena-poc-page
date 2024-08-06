@@ -8,9 +8,7 @@ import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
 import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/types/type";
 import ChoiceButton from "@/components/choiceButton";
-import { useRecoilState } from "recoil";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { addressAtom } from "@/lib/recoil";
 import useWallet from "@/lib/wallet";
 import React from "react";
 import { useSession } from "next-auth/react";
@@ -36,7 +34,7 @@ export default function ArenaChat() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
-  const [battleId, setBattleId] = useState<string>("");
+  const [battleId, setBattleId] = useState<string | null>(null);
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
   const [modelAName, setModelAName] = useState("");
@@ -79,17 +77,19 @@ export default function ArenaChat() {
   };
 
   const openNotification = (rewardData: any) => {
-    const isZeroReward = rewardData.reward === 0;
+    console.log('rewardData :>> ', rewardData);
+    const { reward } = rewardData;
+    const isZeroReward = !reward || reward === 0;
     notiApi.info({
       message: isZeroReward ? "Reward Failed." : "Reward Success!",
       description:
-        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`,
+        isZeroReward ? "Some error occured." : `Reward: ${reward.toFixed(2)} AIN`,
       placement: "topRight",
       duration: 0,
     });
   };
 
-  const pickAndSetModels = async () => {
+  const battleInit = async () => {
     await authFetch("/api/arena/init", {
       method: "POST",
     }).then(async (res) => {
@@ -99,6 +99,9 @@ export default function ArenaChat() {
       } catch (e) {
         console.log('e :>> ', e);
       }
+    }).catch((e) => {
+      alert("Init failed.");
+      router.refresh();
     });
   }
 
@@ -115,26 +118,7 @@ export default function ArenaChat() {
 
   useEffect(()=>{
     testCaptcha();
-  },[executeRecaptcha])
-
-  useEffect(()=>{
-    if(captcha == CaptchaStatus.FALSE){
-      redirect("/leaderboard")
-    }
-  },[captcha])
-  useEffect(() => {
-    switch(status) {
-      case ArenaStatus.NOTCONNECTED:
-      case ArenaStatus.READY:
-      case ArenaStatus.COMPETING: 
-        setModelAName("Model A");
-        setModelBName("Model B");
-        break;
-      case ArenaStatus.END:
-        setModelAName(modelA);
-        setModelBName(modelB);
-    }
-  }, [status])
+  }, [executeRecaptcha])
 
   useEffect(()=> {
     if (
@@ -142,27 +126,41 @@ export default function ArenaChat() {
       captcha === CaptchaStatus.TRUE &&
       session
     ) {
-      setStatus(ArenaStatus.READY);
       resetStates();
-    } else {
+    } else if (!session || !session.accessToken) {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [captcha])
+  }, [captcha, session])
 
   useEffect(() => {
-    console.log('turn, modelAChatList.length, modelBChatList.length :>> ', turn, modelAChatList.length, modelBChatList.length);
+    setModelAName("Model A");
+    setModelBName("Model B");
+    switch(status) {
+      case ArenaStatus.NOTCONNECTED:
+        break;
+      case ArenaStatus.READY:
+        if (!battleId) battleInit();
+      case ArenaStatus.COMPETING:
+        break;
+      case ArenaStatus.END:
+        setModelAName(modelA);
+        setModelBName(modelB);
+    }
+  }, [status])
+
+  useEffect(() => {
     if (turn > 0 && modelAChatList.length / 2 === turn && modelBChatList.length / 2 === turn) {
       setStatus(ArenaStatus.COMPETING);
     }
   }, [modelAChatList.length, modelBChatList.length])
 
   const resetStates = () => {
-    setPrompt("");
+    setStatus(ArenaStatus.READY);
+    setBattleId(null);
     setTurn(0);
-    pickAndSetModels();
     setModelAChatList([]);
     setModelBChatList([]);
-    setStatus(ArenaStatus.READY);
+    setPrompt("");
   }
 
   const onClickChoiceBtn = async (value: ChoiceType) => {
@@ -171,17 +169,24 @@ export default function ArenaChat() {
       battleId,
       choice: value,
     }
-    const models = await (await authFetch("/api/arena/result", {
+    const choiceRes = await authFetch("/api/arena/choice", {
       method: "POST",
       body: JSON.stringify(reqBody),
-    })).json();
-    changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
-    setStatus(ArenaStatus.END);
-    const reward = await (await authFetch(`/api/arena/reward`, {
-      method: "POST",
-      body: JSON.stringify({battleId})
-    })).json();
-    // openNotification(rewardData);
+    })
+    if (choiceRes.ok) {
+      const models = await (choiceRes).json();
+      changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
+      authFetch(`/api/arena/reward`, {
+        method: "POST",
+        body: JSON.stringify({ battleId })
+      }).then(async (res) => {
+        if (res.ok) {
+          const rewardData = await res.json();
+          openNotification(rewardData);
+        }
+      });
+      setStatus(ArenaStatus.END);
+    }
   }
 
   const changeWinnerName = (winner: ChoiceType, modelA: string, modelB: string) => {
@@ -206,11 +211,8 @@ export default function ArenaChat() {
   }
 
   const onClickNextBtn = () => {
+    setStatus(ArenaStatus.READY);
     resetStates();
-    const rand = Math.floor(Math.random() * 20);
-    if (rand === 19) { 
-      testCaptcha();
-    }
     router.refresh();
   }
 
@@ -242,7 +244,6 @@ export default function ArenaChat() {
           }),
         }).then(async (res) => {
           const result = await res.json();
-          console.log('modelAChatList :>> ', modelAChatList);
           setModelAChatList((prev) => [
             ...prev,
             {
@@ -268,6 +269,7 @@ export default function ArenaChat() {
             }
           ]);
         });
+        setPrompt("");
       } catch (err) {
         alert(err);
         resetStates();
@@ -278,7 +280,7 @@ export default function ArenaChat() {
 
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      {/* {notiContextHolder} */}{/* NOTE(yoojin): Hide reward noti */}
+      {notiContextHolder}{/* NOTE(yoojin): Hide reward noti */}
       <Flex justify="center" style={{marginTop: "10px"}}>
         <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} chatList={modelAChatList} />
         <ChatBox modelName={modelBName} status={status} style={RightCardStyle} chatList={modelBChatList} />

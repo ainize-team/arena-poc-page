@@ -24,6 +24,15 @@ export default function ChatBox({ modelName, status, style, chatList}: ChatBoxPr
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }
+
+  const needLoadingBox = (index: number): boolean => {
+    return (
+      status === ArenaStatus.INFERENCING &&
+      index === chatList.length - 1 &&
+      index % 2 === 0
+    )
+  }
+
   function textboxContent() {
     if (chatList.length > 0) {
       return <Paragraph 
@@ -35,13 +44,16 @@ export default function ChatBox({ modelName, status, style, chatList}: ChatBoxPr
         }
       }>
         {
-          chatList.map((_chat: Chat, index) => 
-           <TextBox key={index} chat={_chat} />
+          chatList.map((_chat: Chat, index) =>
+            <>
+              <TextBox key={index} chat={_chat}/>
+              {
+                needLoadingBox(index) ? <TextBox key={index+1} chat={{text: "", type:"assistant"}} isLoading={true} /> : <></>
+              }
+            </>
           )  
         }
       </Paragraph>
-    } else if (status == ArenaStatus.INFERENCING) {
-      return <Spin tip="Loading" size="large"/>
     }
   }
 
