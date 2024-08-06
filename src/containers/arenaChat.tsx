@@ -176,14 +176,15 @@ export default function ArenaChat() {
     if (choiceRes.ok) {
       const models = await (choiceRes).json();
       changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
-      const evalRes = await authFetch(`/api/arena/reward`, {
+      authFetch(`/api/arena/reward`, {
         method: "POST",
         body: JSON.stringify({ battleId })
+      }).then(async (res) => {
+        if (res.ok) {
+          const rewardData = await res.json();
+          openNotification(rewardData);
+        }
       });
-      if (evalRes.ok) {
-        const rewardData = await evalRes.json();
-        openNotification(rewardData);
-      }
       setStatus(ArenaStatus.END);
     }
   }
