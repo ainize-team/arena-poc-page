@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-export const getPickedModels = async (req: NextRequest): Promise<string> => {
+export const battleInit = async (req: NextRequest): Promise<string> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
   const accessToken = req.cookies.get("access_token");
   const res = await fetch(endpoint, {
@@ -48,7 +48,7 @@ export const chatWithModel = async (req: NextRequest): Promise<string> => {
   return result.response;
 }
 
-export const chatResult = async (req: NextRequest): Promise<string[]> => {
+export const choiceModel = async (req: NextRequest): Promise<string[]> => {
   const { 
     battleId,
     choice,  
@@ -73,7 +73,7 @@ export const chatResult = async (req: NextRequest): Promise<string[]> => {
   return models;
 }
 
-export const chatReward = async (req: NextRequest) => {
+export const chatEvaluate = async (req: NextRequest) => {
   const { battleId } = await req.json();
   const accessToken = req.cookies.get("access_token")?.value;
   const endpoint = `${process.env.SERVER_URL}/battle/evaluate`;

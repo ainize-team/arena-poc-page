@@ -169,7 +169,7 @@ export default function ArenaChat() {
       battleId,
       choice: value,
     }
-    const choiceRes = await authFetch("/api/arena/result", {
+    const choiceRes = await authFetch("/api/arena/choice", {
       method: "POST",
       body: JSON.stringify(reqBody),
     })
