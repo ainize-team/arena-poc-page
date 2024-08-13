@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
+/**
+ * 캡차 확인.
+ */
+
 export async function POST(request: Request, response: Response) {
   const secretKey = process.env.CAPTCHA_SECRET_KEY;
   const postData = await request.json();

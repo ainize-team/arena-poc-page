@@ -1,6 +1,13 @@
 import { chatEvaluate } from "@/app/api/arena/arena";
 import { NextRequest } from "next/server";
 
+/**
+ * Choice 까지 완료된 Battle 의 점수 산정 및 크레딧 증가
+ * url: /api/arena/reward
+ * req: battleId(string)
+ * res: Reward amount(number).
+ */
+
 export async function POST(
   req: NextRequest, 
 ) {

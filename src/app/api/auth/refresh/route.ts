@@ -5,6 +5,10 @@ const failedRefresh = {
   expire: undefined
 }
 
+/**
+ * refresh token 으로 Backend 에 access token 재발급 요청
+ */
+
 export async function POST(req: NextRequest) {
   const endpoint = `${process.env.SERVER_URL}/auth/refresh`;
   const refreshToken = req.cookies.get("refresh_token");
