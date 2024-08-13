@@ -10,6 +10,7 @@ export enum ArenaStatus {
 export enum ArenaMenuKey {
   ARENA = "arena",
   LEADERBOARD = "leaderboard",
+  MYPAGE = "mypage",
 }
 
 export enum ChoiceType {
