@@ -6,7 +6,7 @@ import "../globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 import { getGAId } from "@/constant/constant";
 import GoogleCaptchaWrapper from "@/containers/googleCaptchaWrapper";
-import AuthContext from "@/containers/AuthContext";
+import AuthContext from "@/containers/authContext";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",

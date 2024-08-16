@@ -1,10 +1,9 @@
 "use client";
 
-import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/types/type";
 import ChoiceButton from "@/components/choiceButton";
@@ -13,21 +12,8 @@ import useWallet from "@/lib/wallet";
 import React from "react";
 import { useSession } from "next-auth/react";
 import { authFetch } from "@/lib/auth";
-
-const LeftCardStyle: React.CSSProperties = {
-  textAlign: "center",
-  width: "100%",
-  minHeight: "40vh",
-  marginLeft: "3rem",
-  marginRight: "3px",
-}
-const RightCardStyle: React.CSSProperties = {
-  textAlign: "center",
-  width: "100%",
-  minHeight: "40vh",
-  marginLeft: "3px",
-  marginRight: "3rem",
-}
+import ChatBox from "@/components/chatBox";
+import Versus from "@/components/versus";
 
 export default function ArenaChat() {
   const router = useRouter();
@@ -281,9 +267,10 @@ export default function ArenaChat() {
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       {notiContextHolder}{/* NOTE(yoojin): Hide reward noti */}
-      <Flex justify="center" style={{marginTop: "10px"}}>
-        <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} chatList={modelAChatList} />
-        <ChatBox modelName={modelBName} status={status} style={RightCardStyle} chatList={modelBChatList} />
+      <Flex justify="center" style={{marginTop: "10px", position: "relative", gap: "20px"}}>
+        <ChatBox modelName={modelAName} status={status} modelType="model_a" chatList={modelAChatList} />
+        {status !== ArenaStatus.END ? <Versus /> : <></>}
+        <ChatBox modelName={modelBName} status={status} modelType="model_b" chatList={modelBChatList} />
       </Flex>
         {status !== ArenaStatus.END ? (
           <>

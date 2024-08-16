@@ -9,7 +9,7 @@ export default function Home() {
       <ArenaMenu page={ArenaMenuKey.LEADERBOARD} />
         {
           process.env.IS_LEADERBOARD_MAINTENANCE === "true" ? 
-            <MaintenanceMsg />:
+            <MaintenanceMsg /> :
             <Leaderboard />
         }
     </main>
