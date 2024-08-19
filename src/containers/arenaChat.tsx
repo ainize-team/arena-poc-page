@@ -121,7 +121,6 @@ export default function ArenaChat() {
       session
     ) {
       resetStates();
-      console.log('session.user :>> ', session.user);
     } else if (!session || !session.accessToken) {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
