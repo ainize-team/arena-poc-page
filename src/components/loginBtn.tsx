@@ -40,7 +40,7 @@ export default function LoginBtn () {
   const renderLoginBtn = () => {
     return session ? 
       <Button type="default" onClick={onClickLogoutBtn}>
-        <WalletOutlined /> {session.user!.email}
+        <WalletOutlined /> {session.user?.display_name}
       </Button> :
       <Button type="primary" onClick={onClickLoginBtn}>
         <WalletOutlined /> Login with Google.
