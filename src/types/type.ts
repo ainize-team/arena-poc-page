@@ -47,3 +47,14 @@ export enum CaptchaStatus {
   TRUE = "TRUE",
   FALSE = "FALSE"
 }
+
+export type UserInfo = {
+  address: string | null,
+  credit: number,
+  display_name: string,
+  first_name: string,
+  last_name: string,
+  picture: string,
+  tier: number,
+  exp: number,
+}

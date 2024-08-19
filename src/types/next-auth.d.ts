@@ -1,5 +1,6 @@
-import { Session } from "next-auth";
+import { DefaultSession, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { UserInfo } from "./type";
 
 declare module 'next-auth' {
   interface Session {
@@ -10,8 +11,9 @@ declare module 'next-auth' {
     refreshToken: {
       token: string;
       expire: number;
-    }
+    };
     googleAccessToken: string;
+    user: UserInfo & Omit<DefaultSession["user"], "image">;
   }
 }
 

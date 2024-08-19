@@ -4,12 +4,11 @@ import ChatBox from "@/components/chatBox";
 import PromptInput from "@/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/types/type";
 import ChoiceButton from "@/components/choiceButton";
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import useWallet from "@/lib/wallet";
 import React from "react";
 import { useSession } from "next-auth/react";
 import { authFetch } from "@/lib/auth";
@@ -45,12 +44,7 @@ export default function ArenaChat() {
   const [modelBChatList, setModelBChatList] = useState<Chat[]>([]);
   const [turn, setTurn] = useState(0);
 
-  const { data: session } = useSession();
-
-  const {
-    isValidChain,
-    setWalletEventHandler,
-  } = useWallet();
+  const { data: session, update } = useSession();
 
   const testCaptcha = async() => {
     if (!executeRecaptcha) {
@@ -127,6 +121,7 @@ export default function ArenaChat() {
       session
     ) {
       resetStates();
+      console.log('session.user :>> ', session.user);
     } else if (!session || !session.accessToken) {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
@@ -214,6 +209,7 @@ export default function ArenaChat() {
     setStatus(ArenaStatus.READY);
     resetStates();
     router.refresh();
+    update();
   }
 
   const handlePrompt = async (prompt: string) => {

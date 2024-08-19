@@ -1,3 +1,4 @@
+import { UserInfo } from "@/types/type";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google"
 
@@ -75,18 +76,24 @@ const handler = NextAuth({
           access_token.expire = Math.round(access_token.expire * JS_PYTHON_TIMESTAMP_GAP);
           token = Object.assign({}, token, { accessToken: access_token });
         }
+        const userInfo = await fetch(`${process.env.SERVER_URL}/user/me/info`, {
+          method: "GET",
+          headers: { 
+            Cookie: `access_token=${token.accessToken.token};`,
+            "x-api-key": process.env.SERVER_API_KEY!
+          }
+        });
+        const data = await userInfo.json();
+        token.user = data;
       }
       return token;
     },
     async session({ session, token }) {
       if (session) {
         const { refreshToken, accessToken } = token;
-        session = Object.assign({}, session, {
-          refreshToken: refreshToken,
-        });
-        session = Object.assign({}, session, {
-          accessToken: accessToken,
-        });
+        session.refreshToken = refreshToken;
+        session.accessToken = accessToken;
+        session.user = Object.assign(session.user, token.user as UserInfo);
       }
       return session;
     }
