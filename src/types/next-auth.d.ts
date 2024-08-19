@@ -13,7 +13,7 @@ declare module 'next-auth' {
       expire: number;
     };
     googleAccessToken: string;
-    user: UserInfo & Omit<DefaultSession["user"], "image">;
+    user: UserInfo;
   }
 }
 

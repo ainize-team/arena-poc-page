@@ -93,7 +93,7 @@ const handler = NextAuth({
         const { refreshToken, accessToken } = token;
         session.refreshToken = refreshToken;
         session.accessToken = accessToken;
-        session.user = Object.assign(session.user, token.user as UserInfo);
+        session.user = Object.assign({}, token.user as UserInfo);
       }
       return session;
     }
