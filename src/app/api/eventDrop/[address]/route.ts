@@ -1,5 +1,10 @@
 import { NextRequest } from "next/server";
 
+/**
+ * AIN Event 당첨자가 지갑 연결하면 보상량 지급 요청
+ * Arena 메인 로직이랑 관계 X
+ */
+
 export async function GET(
   req: NextRequest, 
   { params }: { params: { address: string } }

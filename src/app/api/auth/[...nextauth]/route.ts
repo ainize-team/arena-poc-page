@@ -5,6 +5,10 @@ import GoogleProvider from "next-auth/providers/google"
 const ONE_SEC_AS_TIMESTAMP = 1000;
 const JS_PYTHON_TIMESTAMP_GAP = 1000;
 
+/**
+ * Nextauth google login 관련
+ */
+
 const getJWTFromServer = async (accessToken: string) => {
   const endpoint = `${process.env.SERVER_URL}/auth/login`;
   console.log("get Token");

@@ -1,6 +1,12 @@
 import { battleInit } from "@/app/api/arena/arena";
 import { NextRequest } from "next/server";
 
+/**
+ * Backend 에 battle id 생성
+ * url: /api/arena/init
+ * res: battle_id(string).
+ */
+
 export async function POST(req: NextRequest) {
   try {
     const battleId = await battleInit(req);
