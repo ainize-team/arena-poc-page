@@ -10,6 +10,7 @@ export enum ArenaStatus {
 export enum ArenaMenuKey {
   ARENA = "arena",
   LEADERBOARD = "leaderboard",
+  MYPAGE = "mypage",
 }
 
 export enum ChoiceType {
@@ -45,4 +46,15 @@ export enum CaptchaStatus {
   YET = "YET",
   TRUE = "TRUE",
   FALSE = "FALSE"
+}
+
+export type UserInfo = {
+  address: string | null,
+  credit: number,
+  display_name: string,
+  first_name: string,
+  last_name: string,
+  picture: string,
+  tier: number,
+  exp: number,
 }
