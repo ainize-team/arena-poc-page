@@ -50,10 +50,10 @@ export default function Leaderboard() {
   };
 
   useEffect(() => {
-    if (isMobile()) {
-      router.push("/m");
-      return;
-    }
+    // if (isMobile()) {
+    //   router.push("/m");
+    //   return;
+    // }
     const setupLeaderboard = async () => {
       setIsLoading(true);
       const { lastUpdated, tableData } = await getLeaderboard();

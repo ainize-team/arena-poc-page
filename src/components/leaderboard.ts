@@ -1,12 +1,12 @@
-"use server";
+"use client";
 
 import { LeaderboardTableData } from "@/types/type";
 import { PUBLIC_ENV } from "../constant/constant";
 
 const MINIMUM_VOTE = Number(PUBLIC_ENV.MINIMUM_VOTE || 100);
 type LeaderboardResponse = {
-  last_updated: number,
-  leader_board: LeaderboardModelData[],
+  updated_at: string,
+  leaderboard: LeaderboardModelData[],
 }
 
 type LeaderboardModelData = {
@@ -21,20 +21,19 @@ type LeaderboardModelData = {
 }
 
 export const getLeaderboard = async () => {
-  const endpoint = `${process.env.SERVER_URL}/dashboard`;
-  const res = await fetch(endpoint, {cache: "no-cache"});
-  const dashboard: LeaderboardResponse = await res.json();
-  // NOTE (yoojin): python timestamp to js timestamp need * 1000
-  const lastUpdatedTS = dashboard.last_updated * 1000; 
+  const res = await fetch("/api/leaderboard", {cache: "no-cache"});
+  const leaderboard: LeaderboardResponse = await res.json();
+  const lastUpdatedTS = Date.parse(leaderboard.updated_at); 
+  console.log('leaderboard :>> ', leaderboard);
   const lastUpdatedString = dateFormat(lastUpdatedTS);
-  const tableData = dashboardToTableData(dashboard.leader_board);
+  const tableData = leaderboardToTableData(leaderboard.leaderboard);
   return {
     lastUpdated: lastUpdatedString,
     tableData,
   };
 }
 
-const dashboardToTableData = (modelDatas: LeaderboardModelData[]) => {
+const leaderboardToTableData = (modelDatas: LeaderboardModelData[]) => {
   const tableData: LeaderboardTableData[] = []; 
   for (const [index, datas] of Object.entries(modelDatas)) {
     const numIndex = Number(index);
