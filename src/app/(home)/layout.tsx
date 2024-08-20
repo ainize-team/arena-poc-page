@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from "@next/third-parties/google";
 import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
 import "../globals.css";
 import RecoilRootWrapper from "@/containers/recoilRootWrapper";
 import { getGAId } from "@/constant/constant";
 import GoogleCaptchaWrapper from "@/containers/googleCaptchaWrapper";
 import AuthContext from "@/containers/authContext";
+// import "./globals.css";
+import Navbar from "@/components/Navbar";
+import { cn } from "@/utils/cn";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
   // position: "fixed",
   height: "80px",
   bottom: 0,
-  width: "100%"
+  width: "100%",
 };
 
 const layoutStyle = {
@@ -23,8 +25,6 @@ const layoutStyle = {
   width: "100%",
   maxWidth: "100%",
 };
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Chatbot Arena",
@@ -39,14 +39,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthContext>
-        <body className={inter.className}>
+        <body>
           <GoogleCaptchaWrapper>
-          <Layout style={layoutStyle}>
-            <RecoilRootWrapper>
-              {children}
-            </RecoilRootWrapper>
-            <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
-          </Layout>
+            <Navbar />
+            <main className="container">
+              <RecoilRootWrapper>{children}</RecoilRootWrapper>
+              <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
+            </main>
+            {/* <Layout style={layoutStyle}>
+              <RecoilRootWrapper>{children}</RecoilRootWrapper>
+              <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
+            </Layout> */}
           </GoogleCaptchaWrapper>
         </body>
       </AuthContext>
