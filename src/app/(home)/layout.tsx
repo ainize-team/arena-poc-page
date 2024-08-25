@@ -8,7 +8,6 @@ import GoogleCaptchaWrapper from "@/src/containers/googleCaptchaWrapper";
 import AuthContext from "@/src/containers/authContext";
 // import "./globals.css";
 import Navbar from "@/src/components/Navbar";
-import { cn } from "@/src/utils/cn";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",
