@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import RewardProgress from "./rewardProgress";
 
 export default function ArenaDescription() {
   const rules = `### 📜 Rules
@@ -16,6 +17,7 @@ export default function ArenaDescription() {
         lineHeight: 1.5,
       }}
     >
+      <RewardProgress />
       <ReactMarkdown
         components={{
           a: (props: any) => <a style={{ color: "blue" }} {...props} />,

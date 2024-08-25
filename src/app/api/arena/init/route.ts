@@ -1,4 +1,4 @@
-import { battleInit } from "@/app/api/arena/arena";
+import { battleInit } from "@/src/app/api/arena/arena";
 import { NextRequest } from "next/server";
 
 /**
@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
     const battleId = await battleInit(req);
     return Response.json(battleId, {
       status: 200,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return Response.json("", {
       status: 500,
     });

@@ -1,19 +1,11 @@
 "use client";
 
-import ArenaMenu from "@/components/arenaMenu";
-import MaintenanceMsg from "@/components/maintenance";
-import Leaderboard from "@/containers/leaderboard";
-import { ArenaMenuKey } from "@/types/type";
-import { useEffect } from "react";
+import ArenaMenu from "@/src/components/arenaMenu";
+import MaintenanceMsg from "@/src/components/maintenance";
+import Leaderboard from "@/src/containers/leaderboard";
+import { ArenaMenuKey } from "@/src/types/type";
 
 export default function Home() {
-  useEffect(() => {
-    document.body.style.setProperty("--bg-color", "#ffffff");
-    return () => {
-      document.body.style.setProperty("--bg-color", "");
-    };
-  }, []);
-
   return (
     <main className="min-h-screen">
       <ArenaMenu page={ArenaMenuKey.LEADERBOARD} />

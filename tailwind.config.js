@@ -46,6 +46,13 @@ module.exports = {
         xsm: "460px",
         "max-lg": { max: "1023px" },
         "max-desktop": { max: "959px" },
+        "min-desktop": { min: "960px" },
+        "max-mobile": { max: "499px" },
+        "min-mobile": { min: "500px" },
+      },
+      boxShadow: {
+        avatar: "0 0 0 2px rgba(0,0,0, 0.15) inset",
+        popover: "0px 4px 12px 0px rgba(0,0,0, 0.15)",
       },
     },
     colors: {
@@ -67,7 +74,7 @@ module.exports = {
         DEFAULT: "#ffffff",
         icon: "#62667d",
         t1: "#000000",
-        t2: "#72778f",
+        t2: "#73778F",
         t3: "#adb2ca",
         l1: "#c9cfde",
         l2: "#e6eaf4",

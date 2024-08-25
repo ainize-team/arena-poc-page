@@ -1,17 +1,17 @@
 "use client";
 
-import ChatBox from "@/components/chatBox";
-import PromptInput from "@/components/promptInput";
+import ChatBox from "@/src/components/chatBox";
+import PromptInput from "@/src/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/types/type";
-import ChoiceButton from "@/components/choiceButton";
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/src/types/type";
+import ChoiceButton from "@/src/components/choiceButton";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import React from "react";
 import { useSession } from "next-auth/react";
-import { authFetch } from "@/lib/auth";
+import { authFetch } from "@/src/lib/auth";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -19,14 +19,14 @@ const LeftCardStyle: React.CSSProperties = {
   minHeight: "40vh",
   marginLeft: "3rem",
   marginRight: "3px",
-}
+};
 const RightCardStyle: React.CSSProperties = {
   textAlign: "center",
   width: "100%",
   minHeight: "40vh",
   marginLeft: "3px",
   marginRight: "3rem",
-}
+};
 
 export default function ArenaChat() {
   const router = useRouter();
@@ -46,11 +46,11 @@ export default function ArenaChat() {
 
   const { data: session, update } = useSession();
 
-  const testCaptcha = async() => {
+  const testCaptcha = async () => {
     if (!executeRecaptcha) {
       return;
     }
-    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+    const gRecaptchaToken = await executeRecaptcha("inquirySubmit");
     const response = await axios({
       method: "post",
       url: "/api/arena/recaptchaSubmit",
@@ -64,20 +64,21 @@ export default function ArenaChat() {
     });
 
     if (response.data && response.data.success === true) {
-      setCaptcha(CaptchaStatus.TRUE)
+      setCaptcha(CaptchaStatus.TRUE);
     } else {
-      setCaptcha(CaptchaStatus.FALSE)
+      setCaptcha(CaptchaStatus.FALSE);
     }
   };
 
   const openNotification = (rewardData: any) => {
-    console.log('rewardData :>> ', rewardData);
+    console.log("rewardData :>> ", rewardData);
     const { reward } = rewardData;
     const isZeroReward = !reward || reward === 0;
     notiApi.info({
       message: isZeroReward ? "Reward Failed." : "Reward Success!",
-      description:
-        isZeroReward ? "Some error occured." : `Reward: ${reward.toFixed(2)} AIN`,
+      description: isZeroReward
+        ? "Some error occured."
+        : `Reward: ${reward.toFixed(2)} AIN`,
       placement: "topRight",
       duration: 0,
     });
@@ -86,18 +87,20 @@ export default function ArenaChat() {
   const battleInit = async () => {
     await authFetch("/api/arena/init", {
       method: "POST",
-    }).then(async (res) => {
-      try {
-        const result = await res.json();
-        setBattleId(result);
-      } catch (e) {
-        console.log('e :>> ', e);
-      }
-    }).catch((e) => {
-      alert("Init failed.");
-      router.refresh();
-    });
-  }
+    })
+      .then(async (res) => {
+        try {
+          const result = await res.json();
+          setBattleId(result);
+        } catch (e) {
+          console.log("e :>> ", e);
+        }
+      })
+      .catch((e) => {
+        alert("Init failed.");
+        router.refresh();
+      });
+  };
 
   const isMobile = () => {
     return /Mobi/i.test(window.navigator.userAgent);
@@ -105,18 +108,18 @@ export default function ArenaChat() {
 
   useEffect(() => {
     if (isMobile()) {
-      router.push("/m");
+      // router.push("/m");
       return;
     }
-  }, [])
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     testCaptcha();
-  }, [executeRecaptcha])
+  }, [executeRecaptcha]);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (
-      status === ArenaStatus.NOTCONNECTED && 
+      status === ArenaStatus.NOTCONNECTED &&
       captcha === CaptchaStatus.TRUE &&
       session
     ) {
@@ -124,12 +127,12 @@ export default function ArenaChat() {
     } else if (!session || !session.accessToken) {
       setStatus(ArenaStatus.NOTCONNECTED);
     }
-  }, [captcha, session])
+  }, [captcha, session]);
 
   useEffect(() => {
     setModelAName("Model A");
     setModelBName("Model B");
-    switch(status) {
+    switch (status) {
       case ArenaStatus.NOTCONNECTED:
         break;
       case ArenaStatus.READY:
@@ -140,13 +143,17 @@ export default function ArenaChat() {
         setModelAName(modelA);
         setModelBName(modelB);
     }
-  }, [status])
+  }, [status]);
 
   useEffect(() => {
-    if (turn > 0 && modelAChatList.length / 2 === turn && modelBChatList.length / 2 === turn) {
+    if (
+      turn > 0 &&
+      modelAChatList.length / 2 === turn &&
+      modelBChatList.length / 2 === turn
+    ) {
       setStatus(ArenaStatus.COMPETING);
     }
-  }, [modelAChatList.length, modelBChatList.length])
+  }, [modelAChatList.length, modelBChatList.length]);
 
   const resetStates = () => {
     setStatus(ArenaStatus.READY);
@@ -155,24 +162,28 @@ export default function ArenaChat() {
     setModelAChatList([]);
     setModelBChatList([]);
     setPrompt("");
-  }
+  };
 
   const onClickChoiceBtn = async (value: ChoiceType) => {
     setStatus(ArenaStatus.REGISTERING);
     const reqBody = {
       battleId,
       choice: value,
-    }
+    };
     const choiceRes = await authFetch("/api/arena/choice", {
       method: "POST",
       body: JSON.stringify(reqBody),
-    })
+    });
     if (choiceRes.ok) {
-      const models = await (choiceRes).json();
-      changeWinnerName(value, models[ChoiceType.MODELA], models[ChoiceType.MODELB]);
+      const models = await choiceRes.json();
+      changeWinnerName(
+        value,
+        models[ChoiceType.MODELA],
+        models[ChoiceType.MODELB],
+      );
       authFetch(`/api/arena/reward`, {
         method: "POST",
-        body: JSON.stringify({ battleId })
+        body: JSON.stringify({ battleId }),
       }).then(async (res) => {
         if (res.ok) {
           const rewardData = await res.json();
@@ -181,14 +192,18 @@ export default function ArenaChat() {
       });
       setStatus(ArenaStatus.END);
     }
-  }
+  };
 
-  const changeWinnerName = (winner: ChoiceType, modelA: string, modelB: string) => {
+  const changeWinnerName = (
+    winner: ChoiceType,
+    modelA: string,
+    modelB: string,
+  ) => {
     const winnerMark = "🎉";
     setModelA(modelA);
     setModelB(modelB);
-    
-    switch(winner) {
+
+    switch (winner) {
       case ChoiceType.MODELA:
         setModelA(winnerMark + modelA);
         break;
@@ -202,14 +217,14 @@ export default function ArenaChat() {
       case ChoiceType.NOTHING:
         break;
     }
-  }
+  };
 
   const onClickNextBtn = () => {
     setStatus(ArenaStatus.READY);
     resetStates();
     router.refresh();
     update();
-  }
+  };
 
   const handlePrompt = async (prompt: string) => {
     if (status === ArenaStatus.READY || status === ArenaStatus.COMPETING) {
@@ -219,16 +234,10 @@ export default function ArenaChat() {
       setPrompt(prompt);
       const userChat: Chat = {
         text: prompt,
-        type: "user"
-      }
-      setModelAChatList([
-        ...modelAChatList,
-        userChat,
-      ]);
-      setModelBChatList([
-        ...modelBChatList,
-        userChat,
-      ]);
+        type: "user",
+      };
+      setModelAChatList([...modelAChatList, userChat]);
+      setModelBChatList([...modelBChatList, userChat]);
       try {
         authFetch("/api/arena/chat", {
           method: "POST",
@@ -243,14 +252,14 @@ export default function ArenaChat() {
             ...prev,
             {
               text: result,
-              type: "assistant"
-            }
+              type: "assistant",
+            },
           ]);
         });
         authFetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
-            battleId, 
+            battleId,
             modelName: "model_b",
             prompt: prompt,
           }),
@@ -260,8 +269,8 @@ export default function ArenaChat() {
             ...prev,
             {
               text: result,
-              type: "assistant"
-            }
+              type: "assistant",
+            },
           ]);
         });
         setPrompt("");
@@ -271,40 +280,76 @@ export default function ArenaChat() {
         router.refresh();
       }
     }
-  }
+  };
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      {notiContextHolder}{/* NOTE(yoojin): Hide reward noti */}
-      <Flex justify="center" style={{marginTop: "10px"}}>
-        <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} chatList={modelAChatList} />
-        <ChatBox modelName={modelBName} status={status} style={RightCardStyle} chatList={modelBChatList} />
+    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+      {notiContextHolder}
+      {/* NOTE(yoojin): Hide reward noti */}
+      <Flex justify="center" style={{ marginTop: "10px" }}>
+        <ChatBox
+          modelName={modelAName}
+          status={status}
+          style={LeftCardStyle}
+          chatList={modelAChatList}
+        />
+        <ChatBox
+          modelName={modelBName}
+          status={status}
+          style={RightCardStyle}
+          chatList={modelBChatList}
+        />
       </Flex>
-        {status !== ArenaStatus.END ? (
-          <>
-            <PromptInput setParentPrompt={handlePrompt} status={status} />
-            <Row justify="space-evenly">
-              <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} /></Col>
-              <Col span={3} />
-            </Row>
-          </>
-        ) : (
-          <Flex justify="center" style={{width: "100%"}}>
-              <Button 
-                style={{
-                  height: "50px",
-                  width: "60%",
-                }}
-                onClick={onClickNextBtn}
-              >Next Challenge</Button>
-          </Flex>
-        )}
+      {status !== ArenaStatus.END ? (
+        <>
+          <PromptInput setParentPrompt={handlePrompt} status={status} />
+          <Row justify="space-evenly">
+            <Col span={3} />
+            <Col span={3}>
+              <ChoiceButton
+                onClick={onClickChoiceBtn}
+                value={ChoiceType.MODELA}
+                arenaStatus={status}
+              />
+            </Col>
+            <Col span={3}>
+              <ChoiceButton
+                onClick={onClickChoiceBtn}
+                value={ChoiceType.MODELB}
+                arenaStatus={status}
+              />
+            </Col>
+            <Col span={3}>
+              <ChoiceButton
+                onClick={onClickChoiceBtn}
+                value={ChoiceType.TIE}
+                arenaStatus={status}
+              />
+            </Col>
+            <Col span={3}>
+              <ChoiceButton
+                onClick={onClickChoiceBtn}
+                value={ChoiceType.NOTHING}
+                arenaStatus={status}
+              />
+            </Col>
+            <Col span={3} />
+          </Row>
+        </>
+      ) : (
+        <Flex justify="center" style={{ width: "100%" }}>
+          <Button
+            style={{
+              height: "50px",
+              width: "60%",
+            }}
+            onClick={onClickNextBtn}
+          >
+            Next Challenge
+          </Button>
+        </Flex>
+      )}
       <div />
     </Space>
-  )
+  );
 }
-

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
 import "../globals.css";
-import RecoilRootWrapper from "@/containers/recoilRootWrapper";
-import { getGAId } from "@/constant/constant";
-import GoogleCaptchaWrapper from "@/containers/googleCaptchaWrapper";
-import AuthContext from "@/containers/authContext";
+import RecoilRootWrapper from "@/src/containers/recoilRootWrapper";
+import { getGAId } from "@/src/constant/constant";
+import GoogleCaptchaWrapper from "@/src/containers/googleCaptchaWrapper";
+import AuthContext from "@/src/containers/authContext";
 // import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { cn } from "@/utils/cn";
+import Navbar from "@/src/components/Navbar";
+import { cn } from "@/src/utils/cn";
 
 const footerStyle: React.CSSProperties = {
   textAlign: "center",

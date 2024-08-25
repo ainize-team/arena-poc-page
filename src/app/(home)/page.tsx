@@ -1,10 +1,10 @@
 "use client";
 
-import ArenaDescription from "@/components/arenaDescription";
-import ArenaMenu from "@/components/arenaMenu";
-import ArenaChat from "@/containers/arenaChat";
-import { ArenaMenuKey } from "@/types/type";
-import MaintenanceMsg from "@/components/maintenance";
+import ArenaDescription from "@/src/components/arenaDescription";
+import ArenaMenu from "@/src/components/arenaMenu";
+import ArenaChat from "@/src/containers/arenaChat";
+import { ArenaMenuKey } from "@/src/types/type";
+import MaintenanceMsg from "@/src/components/maintenance";
 import { Analytics } from "@vercel/analytics/react";
 import { Manrope } from "next/font/google";
 
