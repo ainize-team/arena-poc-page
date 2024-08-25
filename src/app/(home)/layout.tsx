@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import Layout, { Content, Footer, Header } from "antd/lib/layout/layout";
+import { Footer } from "antd/lib/layout/layout";
 import "../globals.css";
 import RecoilRootWrapper from "@/src/containers/recoilRootWrapper";
 import { getGAId } from "@/src/constant/constant";
