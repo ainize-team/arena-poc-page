@@ -17,6 +17,14 @@ const footerStyle: React.CSSProperties = {
   width: "100%",
 };
 
+const layoutStyle = {
+  borderRadius: 8,
+  overflow: "hidden",
+  allignItems: "center",
+  width: "100%",
+  maxWidth: "100%",
+};
+
 export const metadata: Metadata = {
   title: "Chatbot Arena",
   description: "Chatbot Arena powerd by AI Network.",

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const failedRefresh = {
   token: undefined,
-  expire: undefined
-}
+  expire: undefined,
+};
 
 /**
  * refresh token 으로 Backend 에 access token 재발급 요청
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     const result = await fetch(endpoint, {
       method: "GET",
-      headers: { Cookie: `refresh_token=${refreshToken?.value};` }
+      headers: { Cookie: `refresh_token=${refreshToken?.value};` },
     });
     const refreshResult = await result.json();
     const { access_token } = refreshResult;
