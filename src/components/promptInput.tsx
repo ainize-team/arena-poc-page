@@ -1,23 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Input } from 'antd';
+import { Input } from "antd";
 import { ArrowUpOutlined } from "@ant-design/icons";
-import { ArenaStatus } from "@/types/type";
+import { ArenaStatus } from "@/src/types/type";
 
 const { Search } = Input;
 
 type promptProps = {
-  setParentPrompt: Function,
-  status: ArenaStatus,
-  disabled?: boolean,
-}
+  setParentPrompt: Function;
+  status: ArenaStatus;
+  disabled?: boolean;
+};
 
-export default function PromptInput({setParentPrompt, status, disabled = false}: promptProps) {
+export default function PromptInput({
+  setParentPrompt,
+  status,
+  disabled = false,
+}: promptProps) {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const promptPlaceHolder = (status:ArenaStatus) => {
-    switch(status) {
+  const promptPlaceHolder = (status: ArenaStatus) => {
+    switch (status) {
       case ArenaStatus.NOTCONNECTED:
         return "Connect your AIN wallet first.";
       case ArenaStatus.READY:
@@ -28,46 +32,49 @@ export default function PromptInput({setParentPrompt, status, disabled = false}:
       case ArenaStatus.END:
         return "Select next challange first.";
     }
-  }
-  useEffect(() =>{
-    if (status === ArenaStatus.INFERENCING){
+  };
+  useEffect(() => {
+    if (status === ArenaStatus.INFERENCING) {
       setIsLoading(true);
     } else {
       setIsLoading(false);
     }
-  },[status])
+  }, [status]);
 
   const handlePrompt = (event: any) => {
     setPrompt(event.target.value);
-  }
+  };
 
   const onClickSendBtn = async () => {
     setParentPrompt(prompt);
     setPrompt("");
-  }
+  };
 
-  const loadingBTN= () => {
-    if(isLoading === true){
-      return true
+  const loadingBTN = () => {
+    if (isLoading === true) {
+      return true;
     } else {
-      return <ArrowUpOutlined />
+      return <ArrowUpOutlined />;
     }
-  }
+  };
 
   return (
-    <Search 
+    <Search
       placeholder={promptPlaceHolder(status)}
       onChange={handlePrompt}
       onSearch={onClickSendBtn}
       value={prompt}
-      loading={isLoading} 
+      loading={isLoading}
       style={{
         paddingTop: 10,
         width: "100%",
         paddingInline: "3rem",
       }}
       enterButton={loadingBTN()}
-      disabled={(status !== ArenaStatus.READY && status !== ArenaStatus.COMPETING) || disabled}
+      disabled={
+        (status !== ArenaStatus.READY && status !== ArenaStatus.COMPETING) ||
+        disabled
+      }
     />
   );
 }

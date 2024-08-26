@@ -1,10 +1,10 @@
 "use client";
 
-import useWallet  from "@/lib/wallet";
+import useWallet from "@/src/lib/wallet";
 import { WalletOutlined } from "@ant-design/icons";
 import { Button, Modal, Space, Tooltip, notification } from "antd";
 import { useEffect, useState } from "react";
-import { addressAtom, useSsrCompletedState } from "@/lib/recoil";
+import { addressAtom, useSsrCompletedState } from "@/src/lib/recoil";
 import { useRecoilState } from "recoil";
 import { PUBLIC_ENV } from "../constant/constant";
 
@@ -19,7 +19,7 @@ export default function WalletConnectBtn() {
   const {
     isWalletExist,
     setWalletEventHandler,
-    connectWallet, 
+    connectWallet,
     isValidChain,
     getEventReward,
   } = useWallet();
@@ -36,27 +36,26 @@ export default function WalletConnectBtn() {
   useEffect(() => {
     if (!isValidChain) {
       setInvalidChainModalOpen(true);
-    }
-    else 
-      setInvalidChainModalOpen(false);
-  }, [isValidChain])
+    } else setInvalidChainModalOpen(false);
+  }, [isValidChain]);
 
   useEffect(() => {
     if (!isConnected) {
-      if (address !== "")
-        setIsConnected(true);
+      if (address !== "") setIsConnected(true);
       return;
     }
     if (address === "") {
       setIsConnected(false);
       connectWalletAndSetConnected();
     }
-  }, [address])
+  }, [address]);
 
   const setSsrCompleted = useSsrCompletedState();
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
-  const openNotification = (rewardData: { [eventId: string]: { message: string, reward: number } }[]) => {
+  const openNotification = (
+    rewardData: { [eventId: string]: { message: string; reward: number } }[],
+  ) => {
     if (rewardData.length === 0) return;
     for (const events of Object.values(rewardData)) {
       for (const [eventId, data] of Object.entries(events)) {
@@ -77,7 +76,7 @@ export default function WalletConnectBtn() {
       const reward = await getEventReward(connectedAddress);
       openNotification(reward);
     }
-  }
+  };
 
   const onClickConnectWalletBtn = async () => {
     if (!isWalletExist()) {
@@ -93,62 +92,75 @@ export default function WalletConnectBtn() {
       return;
     }
     await connectWalletAndSetConnected();
-  }
+  };
 
   const handleOk = () => {
-    if (noWalletModalOpen)
-      setNoWalletModalOpen(false);
-    if (invalidChainModalOpen)
-      setInvalidChainModalOpen(false);
+    if (noWalletModalOpen) setNoWalletModalOpen(false);
+    if (invalidChainModalOpen) setInvalidChainModalOpen(false);
   };
 
   const renderWalletButton = () => {
     let text = "Connect Wallet";
-    if (isConnected)
-      text = address.slice(0,8) + "...";
+    if (isConnected) text = address.slice(0, 8) + "...";
 
     if (invalidChainModalOpen) {
       return (
-        <Tooltip overlay={
-          <>
-            {`Incorrect network selected.`}
-            <br />
-            {`Please switch to ${PUBLIC_ENV.APP_ENV === "production" ? "Mainnet" : "Testnet"}.`}
-          </>
-        } placement="bottom" open>{text}</Tooltip>
-      )
+        <Tooltip
+          overlay={
+            <>
+              {`Incorrect network selected.`}
+              <br />
+              {`Please switch to ${PUBLIC_ENV.APP_ENV === "production" ? "Mainnet" : "Testnet"}.`}
+            </>
+          }
+          placement="bottom"
+          open
+        >
+          {text}
+        </Tooltip>
+      );
     }
     return text;
-  }
+  };
 
   return (
     <Space>
       {!isMobile ? (
-      <>
-      {notiContextHolder}
-      <Button type={isConnected ? "default" : "primary" } onClick={onClickConnectWalletBtn}>
-        <WalletOutlined />{renderWalletButton()} 
-      </Button>
-      <Modal
-        open={noWalletModalOpen}
-        title="AIN Wallet not found."
-        onOk={handleOk}
-        onCancel={handleOk}
-        footer={[
+        <>
+          {notiContextHolder}
           <Button
-            key="link"
-            href="https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl?hl=ko"
-            type="primary"
-            loading={modalLoading}
-            onClick={handleOk}
+            type={isConnected ? "default" : "primary"}
+            onClick={onClickConnectWalletBtn}
           >
-            Install AIN Wallet
-          </Button>,
-        ]}
-      >
-        <p>To receive rewards in the Arena, you need to connect your AIN Wallet.</p>
-      </Modal>
-      </>) : <></>}
+            <WalletOutlined />
+            {renderWalletButton()}
+          </Button>
+          <Modal
+            open={noWalletModalOpen}
+            title="AIN Wallet not found."
+            onOk={handleOk}
+            onCancel={handleOk}
+            footer={[
+              <Button
+                key="link"
+                href="https://chromewebstore.google.com/detail/ain-wallet/hbdheoebpgogdkagfojahleegjfkhkpl?hl=ko"
+                type="primary"
+                loading={modalLoading}
+                onClick={handleOk}
+              >
+                Install AIN Wallet
+              </Button>,
+            ]}
+          >
+            <p>
+              To receive rewards in the Arena, you need to connect your AIN
+              Wallet.
+            </p>
+          </Modal>
+        </>
+      ) : (
+        <></>
+      )}
     </Space>
   );
 }

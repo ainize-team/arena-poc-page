@@ -1,6 +1,6 @@
 import { Header } from "antd/lib/layout/layout";
 import WalletConnectBtn from "./walletConnectBtn";
-import LoginBtn from "./loginBtn";
+// import LoginBtn from "./loginBtn";
 
 const headerStyle: React.CSSProperties = {
   textAlign: "left",
@@ -15,15 +15,21 @@ const headerStyle: React.CSSProperties = {
 export default function ArenaHeader() {
   return (
     <Header style={headerStyle}>
-      <div style={{
-        flex: "none",
-        fontSize: "32px",
-        fontWeight: "bold",
-        }}>AI Network LLM Arena</div>
-      <div style={{
-        marginLeft: "auto",
-      }}>
-        <LoginBtn />
+      <div
+        style={{
+          flex: "none",
+          fontSize: "32px",
+          fontWeight: "bold",
+        }}
+      >
+        AI Network LLM Arena
+      </div>
+      <div
+        style={{
+          marginLeft: "auto",
+        }}
+      >
+        {/* <LoginBtn /> */}
       </div>
     </Header>
   );

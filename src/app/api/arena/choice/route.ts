@@ -1,4 +1,4 @@
-import { choiceModel } from "@/app/api/arena/arena";
+import { choiceModel } from "@/src/app/api/arena/arena";
 import { NextRequest } from "next/server";
 
 /**

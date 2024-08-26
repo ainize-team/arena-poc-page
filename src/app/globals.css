@@ -1,4 +1,48 @@
-:root {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  /* 모바일에서 터치했을때 색상 변경 효과 제거 */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  /* 폰트 부드럽게 표시 */
+  @apply antialiased;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  /* @apply bg-light-b1 dark:bg-dark; */
+  --bg-color: theme(colors.light.b1);
+  @apply bg-[var(--bg-color)] dark:bg-dark;
+  transition: background-color 0.3s;
+  overflow: hidden;
+}
+
+html {
+  font-family: var(--font-manrope);
+  letter-spacing: 0em;
+}
+
+.container {
+  /* @apply max-w-5xl mx-auto px-4; */
+  @apply mx-auto w-full max-w-screen-lg;
+}
+
+@layer base {
+  /* button 태그 기본 포커스 outline 효과 제거 */
+  button {
+    @apply focus:outline-none;
+  }
+  /* a 태그 기본 포커스 outline 효과 제거 */
+  a {
+    @apply focus-within:outline-none focus:outline-none;
+  }
+}
+
+/* :root {
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
@@ -38,7 +82,7 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
-}
+} */
 
 /* @media (prefers-color-scheme: dark) {
   :root {
@@ -73,7 +117,7 @@
   }
 } */
 
-* {
+/* * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
@@ -116,7 +160,7 @@ ol {
 
 .ant-table-wrapper .ant-table-tbody .ant-table-cell {
   padding: 12px 16px;
-}
+} */
 
 /* @media (prefers-color-scheme: dark) {
   html {
