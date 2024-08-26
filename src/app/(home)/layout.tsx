@@ -40,7 +40,6 @@ export default function RootLayout({
       <AuthContext>
         <body>
           <GoogleCaptchaWrapper>
-            <Navbar />
             <main className="container">
               <RecoilRootWrapper>{children}</RecoilRootWrapper>
               <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
