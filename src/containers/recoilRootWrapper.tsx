@@ -3,6 +3,7 @@
 import ArenaHeader from "@/src/components/arenaHeader";
 import { Content, Header } from "antd/lib/layout/layout";
 import { RecoilRoot } from "recoil";
+import Navbar from "../components/Navbar";
 
 type RecoilRootWrapperProps = {
   children: React.ReactNode;
@@ -18,7 +19,8 @@ export default function RecoilRootWrapper({
 }: RecoilRootWrapperProps) {
   return (
     <RecoilRoot>
-      <ArenaHeader />
+      {/* <ArenaHeader /> */}
+      <Navbar />
       <Content style={contentStyle}>{children}</Content>
     </RecoilRoot>
   );
