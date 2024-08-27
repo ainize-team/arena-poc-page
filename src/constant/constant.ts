@@ -17,16 +17,22 @@ export const parseUserExp = (
   switch (userTier) {
     case 1:
       parsedExp = userExp / 50;
+      break;
     case 2:
       parsedExp = userExp / 80;
+      break;
     case 3:
       parsedExp = userExp / 150;
+      break;
     case 4:
       parsedExp = userExp / 230;
+      break;
     case 5:
       parsedExp = 1;
+      break;
     default:
       parsedExp = userExp / 20;
+      break;
   }
 
   return parsedExp;
