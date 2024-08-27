@@ -1,7 +1,6 @@
 "use client";
 
-import ArenaHeader from "@/src/components/arenaHeader";
-import { Content, Header } from "antd/lib/layout/layout";
+import { Content } from "antd/lib/layout/layout";
 import { RecoilRoot } from "recoil";
 import Navbar from "../components/Navbar";
 
@@ -21,7 +20,12 @@ export default function RecoilRootWrapper({
     <RecoilRoot>
       {/* <ArenaHeader /> */}
       <Navbar />
-      <Content style={contentStyle}>{children}</Content>
+      <header className="px-4 py-6 lg:px-10 lg:py-4">
+        <div className="py-2">&nbsp;</div>
+      </header>
+      <div style={contentStyle} className="mt-6">
+        {children}
+      </div>
     </RecoilRoot>
   );
 }

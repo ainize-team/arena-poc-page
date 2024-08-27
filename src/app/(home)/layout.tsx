@@ -1,34 +1,18 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { Footer } from "antd/lib/layout/layout";
 import "../globals.css";
 import RecoilRootWrapper from "@/src/containers/recoilRootWrapper";
 import { getGAId } from "@/src/constant/constant";
 import GoogleCaptchaWrapper from "@/src/containers/googleCaptchaWrapper";
 import AuthContext from "@/src/containers/authContext";
-// import "./globals.css";
-import Navbar from "@/src/components/Navbar";
-
-const footerStyle: React.CSSProperties = {
-  textAlign: "center",
-  // position: "fixed",
-  height: "80px",
-  bottom: 0,
-  width: "100%",
-};
-
-const layoutStyle = {
-  borderRadius: 8,
-  overflow: "hidden",
-  allignItems: "center",
-  width: "100%",
-  maxWidth: "100%",
-};
+import { Manrope } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "Chatbot Arena",
   description: "Chatbot Arena powerd by AI Network.",
 };
+
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export default function RootLayout({
   children,
@@ -38,16 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthContext>
-        <body>
+        <body className={`${manrope.className} min-h-screen`}>
           <GoogleCaptchaWrapper>
             <main className="container">
               <RecoilRootWrapper>{children}</RecoilRootWrapper>
-              <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
+              <div className="flex items-stretch justify-center py-5 text-sm font-semibold leading-130 -tracking-[0.42px] text-dark-t3">
+                Powered by AI Network © 2024
+              </div>
             </main>
-            {/* <Layout style={layoutStyle}>
-              <RecoilRootWrapper>{children}</RecoilRootWrapper>
-              <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
-            </Layout> */}
           </GoogleCaptchaWrapper>
         </body>
       </AuthContext>

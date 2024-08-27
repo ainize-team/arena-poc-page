@@ -1,10 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{html,js,ts,jsx,tsx}",
+    "./src/components/**/*.{html,js,ts,jsx,tsx}",
+    "./src/containers/**/*.{html,js,ts,jsx,tsx}",
   ],
-  darkMode: "class",
+  darkMode: "selector",
   theme: {
     extend: {
       fontFamily: {
@@ -53,6 +54,8 @@ module.exports = {
       boxShadow: {
         avatar: "0 0 0 2px rgba(0,0,0, 0.15) inset",
         popover: "0px 4px 12px 0px rgba(0,0,0, 0.15)",
+        hover: "0px 2px 4px 0px rgba(165, 163, 174, 0.30)",
+        "hover-dark": "0px 2px 4px 0px rgba(0, 0, 0, 0.30)",
       },
     },
     colors: {

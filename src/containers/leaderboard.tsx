@@ -1,63 +1,37 @@
 "use client";
 
-import { Flex, Table, TableProps } from "antd";
-import { getLeaderboard } from "@/src/components/leaderboard";
-import { useEffect, useState } from "react";
-import { LeaderboardTableData } from "@/src/types/type";
-import ScoreTooltip from "@/src/components/scoreTooltip";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { Spin } from "antd";
+
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  flexRender,
+  getPaginationRowModel,
+} from "@tanstack/react-table";
+import { LeaderboardTableData } from "@/src/types/type";
+import { getLeaderboard } from "@/src/components/leaderboard";
+import { LoadingOutlined } from "@ant-design/icons";
+import { cn } from "../utils/cn";
+
+import ChevronLeft from "@/public/images/buttons/ChevronLeft.svg";
+import ChevronRight from "@/public/images/buttons/ChevronRight.svg";
+
+type LastUpdatedData = {
+  dateFormat: string;
+  mobileDateFormat: string;
+};
 
 export default function Leaderboard() {
   const router = useRouter();
-  const [lastUpdated, setLastUpdated] = useState("");
+  const [lastUpdated, setLastUpdated] = useState<LastUpdatedData>();
   const [tableSourceData, setTableSourceData] =
     useState<LeaderboardTableData[]>();
   const [isLoading, setIsLoading] = useState(true);
-  const columns: TableProps["columns"] = [
-    {
-      title: "Rank",
-      dataIndex: "rank",
-      key: "rank",
-    },
-    {
-      title: "Model Name",
-      dataIndex: "modelName",
-      key: "modelName",
-      render: (text, record) => (
-        <a
-          style={{ color: "blue", textDecoration: "underline" }}
-          href={record.link}
-        >
-          {text}
-        </a>
-      ),
-    },
-    {
-      title: () => <ScoreTooltip>Arena Score</ScoreTooltip>,
-      dataIndex: "elo",
-      key: "elo",
-    },
-    {
-      title: "95% CI",
-      dataIndex: "ci",
-      key: "ci",
-    },
-    {
-      title: "Votes",
-      dataIndex: "votes",
-      key: "votes",
-    },
-    {
-      title: "Organization",
-      dataIndex: "org",
-      key: "org",
-    },
-    {
-      title: "License",
-      dataIndex: "license",
-      key: "license",
-    },
-  ];
 
   const isMobile = () => {
     return /Mobi/i.test(window.navigator.userAgent);
@@ -72,42 +46,252 @@ export default function Leaderboard() {
       setIsLoading(true);
       const { lastUpdated, tableData } = await getLeaderboard();
       setLastUpdated(lastUpdated);
+      // const testArray = tableData.concat(
+      //   tableData.slice(3, 5),
+      //   tableData.slice(5),
+      //   tableData.slice(8),
+      //   tableData.slice(9),
+      //   tableData.slice(2),
+      //   tableData.slice(4),
+      // );
+      // setTableSourceData(testArray);
       setTableSourceData(tableData);
+      console.log("tableData : ", tableData);
       setIsLoading(false);
     };
     setupLeaderboard();
   }, []);
 
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "rank",
+        header: "Rank",
+      },
+      {
+        accessorKey: "modelName",
+        header: "Model Name",
+        cell: ({ row, getValue }) => (
+          <Link
+            href={row.original.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "text-sm font-semibold leading-5 text-blue underline",
+            )}
+          >
+            {getValue()}
+          </Link>
+        ),
+      },
+      {
+        accessorKey: "elo",
+        header: "Arena Score",
+      },
+      {
+        accessorKey: "ci",
+        header: "95% CI",
+      },
+      {
+        accessorKey: "votes",
+        header: "Vote",
+      },
+      {
+        accessorKey: "org",
+        header: "Organization",
+      },
+      {
+        accessorKey: "license",
+        header: "License",
+      },
+    ],
+    [],
+  );
+
+  const table = useReactTable({
+    data: tableSourceData ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: { pagination: { pageSize: 10 } },
+  });
+
   return (
-    <div>
-      <div
-        style={{
-          textAlign: "left",
-          display: "flex",
-          paddingInline: "3rem",
-          marginTop: "16px",
-        }}
-      >
-        <span style={{ flex: "none" }}>Rankings update every 30 minutes.</span>
-        <span style={{ marginLeft: "auto", color: "rgba(0, 0, 0, .5)" }}>
-          Last Updated: {lastUpdated}
+    <div className="min-desktop:px-0 max-desktop:px-4">
+      <div className="flex justify-between">
+        <span className="text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 dark:text-dark-t3">
+          Ranking update every 30 minutes
+        </span>
+        <span className="text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 dark:text-dark-t3 max-desktop:hidden">
+          {lastUpdated?.dateFormat
+            ? `Last Updated: ${lastUpdated?.dateFormat}`
+            : ""}
+        </span>
+        <span className="min-desktop:hidden text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 dark:text-dark-t3">
+          {lastUpdated?.mobileDateFormat}
         </span>
       </div>
-      <Flex
-        style={{
-          width: "100%",
-          marginTop: "12px",
-          paddingInline: "3rem",
-        }}
-        justify="center"
-      >
-        <Table
-          style={{ width: "100%" }}
-          dataSource={tableSourceData}
-          columns={columns}
-          loading={isLoading}
-        />
-      </Flex>
+      <div className="flex flex-col items-start self-stretch py-[14px]">
+        <div className="relative w-full overflow-x-auto rounded-xl border border-light-l2 bg-light dark:border-transparent dark:bg-dark-b2">
+          {(isLoading || table.getRowModel().rows.length === 0) && (
+            <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-xl bg-light/50">
+              {isLoading ? (
+                <Spin
+                  indicator={
+                    <LoadingOutlined
+                      style={{ fontSize: 64 }}
+                      className="text-dark dark:text-light"
+                      spin
+                    />
+                  }
+                />
+              ) : (
+                <div className="text-xl font-semibold leading-5 text-dark">
+                  No data available
+                </div>
+              )}
+            </div>
+          )}
+          <>
+            <table className="min-w-full items-start">
+              <thead className="bg-light-b3 dark:bg-dark-b3">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr
+                    key={headerGroup.id}
+                    className="border-b border-b-light-l2 text-left text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t2 dark:border-transparent dark:text-dark-t2"
+                  >
+                    {headerGroup.headers.map((header, index) => (
+                      <th
+                        key={header.id}
+                        className={cn(
+                          "min-mobile:px-[14px] min-mobile:py-4 max-mobile:py-[14px] max-mobile:px-[10px] whitespace-nowrap",
+                          index === 0 && "text-center",
+                        )}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.length > 0 ? (
+                  table.getRowModel().rows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="border-b border-b-light-l2 text-left text-sm font-semibold leading-5 text-dark dark:border-transparent dark:text-light"
+                    >
+                      {row.getVisibleCells().map((cell, index) => (
+                        <td
+                          key={cell.id}
+                          className={cn(
+                            "min-mobile:px-[14px] min-mobile:py-4 max-mobile:py-[14px] max-mobile:px-[10px] whitespace-nowrap",
+                            index === 0 && "text-center text-base",
+                          )}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : (
+                  <tr className="">
+                    <td colSpan={columns.length} className="text-center">
+                      <div className="min-desktop:min-h-[500px] flex h-full items-center justify-center max-desktop:min-h-[300px]"></div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="sticky left-0 flex w-full justify-center gap-1 justify-self-end px-6 py-4">
+              {/* <button
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
+                  className="rounded border px-2 py-1 disabled:opacity-50"
+                >
+                  {"<<"} First
+                </button> */}
+
+              <button
+                onClick={() => table.previousPage()}
+                disabled={
+                  isLoading ||
+                  table.getRowModel().rows.length === 0 ||
+                  !table.getCanPreviousPage()
+                }
+                className="hover:shadow-hover dark:hover:shadow-hover-dark cursor-pointer rounded px-2 py-1 hover:bg-light-b1 disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:hover:bg-dark-b3"
+              >
+                <Image
+                  width={16}
+                  height={16}
+                  className=""
+                  alt={"leaderboard ChevronLeft"}
+                  src={ChevronLeft}
+                />
+              </button>
+              <button
+                onClick={() =>
+                  table.setPageIndex(table.getState().pagination.pageIndex)
+                }
+                className="hover:shadow-hover dark:hover:shadow-hover-dark h-8 w-8 cursor-pointer rounded px-2 py-1 text-base font-bold leading-5 text-dark hover:bg-light-b1 disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:text-light dark:hover:bg-dark-b3"
+                disabled={isLoading || tableSourceData?.length === 0}
+              >
+                {table.getState().pagination.pageIndex + 1}
+              </button>
+              {table.getCanNextPage() && (
+                <>
+                  <button
+                    onClick={() =>
+                      table.setPageIndex(
+                        table.getState().pagination.pageIndex + 1,
+                      )
+                    }
+                    disabled={
+                      isLoading ||
+                      table.getRowModel().rows.length === 0 ||
+                      table.getState().pagination.pageIndex + 1 >=
+                        table.getPageCount()
+                    }
+                    className="hover:shadow-hover dark:hover:shadow-hover-dark h-8 w-8 cursor-pointer rounded px-2 py-1 text-base font-normal leading-5 text-light-t3 hover:bg-light-b1 hover:text-dark disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:text-dark-t3 dark:hover:bg-dark-b3 dark:hover:text-light"
+                  >
+                    {table.getState().pagination.pageIndex + 2}
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => table.nextPage()}
+                disabled={
+                  isLoading ||
+                  table.getRowModel().rows.length === 0 ||
+                  !table.getCanNextPage()
+                }
+                className="hover:shadow-hover dark:hover:shadow-hover-dark cursor-pointer rounded px-2 py-1 hover:bg-light-b1 disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:hover:bg-dark-b3"
+              >
+                <Image
+                  width={16}
+                  height={16}
+                  className=""
+                  alt={"leaderboard ChevronRight"}
+                  src={ChevronRight}
+                />
+              </button>
+              {/* <button
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                  className="rounded border px-2 py-1 disabled:opacity-50"
+                >
+                  Last {">>"}
+                </button> */}
+            </div>
+          </>
+        </div>
+      </div>
     </div>
   );
 }

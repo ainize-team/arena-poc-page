@@ -57,8 +57,12 @@ const Navbar = () => {
   };
 
   return (
-    <header className="px-4 py-6 lg:px-10 lg:py-4">
-      <div className="container flex items-center justify-between">
+    <header
+      className={cn(
+        "fixed left-0 top-0 z-over w-full bg-light-b1 px-4 py-6 dark:bg-dark lg:px-10 lg:py-4",
+      )}
+    >
+      <div className="flex items-center justify-between">
         <nav>
           <Link
             href="/"

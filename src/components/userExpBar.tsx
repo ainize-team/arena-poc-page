@@ -3,16 +3,21 @@
 import { cn } from "../utils/cn";
 
 type UserExpBarProps = {
-  userExp: number;
   className?: string;
   expBarClassname?: string;
+  userExpPercentage?: number;
+  barWidth?: number;
 };
 
 export default function UserExpBar({
-  userExp,
   className,
-  expBarClassname,
+  userExpPercentage = 0,
+  barWidth = 0,
 }: UserExpBarProps) {
+  const scaleStyle = {
+    width: `${barWidth * userExpPercentage}px`,
+  };
+
   return (
     <div
       className={cn(
@@ -21,7 +26,8 @@ export default function UserExpBar({
       )}
     >
       <div
-        className={cn("absolute h-full bg-orange-t1", expBarClassname)}
+        className={cn("absolute h-full w-full rounded-full bg-orange-t1")}
+        style={scaleStyle}
       ></div>
     </div>
   );

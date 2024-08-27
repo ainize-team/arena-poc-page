@@ -7,3 +7,33 @@ export const PUBLIC_ENV = {
 export const getGAId = () => {
   return PUBLIC_ENV.APP_ENV === "production" ? "G-TFVPRQGF0M" : "G-WHKH2Q8EJY";
 };
+
+export const parseUserExp = (
+  userTier: number = 0,
+  userExp: number = 0,
+): number => {
+  let parsedExp = 0;
+
+  switch (userTier) {
+    case 1:
+      parsedExp = userExp / 50;
+      break;
+    case 2:
+      parsedExp = userExp / 80;
+      break;
+    case 3:
+      parsedExp = userExp / 150;
+      break;
+    case 4:
+      parsedExp = userExp / 230;
+      break;
+    case 5:
+      parsedExp = 1;
+      break;
+    default:
+      parsedExp = userExp / 20;
+      break;
+  }
+
+  return parsedExp;
+};
