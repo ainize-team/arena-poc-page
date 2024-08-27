@@ -7,8 +7,7 @@ import { ArenaMenuKey } from "@/src/types/type";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <ArenaMenu page={ArenaMenuKey.LEADERBOARD} />
+    <main className="">
       {process.env.IS_LEADERBOARD_MAINTENANCE === "true" ? (
         <MaintenanceMsg />
       ) : (

@@ -28,14 +28,29 @@ import LogoutButton from "@/public/images/buttons/LogoutButton.svg";
 import MypageButton from "@/public/images/buttons/MypageButton.svg";
 import SettingButton from "@/public/images/buttons/SettingButton.svg";
 import { userInfoState } from "../lib/recoil";
+import { parseUserExp } from "../constant/constant";
 
 const UserMenu = () => {
   const [userInfo, setRecoilUserInfoState] = useState<Session | null>(null);
+  const [userExpPercentage, setuserExpPercentage] = useState(0);
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
 
   useEffect(() => {
     setRecoilUserInfoState(recoilUserInfoState);
   }, [recoilUserInfoState]);
+
+  useEffect(() => {
+    if (!userInfo) {
+      return;
+    }
+    const userExpPercentage = parseUserExp(
+      userInfo.user.tier,
+      userInfo.user.exp,
+    );
+    return () => {
+      setuserExpPercentage(userExpPercentage);
+    };
+  }, [userInfo]);
 
   const onClickLoginBtn = async () => {
     await signIn();
@@ -72,9 +87,9 @@ const UserMenu = () => {
             <div className="flex items-center justify-between gap-[6px] max-desktop:hidden">
               <UserBadge userTier={userInfo.user.tier} />
               <UserExpBar
-                userExp={userInfo.user.exp}
                 className={"mr-1 h-[10px] w-[68px] rounded-[10px]"}
-                expBarClassname={`h-[10px] rounded-[10px] w-[10]px`}
+                userExpPercentage={userExpPercentage}
+                barWidth={68}
               />
               <UserProfileImage
                 width={32}
@@ -137,9 +152,9 @@ const UserMenu = () => {
                       {userInfo.user.display_name}
                     </p>
                     <UserExpBar
-                      userExp={userInfo.user.exp}
-                      className={"h-[10px] w-[200px] rounded-[10px]"}
-                      expBarClassname={`rounded-[10px] w-[${100}px]`}
+                      className={"h-[10px] w-[200px] rounded-lg"}
+                      userExpPercentage={userExpPercentage}
+                      barWidth={200}
                     />
                   </div>
                 </div>

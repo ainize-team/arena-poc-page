@@ -82,16 +82,20 @@ const stringifyCI = (eloScore: number, ci: Array<number>): string => {
 
 function dateFormat(dateTS: number) {
   const date = new Date(dateTS);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
 
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
+  const month = localDate.getMonth() + 1;
+  const day = localDate.getDate();
+  const hour = localDate.getHours();
+  const minute = localDate.getMinutes();
 
   const monthStr = month >= 10 ? month : "0" + month;
   const dayStr = day >= 10 ? day : "0" + day;
   const hourStr = hour >= 10 ? hour : "0" + hour;
   const minuteStr = minute >= 10 ? minute : "0" + minute;
 
-  return `${date.getFullYear()}-${monthStr}-${dayStr} ${hourStr}:${minuteStr}`;
+  return {
+    dateFormat: `${localDate.getFullYear()}-${monthStr}-${dayStr} ${hourStr}:${minuteStr}`,
+    mobileDateFormat: `${monthStr}-${dayStr} ${hourStr}:${minuteStr}`,
+  };
 }

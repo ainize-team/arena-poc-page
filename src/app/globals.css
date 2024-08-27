@@ -12,18 +12,17 @@
   margin: 0;
 }
 
+html {
+  font-family: var(--font-manrope);
+  letter-spacing: 0em;
+}
+
 html,
 body {
   /* @apply bg-light-b1 dark:bg-dark; */
   --bg-color: theme(colors.light.b1);
   @apply bg-[var(--bg-color)] dark:bg-dark;
   transition: background-color 0.3s;
-  overflow: hidden;
-}
-
-html {
-  font-family: var(--font-manrope);
-  letter-spacing: 0em;
 }
 
 .container {

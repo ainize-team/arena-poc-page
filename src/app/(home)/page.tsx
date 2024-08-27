@@ -12,26 +12,13 @@ const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export default function Home() {
   return (
-    <>
-      <style jsx global>
-        {`
-          :root {
-            --font-manrope: ${manrope.style.fontFamily};
-          }
-        `}
-      </style>
-      <main className="min-h-screen">
-        <ArenaMenu page={ArenaMenuKey.ARENA} />
-        {process.env.IS_ARENA_MAINTENANCE === "true" ? (
-          <MaintenanceMsg />
-        ) : (
-          <>
-            <ArenaDescription />
-            <ArenaChat />
-          </>
-        )}
-        <Analytics />
-      </main>
-    </>
+    <main className="">
+      {process.env.IS_ARENA_MAINTENANCE === "true" ? (
+        <MaintenanceMsg />
+      ) : (
+        <ArenaChat />
+      )}
+      <Analytics />
+    </main>
   );
 }
