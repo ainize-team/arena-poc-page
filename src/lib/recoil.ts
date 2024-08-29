@@ -34,3 +34,9 @@ export const userInfoState = atom<Session | null>({
   default: null,
   effects_UNSTABLE: [persistAtom],
 });
+
+export const themeAtom = atom<string>({
+  key: "theme",
+  default: "system",
+  effects_UNSTABLE: [persistAtom],
+});

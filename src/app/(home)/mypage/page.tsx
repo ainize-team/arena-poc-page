@@ -1,23 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import ArenaMenu from "@/src/components/arenaMenu";
 import Mypage from "@/src/containers/mypage";
-import { ArenaMenuKey } from "@/src/types/type";
-import { isDarkMode } from "@/src/utils/checkUserStates";
+import { userInfoState } from "@/src/lib/recoil";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 
 export default function Home() {
+  const router = useRouter();
+
+  const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
+
+  // TODO(yunsubae) : mypage api
   // useEffect(() => {
-  //   if (isDarkMode()) return;
-  //   document.body.style.setProperty("--bg-color", "#ffffff");
-  //   return () => {
-  //     document.body.style.setProperty("--bg-color", "");
-  //   };
+  //   console.log("recoilUserInfoState : ", recoilUserInfoState);
+  //   if (!recoilUserInfoState) {
+  //     router.push("/");
+  //   }
   // }, []);
 
   return (
     <main className="">
-      <ArenaMenu page={ArenaMenuKey.MYPAGE} />
       <Mypage />
     </main>
   );

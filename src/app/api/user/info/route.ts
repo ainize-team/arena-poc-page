@@ -1,8 +1,6 @@
 import { NextRequest } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-) {
+export async function GET(req: NextRequest) {
   try {
     const endpoint = `${process.env.SERVER_URL}/user/me/info`;
     const accessToken = req.cookies.get("access_token");
@@ -10,20 +8,19 @@ export async function GET(
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
-        "Cookie": `access_token=${accessToken?.value};`,
-        "x-api-key": process.env.SERVER_API_KEY!
-  
+        Cookie: `access_token=${accessToken?.value};`,
+        "x-api-key": process.env.SERVER_API_KEY!,
       },
       cache: "no-cache",
     });
 
     const resData = await res.json();
-    console.log('resData :>> ', resData);
+    console.log("resData :>> ", resData);
     return Response.json(resData, {
       status: 200,
     });
   } catch (error) {
-    console.log('error :>> ', error);
+    console.log("error :>> ", error);
     return Response.json("", {
       status: 500,
     });
