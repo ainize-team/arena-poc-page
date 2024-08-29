@@ -3,37 +3,72 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { Session } from "next-auth";
 import { useRecoilState } from "recoil";
-import { deleteCookie, getCookies, setCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next";
 import {
+  autoPlacement,
   autoUpdate,
   flip,
+  FloatingOverlay,
   offset,
   shift,
   useClick,
   useDismiss,
   useFloating,
   useInteractions,
+  useRole,
 } from "@floating-ui/react";
+
 import UserProfileImage from "./userProfileImage";
 import UserExpBar from "./userExpBar";
 import UserBadge from "./userBadge";
+import { userInfoState } from "../lib/recoil";
+import { parseUserExp } from "../constant/constant";
+import ThemeButtons from "./themeButtons";
 import { cn } from "../utils/cn";
+import { isMobile } from "../utils/checkUserStates";
 
 import GoogleIcon from "@/public/images/GoogleIcon.svg";
 import CloseButton from "@/public/images/buttons/CloseButton.svg";
 import LogoutButton from "@/public/images/buttons/LogoutButton.svg";
 import MypageButton from "@/public/images/buttons/MypageButton.svg";
 import SettingButton from "@/public/images/buttons/SettingButton.svg";
-import { userInfoState } from "../lib/recoil";
-import { parseUserExp } from "../constant/constant";
 
 const UserMenu = () => {
+  const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
+
   const [userInfo, setRecoilUserInfoState] = useState<Session | null>(null);
   const [userExpPercentage, setuserExpPercentage] = useState(0);
-  const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
+  const [isVisibleThemeButtons, setIsVisibleThemeButtons] = useState(false);
+  const [isAnimatingThemeButtons, setIsAnimatingThemeButtons] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: open,
+    onOpenChange: setOpen,
+    // strategy: "fixed",
+    placement: "bottom-end",
+    middleware: [shift(), flip(), offset(0)],
+    // whileElementsMounted: autoUpdate,
+  });
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    useClick(context),
+    // useDismiss(context, {
+    //   ancestorScroll: true,
+    // }),
+    useDismiss(context, {
+      // ancestorScroll: true,
+      outsidePressEvent: "mousedown",
+    }),
+    useRole(context),
+  ]);
+
+  useEffect(() => {
+    initializeThemeButtons();
+  }, [open]);
 
   useEffect(() => {
     setRecoilUserInfoState(recoilUserInfoState);
@@ -52,89 +87,135 @@ const UserMenu = () => {
     };
   }, [userInfo]);
 
+  const popupCenter = (url, title) => {
+    const dualScreenLeft = window.screenLeft ?? window.screenX;
+    const dualScreenTop = window.screenTop ?? window.screenY;
+
+    const width =
+      window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
+
+    const height =
+      window.innerHeight ??
+      document.documentElement.clientHeight ??
+      screen.height;
+
+    const systemZoom = width / window.screen.availWidth;
+
+    const left = (width - 500) / 2 / systemZoom + dualScreenLeft;
+    const top = (height - 550) / 2 / systemZoom + dualScreenTop;
+
+    const newWindow = window.open(
+      url,
+      title,
+      `width=${500 / systemZoom},height=${
+        550 / systemZoom
+      },top=${top},left=${left}`,
+    );
+    newWindow?.focus();
+  };
+
   const onClickLoginBtn = async () => {
-    await signIn();
+    isMobile()
+      ? await signIn("google")
+      : popupCenter("/login", "google log in");
   };
 
   const onClickLogoutBtn = async () => {
     await signOut();
     setUserInfo(null);
     deleteCookie("access_token");
+    setOpen(false);
   };
 
-  const [open, setOpen] = useState(false);
-  const { refs, floatingStyles, context } = useFloating({
-    open: open,
-    onOpenChange: setOpen,
-    strategy: "fixed",
-    placement: "bottom-end",
-    middleware: [shift(), flip(), offset(0)],
-    whileElementsMounted: autoUpdate,
-  });
+  const handleThemeButtonsVisible = () => {
+    setIsVisibleThemeButtons(true);
+  };
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([
-    useClick(context),
-    useDismiss(context, {
-      ancestorScroll: true,
-    }),
-  ]);
+  const handleThemeButtonsClose = () => {
+    setIsAnimatingThemeButtons(true);
+  };
+
+  const handleThemeButtonsAnimationEnd = () => {
+    if (isAnimatingThemeButtons) {
+      setIsVisibleThemeButtons(false);
+      setIsAnimatingThemeButtons(false);
+    }
+  };
+
+  const initializeThemeButtons = () => {
+    setIsVisibleThemeButtons(false);
+    setIsAnimatingThemeButtons(false);
+  };
 
   return (
     <div className="relative inline-block">
-      <div className="">
-        {userInfo ? (
-          <div ref={refs.setReference} {...getReferenceProps()}>
-            <div className="flex items-center justify-between gap-[6px] max-desktop:hidden">
-              <UserBadge userTier={userInfo.user.tier} />
-              <UserExpBar
-                className={"mr-1 h-[10px] w-[68px] rounded-[10px]"}
-                userExpPercentage={userExpPercentage}
-                barWidth={68}
-              />
-              <UserProfileImage
-                width={32}
-                height={32}
-                imageUrl={userInfo.user.picture}
-                onClick={() => {}}
-              />
-            </div>
-            <div className="min-desktop:hidden flex items-center justify-center gap-[10px]">
-              <UserProfileImage
-                width={37}
-                height={37}
-                imageUrl={userInfo.user.picture}
-                onClick={() => {}}
-              />
-            </div>
+      {userInfo ? (
+        <div ref={refs.setReference} {...getReferenceProps()}>
+          <div className="flex items-center justify-between gap-[6px] max-desktop:hidden">
+            <UserBadge userTier={userInfo.user.tier} />
+            <UserExpBar
+              className={"mr-1 h-[10px] w-[68px] rounded-[10px]"}
+              userExpPercentage={userExpPercentage}
+              barWidth={68}
+            />
+            <UserProfileImage
+              width={32}
+              height={32}
+              imageUrl={userInfo.user.picture}
+              onClick={() => {}}
+            />
           </div>
-        ) : (
-          <>
-            <div
-              onClick={onClickLoginBtn}
-              className="flex cursor-pointer items-center justify-center gap-[10px] rounded-3xl border border-light-l1 px-[14px] py-2 text-sm font-semibold leading-150 text-light-t2 dark:border-dark-l1 dark:text-dark-t2 max-desktop:hidden"
-            >
-              <Image width={20} height={20} src={GoogleIcon} alt="googleIcon" />
-              Log in with Google
-            </div>
-            <div ref={refs.setReference} {...getReferenceProps()}>
-              <UserProfileImage
-                width={37}
-                height={37}
-                className="min-desktop:hidden cursor-pointer rounded-full border"
-                onClick={() => {}}
-              />
-            </div>
-          </>
-        )}
+          <div className="min-desktop:hidden flex items-center justify-center gap-[10px]">
+            <UserProfileImage
+              width={37}
+              height={37}
+              imageUrl={userInfo.user.picture}
+              onClick={() => {}}
+            />
+          </div>
+        </div>
+      ) : (
+        <>
+          <div
+            onClick={onClickLoginBtn}
+            className="flex cursor-pointer items-center justify-center gap-[10px] rounded-3xl border border-light-l1 px-[14px] py-2 text-sm font-semibold leading-150 text-light-t2 dark:border-dark-l1 dark:text-dark-t2 max-desktop:hidden"
+          >
+            <Image width={20} height={20} src={GoogleIcon} alt="googleIcon" />
+            Log in with Google
+          </div>
+          <div ref={refs.setReference} {...getReferenceProps()}>
+            <UserProfileImage
+              width={37}
+              height={37}
+              className="min-desktop:hidden cursor-pointer rounded-full border"
+              onClick={() => {}}
+            />
+          </div>
+        </>
+      )}
 
-        {open && (
+      {open && (
+        <FloatingOverlay lockScroll style={{ background: "transparent" }}>
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className="shadow-popover min-mobile:w-[360px] max-mobile:w-full max-mobile:h-full z-popover my-6 overflow-hidden bg-light lg:my-4"
+            //overflow-hidden
+            className="shadow-popover min-mobile:w-[360px] dark:shadow-popover-dark max-mobile:h-full max-mobile:w-full relative z-popover my-6 bg-light lg:my-4"
           >
+            {isVisibleThemeButtons && (
+              <ThemeButtons
+                className={cn(
+                  "animate-slide-in absolute left-0 top-0 z-modal h-full w-full bg-light",
+                  isAnimatingThemeButtons
+                    ? "animate-slide-out"
+                    : "animate-slide-in",
+                )}
+                handleAnimationEnd={handleThemeButtonsAnimationEnd}
+                handleClose={handleThemeButtonsClose}
+              />
+            )}
             {userInfo ? (
-              <div className="flex w-full items-center justify-between self-stretch px-4 py-6">
+              <div className="flex h-[5.5rem] w-full items-center justify-between self-stretch px-4 py-6">
                 <div className="flex items-center gap-3">
                   <UserProfileImage
                     width={44.5}
@@ -170,7 +251,7 @@ const UserMenu = () => {
                 />
               </div>
             ) : (
-              <div className="flex w-full items-center justify-between self-stretch px-4 py-6">
+              <div className="flex h-[5.5rem] w-full items-center justify-between self-stretch px-4 py-6">
                 <p className="text-lg font-bold leading-120 text-dark">
                   AI Network LLM Arena
                 </p>
@@ -206,12 +287,9 @@ const UserMenu = () => {
                     My page
                   </p>
                 </Link>
-                <Link
-                  href="/mypage"
-                  className="flex items-center gap-[10px] self-stretch py-[14px]"
-                  {...getFloatingProps({
-                    onClick: () => setOpen(false),
-                  })}
+                <div
+                  className="flex cursor-pointer items-center gap-[10px] self-stretch py-[14px]"
+                  onClick={handleThemeButtonsVisible}
                 >
                   <Image
                     width={20}
@@ -222,7 +300,7 @@ const UserMenu = () => {
                   <p className="text-base font-semibold leading-150 text-light-t2">
                     Settings
                   </p>
-                </Link>
+                </div>
               </div>
             ) : (
               <></>
@@ -247,7 +325,7 @@ const UserMenu = () => {
                 Leaderboard
               </Link>
               <Link
-                href="/mypage"
+                href="/about"
                 className="px-4 py-4"
                 {...getFloatingProps({
                   onClick: () => setOpen(false),
@@ -291,8 +369,8 @@ const UserMenu = () => {
               )}
             </div>
           </div>
-        )}
-      </div>
+        </FloatingOverlay>
+      )}
     </div>
   );
 };

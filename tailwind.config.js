@@ -8,6 +8,20 @@ module.exports = {
   darkMode: "selector",
   theme: {
     extend: {
+      keyframes: {
+        "slide-in": {
+          "0%": { transform: "translateX(70%)", opacity: 0 },
+          "100%": { transform: "translateX(0)", opacity: 1 },
+        },
+        "slide-out": {
+          "0%": { transform: "translateX(0)", opacity: 1 },
+          "100%": { transform: "translateX(70%)", opacity: 0 },
+        },
+      },
+      animation: {
+        "slide-in": "slide-in 0.3s ease-out forwards",
+        "slide-out": "slide-out 0.3s ease-in forwards",
+      },
       fontFamily: {
         inter: ["var(--font-inter)"],
         manrope: ["var(--font-manrope)"],
@@ -48,12 +62,13 @@ module.exports = {
         "max-lg": { max: "1023px" },
         "max-desktop": { max: "959px" },
         "min-desktop": { min: "960px" },
-        "max-mobile": { max: "499px" },
-        "min-mobile": { min: "500px" },
+        "max-mobile": { max: "699px" },
+        "min-mobile": { min: "700px" },
       },
       boxShadow: {
         avatar: "0 0 0 2px rgba(0,0,0, 0.15) inset",
         popover: "0px 4px 12px 0px rgba(0,0,0, 0.15)",
+        "popover-dark": "0px 4px 12px 0px rgba(255,255,255, 0.3)",
         hover: "0px 2px 4px 0px rgba(165, 163, 174, 0.30)",
         "hover-dark": "0px 2px 4px 0px rgba(0, 0, 0, 0.30)",
       },

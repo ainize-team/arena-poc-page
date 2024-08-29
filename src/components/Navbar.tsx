@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -8,17 +8,16 @@ import { usePathname } from "next/navigation";
 import { getCookies, setCookie } from "cookies-next";
 
 import { cn } from "@/src/utils/cn";
-import { isDarkMode } from "@/src/utils/checkUserStates";
 import UserMenu from "./userMenu";
 import { userInfoState } from "../lib/recoil";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const [darkMode, setDarkMode] = useState(false);
   const { data: session } = useSession();
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
   useEffect(() => {
+    if (!session) return;
     const { access_token, refresh_token } = getCookies();
     if (!refresh_token) {
       if (session?.refreshToken) {
@@ -38,31 +37,14 @@ const Navbar = () => {
     console.log("session : ", session);
   }, [session]);
 
-  useEffect(() => {
-    if (isDarkMode()) {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleDarkMode = () => {
-    if (darkMode) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    }
-    setDarkMode(!darkMode);
-  };
-
   return (
+    //87 , 72
     <header
       className={cn(
-        "fixed left-0 top-0 z-over w-full bg-light-b1 px-4 py-6 dark:bg-dark lg:px-10 lg:py-4",
+        "min-mobile:h-[72px] max-mobile:h-[87px] fixed left-0 top-0 z-over w-full bg-light-b1 px-4 py-6 dark:bg-dark lg:px-10 lg:py-4",
       )}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between self-stretch">
         <nav>
           <Link
             href="/"
@@ -95,10 +77,10 @@ const Navbar = () => {
             Leaderboard
           </Link>
           <Link
-            href="/mypage"
+            href="/about"
             className={cn(
               "text-sm leading-120",
-              pathname === "/mypage"
+              pathname === "/about"
                 ? "font-bold text-light-t1 dark:text-light"
                 : "font-medium text-dark-t2 dark:text-light-t2",
             )}
@@ -106,13 +88,7 @@ const Navbar = () => {
             About
           </Link>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={toggleDarkMode}
-            className="text-dark dark:text-light"
-          >
-            {darkMode ? "light(임시)" : "dark(임시)"}
-          </button>
+        <div className="min-mobile:w-52 flex h-10 items-center justify-end gap-2">
           <UserMenu />
         </div>
       </div>
