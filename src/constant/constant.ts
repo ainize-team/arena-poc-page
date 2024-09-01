@@ -35,5 +35,5 @@ export const parseUserExp = (
       break;
   }
 
-  return parsedExp;
+  return Math.max(parsedExp, 0);
 };

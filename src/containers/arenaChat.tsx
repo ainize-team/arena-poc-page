@@ -3,7 +3,7 @@
 import ChatBox from "@/src/components/chatBox";
 import PromptInput from "@/src/components/promptInput";
 import { Button, Col, Flex, Row, Space, notification } from "antd";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/src/types/type";
@@ -12,6 +12,7 @@ import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import React from "react";
 import { useSession } from "next-auth/react";
 import { authFetch } from "@/src/lib/auth";
+import { toast } from "sonner";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -36,8 +37,8 @@ export default function ArenaChat() {
   const [battleId, setBattleId] = useState<string | null>(null);
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
-  const [modelAName, setModelAName] = useState("");
-  const [modelBName, setModelBName] = useState("");
+  const [modelAName, setModelAName] = useState("Model A");
+  const [modelBName, setModelBName] = useState("Model B");
   const [notiApi, notiContextHolder] = notification.useNotification();
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);
   const [modelAChatList, setModelAChatList] = useState<Chat[]>([]);
@@ -74,14 +75,10 @@ export default function ArenaChat() {
     console.log("rewardData :>> ", rewardData);
     const { reward } = rewardData;
     const isZeroReward = !reward || reward === 0;
-    notiApi.info({
-      message: isZeroReward ? "Reward Failed." : "Reward Success!",
-      description: isZeroReward
-        ? "Some error occured."
-        : `Reward: ${reward.toFixed(2)} AIN`,
-      placement: "topRight",
-      duration: 0,
-    });
+
+    isZeroReward
+      ? toast.error("Reward Failed.")
+      : toast.success("Reward Success!");
   };
 
   const battleInit = async () => {
@@ -199,22 +196,27 @@ export default function ArenaChat() {
     modelA: string,
     modelB: string,
   ) => {
-    const winnerMark = "🎉";
+    const winnerMark = "👍";
+    const loserMark = "👎";
     setModelA(modelA);
     setModelB(modelB);
 
     switch (winner) {
       case ChoiceType.MODELA:
-        setModelA(winnerMark + modelA);
+        setModelA(winnerMark + " " + modelA);
+        setModelB(loserMark + " " + modelB);
         break;
       case ChoiceType.MODELB:
-        setModelB(winnerMark + modelB);
+        setModelB(winnerMark + " " + modelB);
+        setModelA(loserMark + " " + modelA);
         break;
       case ChoiceType.TIE:
-        setModelA(winnerMark + modelA);
-        setModelB(winnerMark + modelB);
+        setModelA(winnerMark + " " + modelA);
+        setModelB(winnerMark + " " + modelB);
         break;
       case ChoiceType.NOTHING:
+        setModelA(loserMark + " " + modelA);
+        setModelB(loserMark + " " + modelB);
         break;
     }
   };
@@ -281,75 +283,52 @@ export default function ArenaChat() {
       }
     }
   };
+  const messageListContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
-      {notiContextHolder}
-      {/* NOTE(yoojin): Hide reward noti */}
-      <Flex justify="center" style={{ marginTop: "10px" }}>
-        <ChatBox
-          modelName={modelAName}
+    <div className="" ref={messageListContainerRef}>
+      <div className="flex flex-col gap-6 max-desktop:gap-4 max-desktop:px-4 min-desktop:px-0">
+        <div className="flex h-[100px] w-full items-center justify-center self-stretch rounded-xl bg-burning-fire bg-cover bg-center bg-no-repeat text-center text-2xl font-extrabold leading-120 text-light text-shadow max-desktop:h-[72px] max-desktop:bg-burning-fire-mobile max-desktop:text-base">
+          The Ultimate AI Battleground
+        </div>
+        <div className="relative flex w-full flex-row items-center gap-5 max-mobile:mb-[100px] max-mobile:flex-col">
+          <ChatBox
+            modelName={modelAName}
+            status={status}
+            style={LeftCardStyle}
+            chatList={modelAChatList}
+            boxClassName=""
+            titleClassName="bg-orange"
+            paragraphClassName=""
+            isLeftSide={true}
+          />
+          {status !== ArenaStatus.END && (
+            <div className="absolute left-1/2 top-5 z-10 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-light-b1 max-mobile:top-1/2 max-mobile:h-10 max-mobile:w-10 max-mobile:-translate-y-1/2 dark:bg-dark-b1">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-light-t2 text-base font-bold leading-4 text-light max-mobile:h-7 max-mobile:w-7 max-mobile:text-2xs max-mobile:leading-120 dark:bg-dark-t2">
+                VS
+              </div>
+            </div>
+          )}
+
+          <ChatBox
+            modelName={modelBName}
+            status={status}
+            style={RightCardStyle}
+            chatList={modelBChatList}
+            boxClassName=""
+            titleClassName="bg-blue"
+            paragraphClassName=""
+            isLeftSide={false}
+          />
+        </div>
+
+        <PromptInput
+          setParentPrompt={handlePrompt}
           status={status}
-          style={LeftCardStyle}
-          chatList={modelAChatList}
+          onClickChoiceBtn={onClickChoiceBtn}
+          onClickNextBtn={onClickNextBtn}
         />
-        <ChatBox
-          modelName={modelBName}
-          status={status}
-          style={RightCardStyle}
-          chatList={modelBChatList}
-        />
-      </Flex>
-      {status !== ArenaStatus.END ? (
-        <>
-          <PromptInput setParentPrompt={handlePrompt} status={status} />
-          <Row justify="space-evenly">
-            <Col span={3} />
-            <Col span={3}>
-              <ChoiceButton
-                onClick={onClickChoiceBtn}
-                value={ChoiceType.MODELA}
-                arenaStatus={status}
-              />
-            </Col>
-            <Col span={3}>
-              <ChoiceButton
-                onClick={onClickChoiceBtn}
-                value={ChoiceType.MODELB}
-                arenaStatus={status}
-              />
-            </Col>
-            <Col span={3}>
-              <ChoiceButton
-                onClick={onClickChoiceBtn}
-                value={ChoiceType.TIE}
-                arenaStatus={status}
-              />
-            </Col>
-            <Col span={3}>
-              <ChoiceButton
-                onClick={onClickChoiceBtn}
-                value={ChoiceType.NOTHING}
-                arenaStatus={status}
-              />
-            </Col>
-            <Col span={3} />
-          </Row>
-        </>
-      ) : (
-        <Flex justify="center" style={{ width: "100%" }}>
-          <Button
-            style={{
-              height: "50px",
-              width: "60%",
-            }}
-            onClick={onClickNextBtn}
-          >
-            Next Challenge
-          </Button>
-        </Flex>
-      )}
-      <div />
-    </Space>
+      </div>
+    </div>
   );
 }

@@ -35,6 +35,7 @@ import CloseButton from "@/public/images/buttons/CloseButton.svg";
 import LogoutButton from "@/public/images/buttons/LogoutButton.svg";
 import MypageButton from "@/public/images/buttons/MypageButton.svg";
 import SettingButton from "@/public/images/buttons/SettingButton.svg";
+import ThemeButton from "@/public/images/buttons/ThemeButton.svg";
 
 const UserMenu = () => {
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
@@ -165,7 +166,7 @@ const UserMenu = () => {
               onClick={() => {}}
             />
           </div>
-          <div className="min-desktop:hidden flex items-center justify-center gap-[10px]">
+          <div className="flex items-center justify-center gap-[10px] min-desktop:hidden">
             <UserProfileImage
               width={37}
               height={37}
@@ -178,7 +179,7 @@ const UserMenu = () => {
         <>
           <div
             onClick={onClickLoginBtn}
-            className="flex cursor-pointer items-center justify-center gap-[10px] rounded-3xl border border-light-l1 px-[14px] py-2 text-sm font-semibold leading-150 text-light-t2 dark:border-dark-l1 dark:text-dark-t2 max-desktop:hidden"
+            className="flex cursor-pointer items-center justify-center gap-[10px] rounded-3xl border border-light-l1 px-[14px] py-2 text-sm font-semibold leading-150 text-light-t2 max-desktop:hidden dark:border-dark-l1 dark:text-dark-t2"
           >
             <Image width={20} height={20} src={GoogleIcon} alt="googleIcon" />
             Log in with Google
@@ -187,7 +188,7 @@ const UserMenu = () => {
             <UserProfileImage
               width={37}
               height={37}
-              className="min-desktop:hidden cursor-pointer rounded-full border"
+              className="cursor-pointer rounded-full border min-desktop:hidden"
               onClick={() => {}}
             />
           </div>
@@ -200,12 +201,12 @@ const UserMenu = () => {
             ref={refs.setFloating}
             style={floatingStyles}
             //overflow-hidden
-            className="shadow-popover min-mobile:w-[360px] dark:shadow-popover-dark max-mobile:h-full max-mobile:w-full relative z-popover my-6 bg-light lg:my-4"
+            className="relative z-popover my-6 bg-light shadow-popover lg:my-4 max-mobile:h-full max-mobile:w-full min-mobile:w-[360px] dark:shadow-popover-dark"
           >
             {isVisibleThemeButtons && (
               <ThemeButtons
                 className={cn(
-                  "animate-slide-in absolute left-0 top-0 z-modal h-full w-full bg-light",
+                  "absolute left-0 top-0 z-modal h-full w-full animate-slide-in bg-light",
                   isAnimatingThemeButtons
                     ? "animate-slide-out"
                     : "animate-slide-in",
@@ -243,6 +244,7 @@ const UserMenu = () => {
                   width={24}
                   height={24}
                   className={cn("cursor-pointer")}
+                  style={{ width: 24, height: 24 }}
                   alt={"modal close button"}
                   src={CloseButton}
                   {...getFloatingProps({
@@ -260,6 +262,7 @@ const UserMenu = () => {
                   height={24}
                   className={cn("cursor-pointer")}
                   alt={"modal close button"}
+                  style={{ width: 24, height: 24 }}
                   src={CloseButton}
                   {...getFloatingProps({
                     onClick: () => setOpen(false),
@@ -294,11 +297,11 @@ const UserMenu = () => {
                   <Image
                     width={20}
                     height={20}
-                    alt={"setting button"}
-                    src={SettingButton}
+                    alt={"theme button"}
+                    src={ThemeButton}
                   />
                   <p className="text-base font-semibold leading-150 text-light-t2">
-                    Settings
+                    Theme
                   </p>
                 </div>
               </div>
@@ -346,6 +349,7 @@ const UserMenu = () => {
                     height={20}
                     alt={"logout button"}
                     src={LogoutButton}
+                    style={{ width: 20, height: 20 }}
                   />
                   <p className="text-sm font-semibold leading-150 text-light-icon">
                     Logout

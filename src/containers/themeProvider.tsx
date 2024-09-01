@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { themeAtom } from "../lib/recoil";
+import { Toaster } from "sonner";
 
 export default function ThemeProvider({
   children,
@@ -20,15 +21,26 @@ export default function ThemeProvider({
     if (theme !== "system") {
       document.documentElement.classList.add(theme);
     } else {
-      // TODO(yunsubae) : 시스템 테마 다크모드일 땐 당분간 라이트로만 보여주기
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
-        ? // ? "dark"
-          "light"
+        ? "dark"
         : "light";
       document.documentElement.classList.add(systemTheme);
     }
   }, [theme]);
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <Toaster
+        position="top-right"
+        richColors={true}
+        closeButton={true}
+        duration={3000}
+        theme={
+          theme === "light" ? "light" : theme === "system" ? "system" : "dark"
+        }
+      />
+    </>
+  );
 }

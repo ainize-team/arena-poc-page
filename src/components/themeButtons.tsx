@@ -26,12 +26,10 @@ export default function ThemeButtons({
   const changeTheme = (newTheme: string) => {
     setTheme(newTheme);
     if (newTheme === "system") {
-      // TODO(yunsubae) : 시스템 테마 다크모드일 땐 당분간 라이트로만 보여주기
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
-        ? "light"
-        : // ? "dark"
-          "light";
+        ? "dark"
+        : "light";
       document.documentElement.classList.remove("light", "dark");
       document.documentElement.classList.add(systemTheme);
     } else {

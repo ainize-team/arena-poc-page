@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import "../globals.css";
+import "@/src/styles/globals.css";
 import RecoilRootWrapper from "@/src/containers/recoilRootWrapper";
 import { getGAId } from "@/src/constant/constant";
 import GoogleCaptchaWrapper from "@/src/containers/googleCaptchaWrapper";
@@ -21,6 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
+        />
+      </head>
       <AuthContext>
         <body className={`${manrope.className} min-h-screen`}>
           <GoogleCaptchaWrapper>
