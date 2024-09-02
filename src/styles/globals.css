@@ -117,16 +117,15 @@ h6 {
 
 .markdown-content blockquote {
   border-left: 4px solid #ccc;
+  margin-top: 1em;
+  margin-bottom: 1em;
   padding-left: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   color: #777;
   font-style: italic;
   font-size: 1.1em;
   background-color: #f5f5f5;
-}
-
-.markdown-content ul {
-  list-style-type: disc; /* 기본 원형 불릿 */
-  margin-left: 1.5em; /* 왼쪽 여백 */
 }
 
 .markdown-content .underline {
@@ -136,9 +135,81 @@ h6 {
   text-decoration-color: #000; /* 밑줄 색상 */
 }
 
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-bottom: 1em; /* 제목 하단 여백 */
+}
+
+.markdown-content p {
+  margin-bottom: 0.5em;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.markdown-content ul li {
+  display: list-item;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .markdown-content ol {
-  list-style-type: decimal; /* 숫자 목록 */
-  margin-left: 1.5em; /* 왼쪽 여백 */
+  list-style-type: decimal;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.markdown-content ol li {
+  display: list-item;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-content ol li p {
+  display: inline; /* p 태그를 인라인으로 변경하여 줄바꿈 방지 */
+}
+
+.markdown-content ul li p {
+  display: inline; /* 블록 요소인 p를 인라인으로 변경하여 줄바꿈 방지 */
+}
+
+.markdown-content ol,
+.markdown-content ul {
+  margin-left: 1em;
+  list-style-position: outside; /* 기본 설정으로 변경하여 숫자와 구두점이 보이도록 함 */
+}
+
+.markdown-content ol li,
+.markdown-content ul li {
+  list-style-position: inside; /* 숫자와 불릿이 내부에서 들여쓰기와 맞게 표시되도록 */
+}
+
+.markdown-content ol li > ul,
+.markdown-content ul li > ul {
+  margin-top: 0.5em; /* 하위 목록의 상단 마진 조정 */
+}
+
+.markdown-content pre {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.markdown-content code {
+  padding: 0.2em 0.4em;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #f5f5f5;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 .markdown-contentDark {
@@ -210,16 +281,15 @@ h6 {
 
 .markdown-contentDark blockquote {
   border-left: 4px solid #ccc;
+  margin-top: 1em;
+  margin-bottom: 1em;
   padding-left: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   color: #777;
   font-style: italic;
   font-size: 1.1em;
   background-color: #000;
-}
-
-.markdown-contentDark ul {
-  list-style-type: disc; /* 기본 원형 불릿 */
-  margin-left: 1.5em; /* 왼쪽 여백 */
 }
 
 .markdown-contentDark .underline {
@@ -229,9 +299,81 @@ h6 {
   text-decoration-color: #000; /* 밑줄 색상 */
 }
 
+.markdown-contentDark h1,
+.markdown-contentDark h2,
+.markdown-contentDark h3,
+.markdown-contentDark h4,
+.markdown-contentDark h5,
+.markdown-contentDark h6 {
+  margin-bottom: 1em; /* 제목 하단 여백 */
+}
+
+.markdown-contentDark p {
+  margin-bottom: 0.5em;
+}
+
+.markdown-contentDark ul {
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.markdown-contentDark ul li {
+  display: list-item;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .markdown-contentDark ol {
-  list-style-type: decimal; /* 숫자 목록 */
-  margin-left: 1.5em; /* 왼쪽 여백 */
+  list-style-type: decimal;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.markdown-contentDark ol li {
+  display: list-item;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-contentDark ol li p {
+  display: inline; /* p 태그를 인라인으로 변경하여 줄바꿈 방지 */
+}
+
+.markdown-contentDark ul li p {
+  display: inline; /* 블록 요소인 p를 인라인으로 변경하여 줄바꿈 방지 */
+}
+
+.markdown-contentDark ol,
+.markdown-contentDark ul {
+  margin-left: 1em;
+  list-style-position: outside; /* 기본 설정으로 변경하여 숫자와 구두점이 보이도록 함 */
+}
+
+.markdown-contentDark ol li,
+.markdown-contentDark ul li {
+  list-style-position: inside; /* 숫자와 불릿이 내부에서 들여쓰기와 맞게 표시되도록 */
+}
+
+.markdown-contentDark ol li > ul,
+.markdown-contentDark ul li > ul {
+  margin-top: 0.5em; /* 하위 목록의 상단 마진 조정 */
+}
+
+.markdown-contentDark pre {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.markdown-contentDark code {
+  padding: 0.2em 0.4em;
+}
+
+.markdown-contentDark hr {
+  border: none;
+  border-top: 1px solid #fff;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 @layer components {

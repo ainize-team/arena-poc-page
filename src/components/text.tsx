@@ -102,7 +102,7 @@ export default function TextBox({
             style={{
               overflowX: "hidden",
               wordBreak: "break-word",
-              whiteSpace: "pre-wrap",
+              // whiteSpace: "pre-wrap",
             }}
           >
             <ReactMarkdown
