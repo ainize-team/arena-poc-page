@@ -29,6 +29,7 @@ export default function TextBox({
 }: Props) {
   const [theme, setTheme] = useRecoilState(themeAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
   const [currentTheme, setCurrentTheme] = useState("light");
 
   const checkTheme = (theme: string) => {
