@@ -2,12 +2,10 @@
 
 import ChatBox from "@/src/components/chatBox";
 import PromptInput from "@/src/components/promptInput";
-import { Button, Col, Flex, Row, Space, notification } from "antd";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/src/types/type";
-import ChoiceButton from "@/src/components/choiceButton";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import React from "react";
 import { useSession } from "next-auth/react";
@@ -39,7 +37,6 @@ export default function ArenaChat() {
   const [modelB, setModelB] = useState("");
   const [modelAName, setModelAName] = useState("Model A");
   const [modelBName, setModelBName] = useState("Model B");
-  const [notiApi, notiContextHolder] = notification.useNotification();
   const [captcha, setCaptcha] = useState(CaptchaStatus.YET);
   const [modelAChatList, setModelAChatList] = useState<Chat[]>([]);
   const [modelBChatList, setModelBChatList] = useState<Chat[]>([]);
@@ -75,6 +72,10 @@ export default function ArenaChat() {
     console.log("rewardData :>> ", rewardData);
     const { reward } = rewardData;
     const isZeroReward = !reward || reward === 0;
+
+    if (!session?.user.tier || session?.user.tier === 0) {
+      return;
+    }
 
     isZeroReward
       ? toast.error("Reward Failed.")

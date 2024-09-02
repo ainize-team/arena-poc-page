@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Input } from "antd";
 import { ArrowUpOutlined } from "@ant-design/icons";
 import { ArenaStatus, ChoiceType } from "@/src/types/type";
 import TextInputWithButton from "./textInputWithButton";
 import ChoiceButton from "./choiceButton";
-
-const { Search } = Input;
 
 type promptProps = {
   setParentPrompt: Function;
@@ -41,6 +38,7 @@ export default function PromptInput({
         return "Select next challange first.";
     }
   };
+
   useEffect(() => {
     if (status === ArenaStatus.INFERENCING) {
       setIsLoading(true);

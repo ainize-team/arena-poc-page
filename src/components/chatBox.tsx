@@ -1,11 +1,8 @@
 import { ArenaStatus, Chat } from "@/src/types/type";
-import { Card, Typography, Spin } from "antd";
 import "highlight.js/styles/a11y-light.css";
 import TextBox from "./text";
 import { useEffect, useRef } from "react";
 import { cn } from "../utils/cn";
-
-const { Paragraph } = Typography;
 
 type ChatBoxProps = {
   modelName: string;
@@ -29,6 +26,7 @@ export default function ChatBox({
   isLeftSide,
 }: ChatBoxProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     scrollToBottom();
   }, [chatList]);
