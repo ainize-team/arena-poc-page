@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { RecoilRoot } from "recoil";
+
 import ThemeProvider from "./themeProvider";
 import Navbar from "../components/Navbar";
 
@@ -28,7 +29,7 @@ export default function RecoilRootWrapper({
         <header className="px-4 py-6 lg:px-10 lg:py-4">
           <div className="py-2">&nbsp;</div>
         </header>
-        <div style={contentStyle} className="mt-6">
+        <div style={contentStyle} className="">
           {children}
         </div>
       </ThemeProvider>

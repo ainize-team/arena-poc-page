@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { getCookies, setCookie } from "cookies-next";
+import { deleteCookie, getCookies, setCookie } from "cookies-next";
 
 import { cn } from "@/src/utils/cn";
 import UserMenu from "./userMenu";
@@ -17,7 +17,11 @@ const Navbar = () => {
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
   useEffect(() => {
-    if (!session) return;
+    if (!session) {
+      setUserInfo(null);
+      deleteCookie("access_token");
+      return;
+    }
     const { access_token, refresh_token } = getCookies();
     if (!refresh_token) {
       if (session?.refreshToken) {
@@ -34,14 +38,13 @@ const Navbar = () => {
       }
     }
     setUserInfo(session);
-    console.log("session : ", session);
   }, [session]);
 
   return (
     //87 , 72
     <header
       className={cn(
-        "min-mobile:h-[72px] max-mobile:h-[87px] fixed left-0 top-0 z-over w-full bg-light-b1 px-4 py-6 dark:bg-dark lg:px-10 lg:py-4",
+        "fixed left-0 top-0 z-over w-full bg-light-b1 px-4 py-6 lg:px-10 lg:py-4 max-mobile:h-[87px] min-mobile:h-[72px] dark:bg-dark",
       )}
     >
       <div className="flex items-center justify-between self-stretch">
@@ -88,7 +91,7 @@ const Navbar = () => {
             About
           </Link>
         </div>
-        <div className="min-mobile:w-52 flex h-10 items-center justify-end gap-2">
+        <div className="flex h-10 items-center justify-end gap-2 min-mobile:w-52">
           <UserMenu />
         </div>
       </div>

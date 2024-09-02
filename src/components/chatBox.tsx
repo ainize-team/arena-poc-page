@@ -3,6 +3,7 @@ import { Card, Typography, Spin } from "antd";
 import "highlight.js/styles/a11y-light.css";
 import TextBox from "./text";
 import { useEffect, useRef } from "react";
+import { cn } from "../utils/cn";
 
 const { Paragraph } = Typography;
 
@@ -11,6 +12,10 @@ type ChatBoxProps = {
   status: ArenaStatus;
   style: React.CSSProperties;
   chatList: Chat[];
+  boxClassName?: string;
+  titleClassName?: string;
+  paragraphClassName?: string;
+  isLeftSide: boolean;
 };
 
 export default function ChatBox({
@@ -18,6 +23,10 @@ export default function ChatBox({
   status,
   style,
   chatList,
+  boxClassName,
+  titleClassName,
+  paragraphClassName,
+  isLeftSide,
 }: ChatBoxProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -41,46 +50,64 @@ export default function ChatBox({
   function textboxContent() {
     if (chatList.length > 0) {
       return (
-        <Paragraph
+        <div
           ref={scrollRef}
-          style={{
-            height: `${40 - 3}vh`, // FIXME(yoojin): change height to not constant value.
-            textAlign: "left",
-            overflow: "auto",
-          }}
+          className={cn(
+            paragraphClassName,
+            "scrollbar dark:scrollbarDark flex h-full flex-col gap-4 overflow-y-scroll px-5 py-4 text-left",
+          )}
         >
           {chatList.map((_chat: Chat, index) => (
-            <>
-              <TextBox key={index} chat={_chat} />
+            <div
+              key={`chat_textBox_Wrap#${index}`}
+              className="boder flex flex-col gap-4"
+            >
+              <TextBox
+                key={`chat_textBox_${index}`}
+                chat={_chat}
+                isLeftSide={isLeftSide}
+              />
               {needLoadingBox(index) ? (
                 <TextBox
                   key={index + 1}
                   chat={{ text: "", type: "assistant" }}
                   isLoading={true}
+                  isLeftSide={isLeftSide}
                 />
               ) : (
                 <></>
               )}
-            </>
+            </div>
           ))}
-        </Paragraph>
+        </div>
       );
     }
   }
 
   return (
-    <Card
-      title={modelName}
-      size="small"
-      bordered={false}
-      styles={{
-        header: {
-          background: status === ArenaStatus.END ? "#fcee8c" : "#ffffff",
-        },
-      }}
-      style={style}
+    <div
+      className={cn(
+        "relative flex h-[500px] w-full flex-col overflow-hidden rounded-xl border border-light-l2 bg-light max-mobile:h-[280px] dark:border-dark-b2 dark:bg-dark-b2",
+      )}
     >
+      <div
+        className={cn(
+          "flex flex-col items-center self-stretch px-8 py-5 max-mobile:px-5 max-mobile:py-4",
+        )}
+      >
+        <div
+          className={cn(
+            titleClassName,
+            "flex h-12 w-full items-center justify-center rounded-[40px] px-9 text-center text-base font-bold leading-120 text-light max-mobile:h-8 max-mobile:px-4 max-mobile:py-[10px] max-mobile:text-xs",
+          )}
+        >
+          {modelName}
+        </div>
+      </div>
       {textboxContent()}
-    </Card>
+      {status === ArenaStatus.END && modelName.includes("👎") && (
+        <div className="absolute left-0 top-0 h-full w-full bg-light-b1 opacity-60 dark:bg-dark" />
+      )}
+    </div>
   );
 }
