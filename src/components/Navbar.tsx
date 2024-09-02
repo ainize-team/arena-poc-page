@@ -17,7 +17,6 @@ const Navbar = () => {
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
   useEffect(() => {
-    console.log("session : ", session);
     if (!session) {
       setUserInfo(null);
       deleteCookie("access_token");

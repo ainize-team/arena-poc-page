@@ -56,7 +56,6 @@ export default function Leaderboard() {
       // );
       // setTableSourceData(testArray);
       setTableSourceData(tableData);
-      console.log("tableData : ", tableData);
       setIsLoading(false);
     };
     setupLeaderboard();
@@ -117,17 +116,17 @@ export default function Leaderboard() {
   });
 
   return (
-    <div className="min-desktop:px-0 max-desktop:px-4">
+    <div className="max-desktop:px-4 min-desktop:px-0">
       <div className="flex justify-between">
         <span className="text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 dark:text-dark-t3">
           Ranking update every 30 minutes
         </span>
-        <span className="text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 dark:text-dark-t3 max-desktop:hidden">
+        <span className="text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 max-desktop:hidden dark:text-dark-t3">
           {lastUpdated?.dateFormat
             ? `Last Updated: ${lastUpdated?.dateFormat}`
             : ""}
         </span>
-        <span className="min-desktop:hidden text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 dark:text-dark-t3">
+        <span className="text-sm font-semibold leading-130 -tracking-[0.42px] text-light-t3 min-desktop:hidden dark:text-dark-t3">
           {lastUpdated?.mobileDateFormat}
         </span>
       </div>
@@ -164,7 +163,7 @@ export default function Leaderboard() {
                       <th
                         key={header.id}
                         className={cn(
-                          "min-mobile:px-[14px] min-mobile:py-4 max-mobile:py-[14px] max-mobile:px-[10px] whitespace-nowrap",
+                          "whitespace-nowrap max-mobile:px-[10px] max-mobile:py-[14px] min-mobile:px-[14px] min-mobile:py-4",
                           index === 0 && "text-center",
                         )}
                       >
@@ -188,7 +187,7 @@ export default function Leaderboard() {
                         <td
                           key={cell.id}
                           className={cn(
-                            "min-mobile:px-[14px] min-mobile:py-4 max-mobile:py-[14px] max-mobile:px-[10px] whitespace-nowrap",
+                            "whitespace-nowrap max-mobile:px-[10px] max-mobile:py-[14px] min-mobile:px-[14px] min-mobile:py-4",
                             index === 0 && "text-center text-base",
                           )}
                         >
@@ -203,7 +202,7 @@ export default function Leaderboard() {
                 ) : (
                   <tr className="">
                     <td colSpan={columns.length} className="text-center">
-                      <div className="min-desktop:min-h-[500px] flex h-full items-center justify-center max-desktop:min-h-[300px]"></div>
+                      <div className="flex h-full items-center justify-center max-desktop:min-h-[300px] min-desktop:min-h-[500px]"></div>
                     </td>
                   </tr>
                 )}
@@ -225,7 +224,7 @@ export default function Leaderboard() {
                   table.getRowModel().rows.length === 0 ||
                   !table.getCanPreviousPage()
                 }
-                className="hover:shadow-hover dark:hover:shadow-hover-dark cursor-pointer rounded px-2 py-1 hover:bg-light-b1 disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:hover:bg-dark-b3"
+                className="cursor-pointer rounded px-2 py-1 hover:bg-light-b1 hover:shadow-hover disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:hover:bg-dark-b3 dark:hover:shadow-hover-dark"
               >
                 <Image
                   width={16}
@@ -239,7 +238,7 @@ export default function Leaderboard() {
                 onClick={() =>
                   table.setPageIndex(table.getState().pagination.pageIndex)
                 }
-                className="hover:shadow-hover dark:hover:shadow-hover-dark h-8 w-8 cursor-pointer rounded px-2 py-1 text-base font-bold leading-5 text-dark hover:bg-light-b1 disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:text-light dark:hover:bg-dark-b3"
+                className="h-8 w-8 cursor-pointer rounded px-2 py-1 text-base font-bold leading-5 text-dark hover:bg-light-b1 hover:shadow-hover disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:text-light dark:hover:bg-dark-b3 dark:hover:shadow-hover-dark"
                 disabled={isLoading || tableSourceData?.length === 0}
               >
                 {table.getState().pagination.pageIndex + 1}
@@ -258,7 +257,7 @@ export default function Leaderboard() {
                       table.getState().pagination.pageIndex + 1 >=
                         table.getPageCount()
                     }
-                    className="hover:shadow-hover dark:hover:shadow-hover-dark h-8 w-8 cursor-pointer rounded px-2 py-1 text-base font-normal leading-5 text-light-t3 hover:bg-light-b1 hover:text-dark disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:text-dark-t3 dark:hover:bg-dark-b3 dark:hover:text-light"
+                    className="h-8 w-8 cursor-pointer rounded px-2 py-1 text-base font-normal leading-5 text-light-t3 hover:bg-light-b1 hover:text-dark hover:shadow-hover disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:text-dark-t3 dark:hover:bg-dark-b3 dark:hover:text-light dark:hover:shadow-hover-dark"
                   >
                     {table.getState().pagination.pageIndex + 2}
                   </button>
@@ -271,7 +270,7 @@ export default function Leaderboard() {
                   table.getRowModel().rows.length === 0 ||
                   !table.getCanNextPage()
                 }
-                className="hover:shadow-hover dark:hover:shadow-hover-dark cursor-pointer rounded px-2 py-1 hover:bg-light-b1 disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:hover:bg-dark-b3"
+                className="cursor-pointer rounded px-2 py-1 hover:bg-light-b1 hover:shadow-hover disabled:bg-transparent disabled:opacity-50 disabled:shadow-none dark:hover:bg-dark-b3 dark:hover:shadow-hover-dark"
               >
                 <Image
                   width={16}

@@ -6,7 +6,6 @@ export const isMobile = () => {
 // 모바일 수준의 레이아웃 체크
 export const isMobileLayout = () => {
   if (typeof window !== "undefined") {
-    console.log("isMobileLayout");
     return window.innerWidth <= 620;
   }
   return false;
