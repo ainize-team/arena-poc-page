@@ -22,7 +22,6 @@ export default function Home() {
     try {
       const res = await fetch("/api/user/info");
       const data: UserInfo = await res.json();
-      console.log("userInfo : ", data);
       setUserInfo((prevState) => {
         if (!prevState) return prevState;
         return {
@@ -38,7 +37,6 @@ export default function Home() {
   }, [recoilUserInfoState]);
 
   useEffect(() => {
-    console.log("recoilUserInfoState : ", recoilUserInfoState);
     if (!recoilUserInfoState) {
       router.push("/");
     } else {

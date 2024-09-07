@@ -110,7 +110,6 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
       );
       const { histories } = await res.json();
       if (res.status === 200) {
-        console.log("getHistoriesAPI : ", histories);
         historiesToTableData(histories);
       }
     } catch (error) {}
