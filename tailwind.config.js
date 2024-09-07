@@ -65,6 +65,7 @@ export const theme = {
       sidebar: "80",
       popover: "98",
       modal: "99",
+      navbar: "999",
       over: "9999",
     },
     maxWidth: {
@@ -114,6 +115,18 @@ export const theme = {
       b2: "#f6f7fa",
       b3: "#fbfbfc",
       b4: "#FFFFFF",
+      tier0Text: "#8D93A5",
+      tier0Bg: "#E6E8ED",
+      tier1Text: "#FFAA00",
+      tier1Bg: "#FFF6DF",
+      tier2Text: "#FF7A00",
+      tier2Bg: "#FFF2E5",
+      tier3Text: "#FF5C00",
+      tier3Bg: "#FFEFE6",
+      tier4Text: "#FF0000",
+      tier4Bg: "#FFE5E5",
+      tier5Text: "#8F14A3",
+      tier5Bg: "#EEDCF1",
     },
     dark: {
       DEFAULT: "#000000",
@@ -127,6 +140,18 @@ export const theme = {
       b2: "#1B1D22",
       b3: "#292A33",
       b4: "#343541",
+      tier0DarkText: "#C9CFDE",
+      tier0DarkBg: "#595B66",
+      tier1DarkText: "#FFAA00",
+      tier1DarkBg: "#4C4333",
+      tier2DarkText: "#FF7A00",
+      tier2DarkBg: "#543A29",
+      tier3DarkText: "#FF5C00",
+      tier3DarkBg: "#451D07",
+      tier4DarkText: "#FF0000",
+      tier4DarkBg: "#380909",
+      tier5DarkText: "#A801C3",
+      tier5DarkBg: "#25092A",
     },
     orange: {
       DEFAULT: "#FF823C",
@@ -147,6 +172,21 @@ export const theme = {
       50: "#3647E5",
       75: "#0F1974",
     },
+    green: {
+      DEFAULT: "#009785",
+      light: {
+        DEFAULT: "#009785",
+        t1: "#00D4A0",
+        t2: "#B3F1E2",
+        t3: "#D9F8F0",
+      },
+      dark: {
+        DEFAULT: "#00D4A0",
+        t1: "#009785",
+        t2: "#2A5554",
+        t3: "#387372",
+      },
+    },
   },
 };
 export const plugins = [
@@ -160,4 +200,5 @@ export const plugins = [
       { values: theme("textShadow") },
     );
   }),
+  // require("@tailwindcss/forms"),
 ];

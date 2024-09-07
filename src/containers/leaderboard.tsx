@@ -33,28 +33,11 @@ export default function Leaderboard() {
     useState<LeaderboardTableData[]>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const isMobile = () => {
-    return /Mobi/i.test(window.navigator.userAgent);
-  };
-
   useEffect(() => {
-    // if (isMobile()) {
-    //   router.push("/m");
-    //   return;
-    // }
     const setupLeaderboard = async () => {
       setIsLoading(true);
       const { lastUpdated, tableData } = await getLeaderboard();
       setLastUpdated(lastUpdated);
-      // const testArray = tableData.concat(
-      //   tableData.slice(3, 5),
-      //   tableData.slice(5),
-      //   tableData.slice(8),
-      //   tableData.slice(9),
-      //   tableData.slice(2),
-      //   tableData.slice(4),
-      // );
-      // setTableSourceData(testArray);
       setTableSourceData(tableData);
       setIsLoading(false);
     };
@@ -209,14 +192,6 @@ export default function Leaderboard() {
               </tbody>
             </table>
             <div className="sticky left-0 flex w-full justify-center gap-1 justify-self-end px-6 py-4">
-              {/* <button
-                  onClick={() => table.setPageIndex(0)}
-                  disabled={!table.getCanPreviousPage()}
-                  className="rounded border px-2 py-1 disabled:opacity-50"
-                >
-                  {"<<"} First
-                </button> */}
-
               <button
                 onClick={() => table.previousPage()}
                 disabled={
@@ -280,13 +255,6 @@ export default function Leaderboard() {
                   src={ChevronRight}
                 />
               </button>
-              {/* <button
-                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                  disabled={!table.getCanNextPage()}
-                  className="rounded border px-2 py-1 disabled:opacity-50"
-                >
-                  Last {">>"}
-                </button> */}
             </div>
           </>
         </div>

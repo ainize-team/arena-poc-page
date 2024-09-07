@@ -3,7 +3,6 @@ import { addressAtom } from "./recoil";
 import { useEffect, useState } from "react";
 import { PUBLIC_ENV } from "../constant/constant";
 
-
 export default function useWallet() {
   const [walletAddress, setWalletAddress] = useState("");
   const [address, setAddress] = useRecoilState(addressAtom);
@@ -12,7 +11,7 @@ export default function useWallet() {
   const isWalletExist = (): boolean => {
     if (window.ainetwork) return true;
     return false;
-  }
+  };
 
   useEffect(() => {
     const walletExtension = window.ainetwork;
@@ -27,15 +26,15 @@ export default function useWallet() {
       const validChain = PUBLIC_ENV.APP_ENV === "production" ? 1 : 0;
       setWalletAddress(_address);
       setIsValidChain(validChain === chainId);
-    }
+    };
     getWalletInfo();
-  }, [])
+  }, []);
 
   useEffect(() => {
     // NOTE(yoojin): 페이지 이동시 walletAddress 가 empty로 변경되어 호출됨.
     if (!walletAddress || address === walletAddress) return;
     setAddress("");
-  }, [walletAddress])
+  }, [walletAddress]);
 
   const setWalletEventHandler = () => {
     const walletExtension = window.ainetwork;
@@ -50,7 +49,7 @@ export default function useWallet() {
       const { chainId } = event.detail;
       const validChainId = PUBLIC_ENV.APP_ENV === "production" ? 1 : 0;
       setIsValidChain(chainId === validChainId);
-    })
+    });
   };
 
   const connectWallet = async () => {
@@ -59,10 +58,10 @@ export default function useWallet() {
       const date = new Date();
       const signMessage = `arena.ainetwork.ai wants you to sign in with your AI Network account: ${walletAddress}\
         Please sign-in to use the arena. This is only for login in purposes, it does not cost any gas and does not send any funds.\
-        Issued At: ${date.toDateString()}`
+        Issued At: ${date.toDateString()}`;
       await walletExtension.signMessage(signMessage);
       try {
-        setAddress(walletAddress);
+        // setAddress(walletAddress);
         return walletAddress;
       } catch (error) {
         setAddress("");
@@ -82,11 +81,11 @@ export default function useWallet() {
     } catch (error) {
       return null;
     }
-  }
+  };
 
   const handleChangedAddress = (_address: string) => {
     setAddress(_address);
-  }
+  };
 
   return {
     isWalletExist,
@@ -95,6 +94,6 @@ export default function useWallet() {
     handleChangedAddress,
     setAddress,
     setWalletEventHandler,
-    getEventReward
+    getEventReward,
   };
 }
