@@ -105,7 +105,7 @@ export default function Home() {
                   ),
                 }}
               >
-                {`**1. Tier Promotion**\n\nA score between 0 and 1 is given based on the quality of the question, and as experience points accumulate, the user&apos;s tier level increases.\n\nStart at Tier 0 upon first login\n\nReach 20 EXP at Tier 0 → Promote to Tier 1\n\nReach 50 EXP at Tier 1 → Promote to Tier 2\n\nReach 80 EXP at Tier 2 → Promote to Tier 3\n\nReach 150 EXP at Tier 3 → Promote to Tier 4\n\nReach 230 EXP at Tier 4 → Promote to Tier 5\n\n**2. Tier Demotion**\n\nIf any attention check questions embedded within the prompts are answered incorrectly, the user will be demoted by one tier. Users will also be demoted if they do not log in for more than three days.`}
+                {`**1. Tier Promotion**\n\nA score between 0 and 1 is given based on the quality of the question, and as experience points accumulate, the user&apos;s tier level increases.\n\nStart at Tier 0 upon first login\n\nReach 20 EXP at Tier 0 → Promote to Tier 1\n\nReach 50 EXP at Tier 1 → Promote to Tier 2\n\nReach 80 EXP at Tier 2 → Promote to Tier 3\n\nReach 150 EXP at Tier 3 → Promote to Tier 4\n\nReach 230 EXP at Tier 4 → Promote to Tier 5\n\n**2. Tier Demotion**\n\nIf any attention check questions embedded within the prompts are answered incorrectly, the user will be demoted by one tier.`}
               </ReactMarkdown>
             </div>
           </>

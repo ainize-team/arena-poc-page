@@ -11,6 +11,7 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import { authFetch } from "@/src/lib/auth";
 import { toast } from "sonner";
+import { processNumber } from "../constant/constant";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -79,7 +80,7 @@ export default function ArenaChat() {
 
     isZeroReward
       ? toast.error("Reward Failed.")
-      : toast.success("Reward Success!");
+      : toast.success(`Reward Success! ${processNumber(reward)} AIN`);
   };
 
   const battleInit = async () => {
