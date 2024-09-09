@@ -10,7 +10,7 @@ import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 
 import Modal from "./modal";
-import { modalState, themeAtom } from "../lib/recoil";
+import { modalState, themeAtom, userInfoState } from "../lib/recoil";
 import { ClaimStatus, UserInfo } from "../types/type";
 import { cn } from "../utils/cn";
 import {
@@ -48,6 +48,7 @@ const ClaimModal = ({
   setClaimStatus,
 }: ClaimModalProps) => {
   const [theme, setTheme] = useRecoilState(themeAtom);
+  const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
 
   const claimInputSpanRef = useRef<HTMLSpanElement>(null);
   const claimInputInputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +64,7 @@ const ClaimModal = ({
   const [claimResponseData, setClaimResponseData] = useState<ClaimResponse>(
     defaultClaimResponseData,
   );
+  const [isModalButtonDisabled, setIsModalButtonDisabled] = useState(false);
 
   const initializeModal = () => {
     setClaimResponseData(defaultClaimResponseData);
@@ -81,6 +83,28 @@ const ClaimModal = ({
       claimInputInputRef.current.style.width = `${Math.max(claimInputSpanRef.current.offsetWidth, 20)}px`;
     }
   }, [claimInputValue]);
+
+  useEffect(() => {
+    if (!isDesktopBrowser()) {
+      return setIsModalButtonDisabled(false);
+    }
+
+    switch (claimStatus) {
+      case ClaimStatus.READY:
+        if (!userInfo?.address || isClaimableError || !claimInputValue) {
+          setIsModalButtonDisabled(true);
+        } else {
+          setIsModalButtonDisabled(false);
+        }
+        break;
+      case ClaimStatus.NOTCONNECTED:
+        setIsModalButtonDisabled(true);
+        break;
+      default:
+        setIsModalButtonDisabled(false);
+        break;
+    }
+  }, [claimStatus, isClaimableError, userInfo, claimInputValue]);
 
   const checkTheme = (theme: string) => {
     if (theme === "system") {
@@ -177,6 +201,33 @@ const ClaimModal = ({
     }
   };
 
+  const discardAddress = async () => {
+    const reqBody = {
+      address: "",
+    };
+
+    const res = await fetch("/api/user/connect/ain", {
+      method: "POST",
+      body: JSON.stringify(reqBody),
+    });
+
+    if (res.ok) {
+      const models = await res.json();
+      console.log("AIN CONNECT : ", models);
+      setUserInfo((prevState) => {
+        if (!prevState) return prevState;
+        return {
+          ...prevState,
+          user: {
+            ...prevState.user,
+            address: "",
+          },
+        };
+      });
+      setClaimStatus(ClaimStatus.NOTCONNECTED);
+    }
+  };
+
   return (
     <Modal
       onRequestClose={() => {
@@ -184,19 +235,7 @@ const ClaimModal = ({
         initializeModal();
       }}
       bottomButtonText={claimStatus}
-      isDisabled={
-        isDesktopBrowser()
-          ? !claimInputValue
-            ? true
-            : claimStatus === ClaimStatus.NOTCONNECTED
-              ? true
-              : claimStatus === ClaimStatus.READY && userInfo?.address
-                ? isClaimableError
-                : claimStatus === ClaimStatus.READY && !userInfo?.address
-                  ? true
-                  : false
-          : false
-      }
+      isDisabled={isModalButtonDisabled}
       bottomButtonHandler={claimAinRequest}
       isDesktop={isDesktopBrowser()}
     >
@@ -353,7 +392,10 @@ const ClaimModal = ({
               Claim
             </p>
             {claimStatus === ClaimStatus.READY ? (
-              <div className="flex cursor-pointer items-center justify-center gap-1 self-stretch rounded-lg border border-green-light-t2 bg-green-light-t3 px-3 py-[6px] hover:bg-green-light-t2 dark:border-green-dark-t3 dark:bg-green-dark-t2 dark:hover:bg-green-dark-t3">
+              <div
+                className="flex cursor-pointer items-center justify-center gap-1 self-stretch rounded-lg border border-green-light-t2 bg-green-light-t3 px-3 py-[6px] hover:bg-green-light-t2 dark:border-green-dark-t3 dark:bg-green-dark-t2 dark:hover:bg-green-dark-t3"
+                onClick={discardAddress}
+              >
                 <Image
                   alt="ready status icon"
                   width={14}

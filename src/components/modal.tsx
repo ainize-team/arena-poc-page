@@ -89,6 +89,8 @@ const Modal: React.FC<ModalProps> = ({
       className={cn(
         "absolute left-1/2 top-1/2 z-over h-fit w-fit -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-light shadow-sm outline-none max-desktop:px-4 max-desktop:py-4 min-desktop:p-8 dark:bg-dark-b4",
       )}
+      onAfterOpen={() => (document.body.style.overflow = "hidden")}
+      onAfterClose={() => (document.body.style.overflow = "unset")}
     >
       <div className="relative w-full outline-none max-desktop:px-4 min-desktop:px-0">
         <div
