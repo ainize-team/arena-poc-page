@@ -75,6 +75,7 @@ export default function ArenaChat() {
     const isZeroReward = !reward || reward === 0;
 
     if (!session?.user.tier || session?.user.tier === 0) {
+      toast.info("Tier 0 has no rewards.");
       return;
     }
 
