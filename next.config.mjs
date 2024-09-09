@@ -24,6 +24,10 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
+
+  webpack(config) {
+    return config;
+  },
 };
 
 export default nextConfig;
