@@ -312,7 +312,7 @@ const ClaimModal = ({
         />
       ) : claimStatus === ClaimStatus.SUCCESS ? (
         <ErrorModalChildren
-          errorTitle={`**${processNumber(claimResponseData.amount)} AIN** has been transferred \nto **${formatAddress(claimResponseData.tx_hash)} !**
+          errorTitle={`**${processNumber(claimResponseData.amount)} AIN** has been transferred \nto **${formatAddress(userInfo?.address ?? "")} !**
             `}
           errorContentChildren={
             <div className="text-center text-base font-normal text-dark dark:text-light">
