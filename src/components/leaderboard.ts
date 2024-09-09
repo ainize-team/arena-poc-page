@@ -80,9 +80,9 @@ const stringifyCI = (eloScore: number, ci: Array<number>): string => {
   return `${upper > 0 ? `+${upper}` : upper} / ${lower}`;
 };
 
-function dateFormat(dateTS: number) {
+export function dateFormat(dateTS: number) {
   const date = new Date(dateTS);
-  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset());
 
   const month = localDate.getMonth() + 1;
   const day = localDate.getDate();
@@ -97,5 +97,7 @@ function dateFormat(dateTS: number) {
   return {
     dateFormat: `${localDate.getFullYear()}-${monthStr}-${dayStr} ${hourStr}:${minuteStr}`,
     mobileDateFormat: `${monthStr}-${dayStr} ${hourStr}:${minuteStr}`,
+    mobileMypageFormat: `${localDate.getFullYear()}.${monthStr}.${dayStr}`,
+    myPageDateFormat: `${localDate.getFullYear()}.${monthStr}.${dayStr} ${hourStr}:${minuteStr}`,
   };
 }

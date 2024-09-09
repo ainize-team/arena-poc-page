@@ -41,7 +41,7 @@ const UserMenu = () => {
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
 
   const [userInfo, setRecoilUserInfoState] = useState<Session | null>(null);
-  const [userExpPercentage, setuserExpPercentage] = useState(0);
+  const [userExpPercentage, setUserExpPercentage] = useState(0);
   const [isVisibleThemeButtons, setIsVisibleThemeButtons] = useState(false);
   const [isAnimatingThemeButtons, setIsAnimatingThemeButtons] = useState(false);
   const [open, setOpen] = useState(false);
@@ -83,9 +83,7 @@ const UserMenu = () => {
       userInfo.user.tier,
       userInfo.user.exp,
     );
-    return () => {
-      setuserExpPercentage(userExpPercentage);
-    };
+    setUserExpPercentage(userExpPercentage);
   }, [userInfo]);
 
   const popupCenter = (url, title) => {

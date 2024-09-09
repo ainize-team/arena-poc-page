@@ -40,3 +40,8 @@ export const themeAtom = atom<string>({
   default: "system",
   effects_UNSTABLE: [persistAtom],
 });
+
+export const modalState = atom<boolean>({
+  key: "modalState",
+  default: false,
+});
