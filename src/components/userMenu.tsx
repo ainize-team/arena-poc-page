@@ -222,10 +222,10 @@ const UserMenu = () => {
                     imageUrl={userInfo.user.picture}
                     onClick={() => {}}
                     hasBadge={true}
-                    badgeHeight={22}
-                    badgeWidth={14}
+                    badgeHeight={32}
+                    badgeWidth={20}
                     userTier={userInfo.user.tier}
-                    badgeClassName="bottom-[-2px] right-[-2px]"
+                    badgeClassName="bottom-[-9px] right-[-5px]"
                   />
                   <div className="flex flex-col items-start gap-2">
                     <p className="text-xl font-bold leading-120 tracking-[-0.6px] text-dark">
