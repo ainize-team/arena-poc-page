@@ -9,7 +9,7 @@ import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/src/types/type";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import React from "react";
 import { useSession } from "next-auth/react";
-import { authFetch } from "@/src/lib/auth";
+import useAuth from "@/src/lib/auth";
 import { toast } from "sonner";
 import { processNumber } from "../constant/constant";
 
@@ -44,6 +44,7 @@ export default function ArenaChat() {
   const [turn, setTurn] = useState(0);
 
   const { data: session, update } = useSession();
+  const { authFetch, checkAuth } = useAuth();
 
   const testCaptcha = async () => {
     if (!executeRecaptcha) {
@@ -244,7 +245,9 @@ export default function ArenaChat() {
       setModelAChatList([...modelAChatList, userChat]);
       setModelBChatList([...modelBChatList, userChat]);
       try {
-        authFetch("/api/arena/chat", {
+        // NOTE(yoojin): Inference 가 동시에 두 번 요청가기 때문에 미리 auth check 후 일반 fetch 사용
+        await checkAuth();
+        fetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
             battleId,
@@ -261,7 +264,7 @@ export default function ArenaChat() {
             },
           ]);
         });
-        authFetch("/api/arena/chat", {
+        fetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
             battleId,

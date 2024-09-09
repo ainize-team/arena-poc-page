@@ -1,35 +1,37 @@
-import { getCookies, setCookie } from "cookies-next";
-import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
-export const authFetch = async (
-  url: string | URL,
-  requestInit: RequestInit,
-) => {
-  // await checkCookies();
-  return fetch(url, requestInit);
-};
+export default function useAuth() {
+  const { data: session, update } = useSession();
 
-const refreshToken = async () => {
-  const res = await fetch("/api/auth/refresh", {
-    method: "POST",
-  });
-  const accessToken = await res.json();
-  if (!accessToken.token) {
-    throw new Error("Failed to fetch jwt.");
+  const authFetch = async (
+    url: string | URL,
+    requestInit: RequestInit,
+  ) => {
+    await checkAuth();
+    return fetch(url, requestInit);
   }
-  setCookie("access_token", accessToken.token, {
-    expires: accessToken.expire,
-  });
-  return accessToken.token;
-};
 
-export const checkCookies = async () => {
-  const { access_token, refresh_token } = getCookies();
-  if (!access_token) {
-    if (!refresh_token) {
-      await signIn();
-    } else {
-      await refreshToken();
+  const checkAuth = async () => {
+      if (!session || !session.accessToken || Date.now() - session.accessToken.expire > 1000 * 60 ) {
+      if (!session?.refreshToken || Date.now() - session.refreshToken.expire > 1000 * 60) {
+        // NOTE(yoojin): re-login? do something. Need test but not critical because of session expired.
+      } else {
+        await refreshToken();
+      }
     }
   }
-};
+
+  const refreshToken = async () => {
+    const res = await fetch("/api/auth/refresh", {
+      method: "POST",
+    });
+    const accessToken = await res.json();
+    await update({ accessToken });
+    console.log('refresh Date.now() :>> ', Date.now());
+  }
+
+  return {
+    authFetch,
+    checkAuth,
+  }
+}
