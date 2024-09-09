@@ -15,13 +15,17 @@ export async function POST(req: NextRequest) {
   try {
     const result = await fetch(endpoint, {
       method: "GET",
-      headers: { Cookie: `refresh_token=${refreshToken?.value};` },
+      headers: { 
+        Cookie: `refresh_token=${refreshToken?.value};`,
+        "x-api-key": process.env.SERVER_API_KEY!,
+      },
     });
     const refreshResult = await result.json();
     const { access_token } = refreshResult;
     access_token.expire = Math.round(access_token.expire * 1000);
     return Response.json(access_token, { status: 200 });
   } catch (e) {
+    console.log("Refresh Error", e);
     return Response.json(failedRefresh, { status: 500 });
   }
 }
