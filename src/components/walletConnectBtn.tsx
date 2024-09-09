@@ -131,7 +131,7 @@ export default function WalletConnectBtn({
         height={14}
         src={currentTheme === "light" ? NoticeIcon : NoticeIconDark}
       />
-      <p className="text-left text-sm font-medium -tracking-[0.28px] text-light-t2 dark:text-dark-t3">
+      <p className="text-left text-sm font-medium -tracking-[0.28px] text-light-t2 dark:text-dark-t2">
         Connect AIN wallet to claim
       </p>
     </div>
