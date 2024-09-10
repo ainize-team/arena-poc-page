@@ -8,6 +8,7 @@ import React, {
 import { useRecoilState } from "recoil";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
 
 import Modal from "./modal";
 import { modalState, themeAtom, userInfoState } from "../lib/recoil";
@@ -22,12 +23,12 @@ import {
 import ErrorModalChildren from "./errorModalChildren";
 import WalletConnectBtn from "./walletConnectBtn";
 import { ClaimResponse } from "../app/api/user/claim/route";
+import useAuth from "../lib/auth";
 
 import NoticeIcon from "@/public/images/buttons/NoticeIcon.svg";
 import NoticeIconDark from "@/public/images/buttons/NoticeIconDark.svg";
 import ReadyStatusIcon from "@/public/images/buttons/ReadyStatusIcon.svg";
 import Outlink from "@/public/images/buttons/Outlink";
-import Link from "next/link";
 
 interface ClaimModalProps {
   onCloseFunction: () => void;
@@ -49,6 +50,7 @@ const ClaimModal = ({
 }: ClaimModalProps) => {
   const [theme, setTheme] = useRecoilState(themeAtom);
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
+  const { authFetch } = useAuth();
 
   const claimInputSpanRef = useRef<HTMLSpanElement>(null);
   const claimInputInputRef = useRef<HTMLInputElement>(null);
@@ -184,7 +186,7 @@ const ClaimModal = ({
         amount: Number(claimInputValue),
       };
 
-      const res = await fetch("/api/user/claim", {
+      const res = await authFetch("/api/user/claim", {
         method: "POST",
         body: JSON.stringify(reqBody),
       });
@@ -206,7 +208,7 @@ const ClaimModal = ({
       address: "",
     };
 
-    const res = await fetch("/api/user/connect/ain", {
+    const res = await authFetch("/api/user/connect/ain", {
       method: "POST",
       body: JSON.stringify(reqBody),
     });

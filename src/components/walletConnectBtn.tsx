@@ -12,6 +12,7 @@ import {
   useSsrCompletedState,
 } from "@/src/lib/recoil";
 import { ClaimStatus } from "../types/type";
+import useAuth from "../lib/auth";
 
 import NoticeIcon from "@/public/images/buttons/NoticeIcon.svg";
 import NoticeIconDark from "@/public/images/buttons/NoticeIconDark.svg";
@@ -23,6 +24,7 @@ interface WalletConnectBtnProps {
 export default function WalletConnectBtn({
   setClaimStatus,
 }: WalletConnectBtnProps) {
+  const { authFetch } = useAuth();
   const [theme, setTheme] = useRecoilState(themeAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
@@ -80,7 +82,7 @@ export default function WalletConnectBtn({
         address: connectedAddress,
       };
 
-      const res = await fetch("/api/user/connect/ain", {
+      const res = await authFetch("/api/user/connect/ain", {
         method: "POST",
         body: JSON.stringify(reqBody),
       });
