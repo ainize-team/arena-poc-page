@@ -15,6 +15,7 @@ import AINetworkLogo from "@/public/images/logo/AINetworkLogo.svg";
 import XLogo from "@/public/images/logo/XLogo.svg";
 import DiscordLogo from "@/public/images/logo/DiscordLogo.svg";
 import TelegramLogo from "@/public/images/logo/TelegramLogo.svg";
+import Link from "next/link";
 
 export default function Home() {
   const [theme, setTheme] = useRecoilState(themeAtom);
@@ -224,64 +225,92 @@ export default function Home() {
             Join the community
           </div>
           <div className="flex items-start justify-center gap-6 self-stretch max-desktop:flex-col min-desktop:flex-row">
-            <div className="flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full">
+            <Link
+              href={"https://www.ainetwork.ai/"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full dark:bg-dark-b3",
+              )}
+            >
               <Image
                 src={AINetworkLogo}
                 alt="ainetwork logo"
                 className="h-16 w-16"
               />
               <div className="flex flex-col items-start gap-[6px]">
-                <div className="feading-150 text-base font-bold text-dark">
+                <div className="feading-150 text-base font-bold text-dark dark:text-light">
                   AI Network
                 </div>
-                <div className="text-sm leading-5 text-dark">
+                <div className="text-sm leading-5 text-dark dark:text-light">
                   Follow our latest news
                 </div>
               </div>
-            </div>
-            <div className="flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full">
+            </Link>
+            <Link
+              href={"https://x.com/ainetwork_ai"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full dark:bg-dark-b3",
+              )}
+            >
               <Image src={XLogo} alt="x logo" className="h-16 w-16" />
               <div className="flex flex-col items-start gap-[6px]">
-                <div className="feading-150 text-base font-bold text-dark">
+                <div className="feading-150 text-base font-bold text-dark dark:text-light">
                   Twitter
                 </div>
-                <div className="text-sm leading-5 text-dark">
+                <div className="text-sm leading-5 text-dark dark:text-light">
                   Follow our latest news
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
           <div className="flex items-start justify-center gap-6 self-stretch max-desktop:flex-col min-desktop:flex-row">
-            <div className="flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full">
+            <Link
+              href={"https://discord.gg/ZWEx46mhsb"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full dark:bg-dark-b3",
+              )}
+            >
               <Image
                 src={DiscordLogo}
                 alt="discord logo"
                 className="h-16 w-16"
               />
               <div className="flex flex-col items-start gap-[6px]">
-                <div className="feading-150 text-base font-bold text-dark">
+                <div className="feading-150 text-base font-bold text-dark dark:text-light">
                   Discord
                 </div>
-                <div className="text-sm leading-5 text-dark">
+                <div className="text-sm leading-5 text-dark dark:text-light">
                   Join global community
                 </div>
               </div>
-            </div>
-            <div className="flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full">
+            </Link>
+            <Link
+              href={"https://t.me/ainetwork_en"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full dark:bg-dark-b3",
+              )}
+            >
               <Image
                 src={TelegramLogo}
                 alt="telegram logo"
                 className="h-16 w-16"
               />
               <div className="flex flex-col items-start gap-[6px]">
-                <div className="feading-150 text-base font-bold text-dark">
+                <div className="feading-150 text-base font-bold text-dark dark:text-light">
                   Telegram
                 </div>
-                <div className="text-sm leading-5 text-dark">
+                <div className="text-sm leading-5 text-dark dark:text-light">
                   Join global community
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

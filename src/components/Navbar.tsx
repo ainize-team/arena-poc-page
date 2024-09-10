@@ -77,7 +77,7 @@ const Navbar = () => {
             <ArenaLLMLogo
               strokeColor={currentTheme === "light" ? "#000" : "#fff"}
             />
-            AI Network LLM
+            AI Network LLM Arena
           </Link>
         </nav>
         <div className="flex gap-6 max-desktop:hidden">
