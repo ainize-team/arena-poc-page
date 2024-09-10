@@ -28,7 +28,7 @@ import { userInfoState } from "../lib/recoil";
 import { parseUserExp } from "../constant/constant";
 import ThemeButtons from "./themeButtons";
 import { cn } from "../utils/cn";
-import { isMobile } from "../utils/checkUserStates";
+import onClickLoginBtn from "../utils/handleLogin";
 
 import GoogleIcon from "@/public/images/GoogleIcon.svg";
 import CloseButton from "@/public/images/buttons/CloseButton.svg";
@@ -85,39 +85,6 @@ const UserMenu = () => {
     );
     setUserExpPercentage(userExpPercentage);
   }, [userInfo]);
-
-  const popupCenter = (url, title) => {
-    const dualScreenLeft = window.screenLeft ?? window.screenX;
-    const dualScreenTop = window.screenTop ?? window.screenY;
-
-    const width =
-      window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
-
-    const height =
-      window.innerHeight ??
-      document.documentElement.clientHeight ??
-      screen.height;
-
-    const systemZoom = width / window.screen.availWidth;
-
-    const left = (width - 500) / 2 / systemZoom + dualScreenLeft;
-    const top = (height - 550) / 2 / systemZoom + dualScreenTop;
-
-    const newWindow = window.open(
-      url,
-      title,
-      `width=${500 / systemZoom},height=${
-        550 / systemZoom
-      },top=${top},left=${left}`,
-    );
-    newWindow?.focus();
-  };
-
-  const onClickLoginBtn = async () => {
-    isMobile()
-      ? await signIn("google")
-      : popupCenter("/login", "google log in");
-  };
 
   const onClickLogoutBtn = async () => {
     await signOut();
