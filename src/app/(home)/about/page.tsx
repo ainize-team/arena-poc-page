@@ -16,12 +16,22 @@ import XLogo from "@/public/images/logo/XLogo.svg";
 import DiscordLogo from "@/public/images/logo/DiscordLogo.svg";
 import TelegramLogo from "@/public/images/logo/TelegramLogo.svg";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [theme, setTheme] = useRecoilState(themeAtom);
 
   const [tabState, setTabState] = useState("ARENA");
   const [currentTheme, setCurrentTheme] = useState("light");
+
+  const handleTabClick = (tabName: string) => {
+    setTabState(tabName);
+    const params = new URLSearchParams({
+      tab: tabName,
+    });
+    router.push(`/about?${params.toString()}`);
+  };
 
   const checkTheme = (theme: string) => {
     if (theme === "system") {
@@ -39,13 +49,26 @@ export default function Home() {
     checkTheme(theme);
   }, [theme]);
 
+  useEffect(() => {
+    const queryTab = new URLSearchParams(window.location.search).get("tab");
+    if (queryTab) {
+      setTabState(queryTab);
+    }
+  }, []);
+
   const renderTabState = () => {
     switch (tabState) {
       case "ARENA":
         return (
           <>
             <div className="flex overflow-hidden rounded-xl bg-light">
-              <Image src={AboutArena} alt="about arena" />
+              <Image
+                src={AboutArena}
+                alt="about arena"
+                width={400}
+                height={240}
+                className="h-[240px] w-[400px]"
+              />
             </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left leading-150 text-dark max-desktop:text-sm min-desktop:text-base dark:text-light">
               <ReactMarkdown
@@ -69,7 +92,13 @@ export default function Home() {
         return (
           <>
             <div className="flex overflow-hidden rounded-xl bg-light">
-              <Image src={AboutLeaderboard} alt="about leaderboard" />
+              <Image
+                src={AboutLeaderboard}
+                alt="about leaderboard"
+                width={400}
+                height={240}
+                className="h-[240px] w-[400px]"
+              />
             </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left leading-150 text-dark max-desktop:text-sm min-desktop:text-base dark:text-light">
               <ReactMarkdown
@@ -93,7 +122,13 @@ export default function Home() {
         return (
           <>
             <div className="flex overflow-hidden rounded-xl bg-light">
-              <Image src={AboutTier} alt="about tier" />
+              <Image
+                src={AboutTier}
+                alt="about tier"
+                width={400}
+                height={240}
+                className="h-[240px] w-[400px]"
+              />
             </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left leading-150 text-dark max-desktop:text-sm min-desktop:text-base dark:text-light">
               <ReactMarkdown
@@ -117,7 +152,13 @@ export default function Home() {
         return (
           <>
             <div className="flex overflow-hidden rounded-xl bg-light">
-              <Image src={AboutReward} alt="about reward" />
+              <Image
+                src={AboutReward}
+                alt="about reward"
+                width={400}
+                height={240}
+                className="h-[240px] w-[400px]"
+              />
             </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left leading-150 text-dark max-desktop:text-sm min-desktop:text-base dark:text-light">
               <ReactMarkdown
@@ -132,7 +173,7 @@ export default function Home() {
                   ),
                 }}
               >
-                {`Rewards are distributed based on tier level.\n\nAs the tier level rises, the rewards become greater.\n- **Tier 0** :  No rewards\n- **Tier 1** :  Average reward 10 credits\n- **Tier 2** :  1.5 x Tier 1 reward.\n- **Tier 3** :  2 x Tier 1 reward.\n- **Tier 4** :  2.5 x Tier 1 reward.\n- **Tier 5** :  3 x Tier 1 reward.`}
+                {`Rewards are distributed based on tier level.\n\nAs the tier level rises, the rewards become greater.\n- **Tier 0** :  No rewards\n- **Tier 1** :  Average reward 0.5 credits\n- **Tier 2** :  1.5 x Tier 1 reward.\n- **Tier 3** :  2 x Tier 1 reward.\n- **Tier 4** :  2.5 x Tier 1 reward.\n- **Tier 5** :  3 x Tier 1 reward.`}
               </ReactMarkdown>
             </div>
           </>
@@ -172,7 +213,7 @@ export default function Home() {
                 tabState === "ARENA" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
-              onClick={() => setTabState("ARENA")}
+              onClick={() => handleTabClick("ARENA")}
             >
               Arena
             </div>
@@ -182,7 +223,7 @@ export default function Home() {
                 tabState === "LEADERBOARD" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
-              onClick={() => setTabState("LEADERBOARD")}
+              onClick={() => handleTabClick("LEADERBOARD")}
             >
               Leaderboard
             </div>
@@ -192,7 +233,7 @@ export default function Home() {
                 tabState === "TIER" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
-              onClick={() => setTabState("TIER")}
+              onClick={() => handleTabClick("TIER")}
             >
               Tier & EXP
             </div>
@@ -202,7 +243,7 @@ export default function Home() {
                 tabState === "REWARD" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
-              onClick={() => setTabState("REWARD")}
+              onClick={() => handleTabClick("REWARD")}
             >
               Reward
             </div>
