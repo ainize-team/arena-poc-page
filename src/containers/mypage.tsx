@@ -380,7 +380,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-5 self-stretch">
+        <div className="flex flex-col items-center gap-5 self-stretch pb-5">
           <div className="flex w-full flex-col items-center gap-1 px-[10px]">
             <UserExpBar
               className={"h-[13px] w-full rounded-3xl"}
@@ -472,7 +472,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
               </div>
             )}
 
-            <div className="flex items-start gap-1 self-stretch">
+            {/* <div className="flex items-start gap-1 self-stretch">
               <Image
                 alt="notice icon"
                 width={14}
@@ -483,7 +483,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
               <p className="text-left text-sm font-medium leading-120 -tracking-[0.28px] text-light-t2 dark:text-dark-t3">
                 Tier drops after 3 days of inactive
               </p>
-            </div>
+            </div> */}
           </div>
 
           <Link

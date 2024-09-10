@@ -124,7 +124,7 @@ export default function WalletConnectBtn({
 
   return (
     <div
-      className="flex cursor-pointer items-center justify-center gap-1 self-stretch rounded-lg border border-light-l2 bg-light-b2 px-3 py-[6px] hover:bg-light-l2 dark:border-dark-l2 dark:bg-dark-b3 dark:hover:bg-dark-b2"
+      className="flex cursor-pointer items-center justify-center gap-1 self-stretch rounded-lg border border-light-l2 bg-light-b2 px-3 py-[6px] hover:bg-light-l2 dark:border-[#414358] dark:bg-dark-b4 dark:hover:bg-dark-b2"
       onClick={onClickConnectWalletBtn}
     >
       <Image

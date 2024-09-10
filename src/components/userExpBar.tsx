@@ -15,7 +15,7 @@ export default function UserExpBar({
   barWidth = 0,
 }: UserExpBarProps) {
   const scaleStyle = {
-    width: `${barWidth * userExpPercentage}px`,
+    width: `${userExpPercentage * 100}%`,
   };
 
   return (

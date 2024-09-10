@@ -173,7 +173,9 @@ const ClaimModal = ({
       return;
     }
     setIsClaimableError(false);
-    const maxClaimable = processNumber(userInfo.credit) - transferFee;
+    const maxClaimable = processNumber(
+      processNumber(userInfo.credit) - transferFee,
+    );
     setClaimInputValue(maxClaimable.toString());
   };
 
@@ -433,8 +435,8 @@ const ClaimModal = ({
                   className={cn(
                     "flex max-w-[300px] flex-[1_0_0%] cursor-text items-center justify-end self-stretch rounded-lg border-[1.5px] px-4 py-3",
                     isClaimInputFocused
-                      ? "border-primary-violet1Active dark:border-primary-violet3"
-                      : "border-light-l1",
+                      ? "border-primary-violet2 dark:border-primary"
+                      : "border-light-l1 dark:border-dark-l2",
                     isClaimableError &&
                       "border-light-tier4Text dark:border-dark-tier4DarkText",
                   )}
@@ -474,7 +476,7 @@ const ClaimModal = ({
               </div>
 
               <div
-                className="chat flex cursor-pointer items-center justify-center self-end rounded-md bg-light-b1 px-3 py-1 text-sm font-bold leading-130 text-dark hover:bg-light-l1 dark:bg-dark-b3 dark:text-light hover:dark:bg-dark-b2"
+                className="chat flex cursor-pointer items-center justify-center self-end rounded-md bg-light-b1 px-3 py-1 text-sm font-bold leading-130 text-dark hover:bg-light-l1 dark:bg-dark-b2 dark:text-light hover:dark:bg-dark-b1"
                 onClick={handleClickMax}
               >
                 MAX
@@ -482,13 +484,13 @@ const ClaimModal = ({
             </div>
             <div className="flex items-center gap-2 self-stretch pr-4">
               <div className="flex flex-[1_0_0%] items-center text-base font-medium leading-5 text-dark dark:text-light">
-                Transfer Fee
+                Estimated Gas Fee
               </div>
               <p className="chat text-xl font-bold leading-150 text-light-t2">
                 - {transferFee} AIN
               </p>
             </div>
-            <div className="h-[1.5px] w-full bg-light-l1 dark:bg-dark-l1" />
+            <div className="h-[1.5px] w-full bg-light-l1 dark:bg-dark-l2" />
             <div className="flex items-center gap-2 self-stretch pr-4">
               <div className="flex flex-[1_0_0%] items-center text-base font-medium leading-5 text-dark dark:text-light">
                 Remaining Rewards
