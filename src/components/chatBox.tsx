@@ -96,7 +96,7 @@ export default function ChatBox({
         <div
           className={cn(
             titleClassName,
-            "flex h-12 w-full items-center justify-center rounded-[40px] px-9 text-center text-base font-bold leading-120 text-light max-mobile:h-8 max-mobile:px-4 max-mobile:py-[10px] max-mobile:text-xs",
+            "flex h-12 w-full items-center justify-center rounded-[40px] px-9 text-center text-base font-bold leading-120 text-light max-mobile:px-4 max-mobile:py-[10px] max-mobile:text-sm",
           )}
         >
           {modelName}
@@ -104,7 +104,7 @@ export default function ChatBox({
       </div>
       {textboxContent()}
       {status === ArenaStatus.END && modelName.includes("👎") && (
-        <div className="absolute left-0 top-0 h-full w-full bg-light-b1 opacity-60 dark:bg-dark" />
+        <div className="absolute left-0 top-0 h-full w-full bg-light-b1 opacity-50 dark:bg-dark-b2" />
       )}
     </div>
   );

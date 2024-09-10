@@ -145,7 +145,7 @@ export default function PromptInput({
   return (
     <div
       id="input-container"
-      className="z-layout flex flex-col max-mobile:fixed max-mobile:bottom-0 max-mobile:left-0 max-mobile:right-0 max-mobile:border-t max-mobile:border-t-light-l2 max-mobile:bg-light-b1 max-mobile:px-[10px] max-mobile:py-4 min-mobile:gap-6 max-mobile:dark:border-t-dark-l2 max-mobile:dark:bg-dark"
+      className="z-layout flex flex-col max-mobile:fixed max-mobile:bottom-0 max-mobile:left-0 max-mobile:right-0 max-mobile:border-t max-mobile:border-t-light-l2 max-mobile:bg-light-b1 max-mobile:px-[10px] max-mobile:py-4 min-mobile:gap-6 max-mobile:dark:border-t-dark-b3 max-mobile:dark:bg-dark"
     >
       <TextInputWithButton
         placeholder={promptPlaceHolder(status)}

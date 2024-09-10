@@ -87,7 +87,7 @@ const Modal: React.FC<ModalProps> = ({
       shouldCloseOnOverlayClick={false} // 외부 클릭으로 모달 닫기 활성화
       appElement={document.querySelector("main") || undefined}
       className={cn(
-        "absolute left-1/2 top-1/2 z-over h-fit w-fit -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-light shadow-sm outline-none max-desktop:px-4 max-desktop:py-4 min-desktop:p-8 dark:bg-dark-b4",
+        "absolute left-1/2 top-1/2 z-over h-fit w-fit -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl bg-light shadow-sm outline-none max-desktop:px-4 max-desktop:py-4 min-desktop:p-8 dark:bg-dark-b3",
       )}
       onAfterOpen={() => (document.body.style.overflow = "hidden")}
       onAfterClose={() => (document.body.style.overflow = "unset")}
@@ -112,7 +112,7 @@ const Modal: React.FC<ModalProps> = ({
             handleClickBottomButton(bottomButtonText);
           }}
           className={cn(
-            "flex w-full flex-row items-center justify-center gap-2 self-stretch rounded-xl bg-dark px-5 py-3 text-base font-bold leading-5 text-light disabled:cursor-not-allowed disabled:opacity-30 dark:bg-dark-l1",
+            "flex w-full flex-row items-center justify-center gap-2 self-stretch rounded-xl bg-dark px-5 py-3 text-base font-bold leading-5 text-light disabled:cursor-not-allowed disabled:opacity-50 dark:bg-light dark:text-dark",
           )}
           disabled={isDisabled || isAsyncLoading}
         >
@@ -124,7 +124,7 @@ const Modal: React.FC<ModalProps> = ({
                     fontSize: 20,
                     fontWeight: 700,
                   }}
-                  className="text-light"
+                  className="text-light dark:text-dark"
                   spin
                 />
               }

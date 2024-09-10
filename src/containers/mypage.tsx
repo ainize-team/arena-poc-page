@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRecoilState } from "recoil";
-import { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -37,6 +35,7 @@ import {
 } from "../types/type";
 import ClaimModal from "../components/claimModal";
 import { dateFormat } from "../components/leaderboard";
+import useAuth from "../lib/auth";
 
 import DownloadIcon from "@/public/images/buttons/DownloadIcon.svg";
 import DownloadIconDark from "@/public/images/buttons/DownloadIconDark.svg";
@@ -62,12 +61,12 @@ const defaultPagination: PaginationParam = {
 export default function Mypage({ userInfo, getInfo }: MypageProps) {
   const router = useRouter();
   const { data: session } = useSession();
+  const { authFetch } = useAuth();
 
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
   const [theme, setTheme] = useRecoilState(themeAtom);
   const [isOpen, setIsOpen] = useRecoilState(modalState);
 
-  // const [userInfo, setRecoilUserInfoState] = useState<Session | null>(null);
   const [userExpPercentage, setUserExpPercentage] = useState(0);
   const [currentTheme, setCurrentTheme] = useState("light");
   const [tableSourceData, setTableSourceData] = useState<
@@ -88,8 +87,9 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
     }
     try {
       const { last_doc_id, count } = pagination;
-      const res = await fetch(
+      const res = await authFetch(
         `/api/user/credit_histories?count=${count}${last_doc_id ? `&last_doc_id=${last_doc_id}` : ""}`,
+        { method: "GET" },
       );
       const { histories } = await res.json();
       if (res.status === 200) {
@@ -105,8 +105,9 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
     }
     try {
       const { last_doc_id, count } = pagination;
-      const res = await fetch(
+      const res = await authFetch(
         `/api/user/credit_histories?count=${count}${last_doc_id ? `&last_doc_id=${last_doc_id}` : ""}`,
+        { method: "GET" },
       );
       const { histories } = await res.json();
       if (res.status === 200) {
@@ -353,6 +354,13 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
     pageCount: Math.ceil(tableSourceData.length / 5),
   });
 
+  const navigateToPageWithTab = () => {
+    const params = new URLSearchParams({
+      tab: "TIER",
+    });
+    router.push(`/about?${params.toString()}`);
+  };
+
   return userInfo ? (
     <div className="flex gap-6 max-desktop:flex-col max-desktop:px-4 min-desktop:flex-row min-desktop:px-0 min-mobile:mt-7">
       <div className="flex h-full min-w-[300px] flex-col items-center gap-8 self-stretch rounded-xl bg-light-b3 px-5 py-6 dark:bg-dark-b2">
@@ -376,7 +384,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-5 self-stretch">
+        <div className="flex flex-col items-center gap-5 self-stretch pb-5">
           <div className="flex w-full flex-col items-center gap-1 px-[10px]">
             <UserExpBar
               className={"h-[13px] w-full rounded-3xl"}
@@ -468,7 +476,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
               </div>
             )}
 
-            <div className="flex items-start gap-1 self-stretch">
+            {/* <div className="flex items-start gap-1 self-stretch">
               <Image
                 alt="notice icon"
                 width={14}
@@ -479,17 +487,17 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
               <p className="text-left text-sm font-medium leading-120 -tracking-[0.28px] text-light-t2 dark:text-dark-t3">
                 Tier drops after 3 days of inactive
               </p>
-            </div>
+            </div> */}
           </div>
 
-          <Link
-            href="/about"
+          <div
+            onClick={navigateToPageWithTab}
             className={cn(
-              "text-sm font-medium leading-140 text-light-t2 underline dark:text-dark-t2",
+              "cursor-pointer text-sm font-medium leading-140 text-light-t2 underline dark:text-dark-t2",
             )}
           >
             How to level up your battle tier
-          </Link>
+          </div>
         </div>
       </div>
       <div className="flex h-full w-full flex-col items-start gap-6 max-desktop:w-full min-desktop:min-w-[570px] min-desktop:p-6">

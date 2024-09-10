@@ -12,6 +12,7 @@ import {
   useSsrCompletedState,
 } from "@/src/lib/recoil";
 import { ClaimStatus } from "../types/type";
+import useAuth from "../lib/auth";
 
 import NoticeIcon from "@/public/images/buttons/NoticeIcon.svg";
 import NoticeIconDark from "@/public/images/buttons/NoticeIconDark.svg";
@@ -23,6 +24,7 @@ interface WalletConnectBtnProps {
 export default function WalletConnectBtn({
   setClaimStatus,
 }: WalletConnectBtnProps) {
+  const { authFetch } = useAuth();
   const [theme, setTheme] = useRecoilState(themeAtom);
   const [userInfo, setUserInfo] = useRecoilState(userInfoState);
 
@@ -80,7 +82,7 @@ export default function WalletConnectBtn({
         address: connectedAddress,
       };
 
-      const res = await fetch("/api/user/connect/ain", {
+      const res = await authFetch("/api/user/connect/ain", {
         method: "POST",
         body: JSON.stringify(reqBody),
       });
@@ -122,7 +124,7 @@ export default function WalletConnectBtn({
 
   return (
     <div
-      className="flex cursor-pointer items-center justify-center gap-1 self-stretch rounded-lg border border-light-l2 bg-light-b2 px-3 py-[6px] hover:bg-light-l2 dark:border-dark-l2 dark:bg-dark-b3 dark:hover:bg-dark-b2"
+      className="flex cursor-pointer items-center justify-center gap-1 self-stretch rounded-lg border border-light-l2 bg-light-b2 px-3 py-[6px] hover:bg-light-l2 dark:border-[#414358] dark:bg-dark-b4 dark:hover:bg-dark-b2"
       onClick={onClickConnectWalletBtn}
     >
       <Image
@@ -131,7 +133,7 @@ export default function WalletConnectBtn({
         height={14}
         src={currentTheme === "light" ? NoticeIcon : NoticeIconDark}
       />
-      <p className="text-left text-sm font-medium -tracking-[0.28px] text-light-t2 dark:text-dark-t3">
+      <p className="text-left text-sm font-medium -tracking-[0.28px] text-light-t2 dark:text-dark-t2">
         Connect AIN wallet to claim
       </p>
     </div>

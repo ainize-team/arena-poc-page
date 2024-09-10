@@ -8,6 +8,7 @@ import React, {
 import { useRecoilState } from "recoil";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
 
 import Modal from "./modal";
 import { modalState, themeAtom, userInfoState } from "../lib/recoil";
@@ -22,12 +23,12 @@ import {
 import ErrorModalChildren from "./errorModalChildren";
 import WalletConnectBtn from "./walletConnectBtn";
 import { ClaimResponse } from "../app/api/user/claim/route";
+import useAuth from "../lib/auth";
 
 import NoticeIcon from "@/public/images/buttons/NoticeIcon.svg";
 import NoticeIconDark from "@/public/images/buttons/NoticeIconDark.svg";
 import ReadyStatusIcon from "@/public/images/buttons/ReadyStatusIcon.svg";
 import Outlink from "@/public/images/buttons/Outlink";
-import Link from "next/link";
 
 interface ClaimModalProps {
   onCloseFunction: () => void;
@@ -49,6 +50,7 @@ const ClaimModal = ({
 }: ClaimModalProps) => {
   const [theme, setTheme] = useRecoilState(themeAtom);
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
+  const { authFetch } = useAuth();
 
   const claimInputSpanRef = useRef<HTMLSpanElement>(null);
   const claimInputInputRef = useRef<HTMLInputElement>(null);
@@ -171,7 +173,9 @@ const ClaimModal = ({
       return;
     }
     setIsClaimableError(false);
-    const maxClaimable = processNumber(userInfo.credit) - transferFee;
+    const maxClaimable = processNumber(
+      processNumber(userInfo.credit) - transferFee,
+    );
     setClaimInputValue(maxClaimable.toString());
   };
 
@@ -184,7 +188,7 @@ const ClaimModal = ({
         amount: Number(claimInputValue),
       };
 
-      const res = await fetch("/api/user/claim", {
+      const res = await authFetch("/api/user/claim", {
         method: "POST",
         body: JSON.stringify(reqBody),
       });
@@ -206,7 +210,7 @@ const ClaimModal = ({
       address: "",
     };
 
-    const res = await fetch("/api/user/connect/ain", {
+    const res = await authFetch("/api/user/connect/ain", {
       method: "POST",
       body: JSON.stringify(reqBody),
     });
@@ -312,7 +316,7 @@ const ClaimModal = ({
         />
       ) : claimStatus === ClaimStatus.SUCCESS ? (
         <ErrorModalChildren
-          errorTitle={`**${processNumber(claimResponseData.amount)} AIN** has been transferred \nto **${formatAddress(claimResponseData.tx_hash)} !**
+          errorTitle={`**${processNumber(claimResponseData.amount)} AIN** has been transferred \nto **${formatAddress(userInfo?.address ?? "")} !**
             `}
           errorContentChildren={
             <div className="text-center text-base font-normal text-dark dark:text-light">
@@ -431,8 +435,8 @@ const ClaimModal = ({
                   className={cn(
                     "flex max-w-[300px] flex-[1_0_0%] cursor-text items-center justify-end self-stretch rounded-lg border-[1.5px] px-4 py-3",
                     isClaimInputFocused
-                      ? "border-primary-violet1Active dark:border-primary-violet3"
-                      : "border-light-l1",
+                      ? "border-primary-violet2 dark:border-primary"
+                      : "border-light-l1 dark:border-dark-l2",
                     isClaimableError &&
                       "border-light-tier4Text dark:border-dark-tier4DarkText",
                   )}
@@ -472,7 +476,7 @@ const ClaimModal = ({
               </div>
 
               <div
-                className="chat flex cursor-pointer items-center justify-center self-end rounded-md bg-light-b1 px-3 py-1 text-sm font-bold leading-130 text-dark hover:bg-light-l1 dark:bg-dark-b3 dark:text-light hover:dark:bg-dark-b2"
+                className="chat flex cursor-pointer items-center justify-center self-end rounded-md bg-light-b1 px-3 py-1 text-sm font-bold leading-130 text-dark hover:bg-light-l1 dark:bg-dark-b2 dark:text-light hover:dark:bg-dark-b1"
                 onClick={handleClickMax}
               >
                 MAX
@@ -480,13 +484,13 @@ const ClaimModal = ({
             </div>
             <div className="flex items-center gap-2 self-stretch pr-4">
               <div className="flex flex-[1_0_0%] items-center text-base font-medium leading-5 text-dark dark:text-light">
-                Transfer Fee
+                Estimated Gas Fee
               </div>
               <p className="chat text-xl font-bold leading-150 text-light-t2">
                 - {transferFee} AIN
               </p>
             </div>
-            <div className="h-[1.5px] w-full bg-light-l1 dark:bg-dark-l1" />
+            <div className="h-[1.5px] w-full bg-light-l1 dark:bg-dark-l2" />
             <div className="flex items-center gap-2 self-stretch pr-4">
               <div className="flex flex-[1_0_0%] items-center text-base font-medium leading-5 text-dark dark:text-light">
                 Remaining Rewards
