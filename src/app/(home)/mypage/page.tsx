@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import { Session } from "next-auth";
-
 import { Spin } from "antd";
+
+import useAuth from "@/src/lib/auth";
 import { LoadingOutlined } from "@ant-design/icons";
 import Mypage from "@/src/containers/mypage";
 import { userInfoState } from "@/src/lib/recoil";
@@ -13,6 +14,7 @@ import { UserInfo } from "@/src/types/type";
 
 export default function Home() {
   const router = useRouter();
+  const { authFetch } = useAuth();
 
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
 
@@ -20,7 +22,9 @@ export default function Home() {
 
   const getInfo = async () => {
     try {
-      const res = await fetch("/api/user/info");
+      const res = await authFetch("/api/user/info", {
+        method: "GET",
+      });
       const data: UserInfo = await res.json();
       setUserInfo((prevState) => {
         if (!prevState) return prevState;

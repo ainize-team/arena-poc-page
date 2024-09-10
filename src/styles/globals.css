@@ -135,6 +135,10 @@ h6 {
   text-decoration-color: #000; /* 밑줄 색상 */
 }
 
+.katex {
+  font-size: 1.2em; /* 수식의 크기 조정 */
+}
+
 .markdown-content h1,
 .markdown-content h2,
 .markdown-content h3,

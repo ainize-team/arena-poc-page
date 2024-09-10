@@ -37,6 +37,7 @@ import {
 } from "../types/type";
 import ClaimModal from "../components/claimModal";
 import { dateFormat } from "../components/leaderboard";
+import useAuth from "../lib/auth";
 
 import DownloadIcon from "@/public/images/buttons/DownloadIcon.svg";
 import DownloadIconDark from "@/public/images/buttons/DownloadIconDark.svg";
@@ -62,6 +63,7 @@ const defaultPagination: PaginationParam = {
 export default function Mypage({ userInfo, getInfo }: MypageProps) {
   const router = useRouter();
   const { data: session } = useSession();
+  const { authFetch } = useAuth();
 
   const [recoilUserInfoState, setUserInfo] = useRecoilState(userInfoState);
   const [theme, setTheme] = useRecoilState(themeAtom);
@@ -88,8 +90,9 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
     }
     try {
       const { last_doc_id, count } = pagination;
-      const res = await fetch(
+      const res = await authFetch(
         `/api/user/credit_histories?count=${count}${last_doc_id ? `&last_doc_id=${last_doc_id}` : ""}`,
+        { method: "GET" },
       );
       const { histories } = await res.json();
       if (res.status === 200) {
@@ -105,8 +108,9 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
     }
     try {
       const { last_doc_id, count } = pagination;
-      const res = await fetch(
+      const res = await authFetch(
         `/api/user/credit_histories?count=${count}${last_doc_id ? `&last_doc_id=${last_doc_id}` : ""}`,
+        { method: "GET" },
       );
       const { histories } = await res.json();
       if (res.status === 200) {

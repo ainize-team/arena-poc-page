@@ -43,7 +43,9 @@ export default function Home() {
       case "ARENA":
         return (
           <>
-            <Image src={AboutArena} alt="about arena" />
+            <div className="h-[240px] w-[400px] overflow-hidden rounded-xl bg-light">
+              <Image src={AboutArena} alt="about arena" />
+            </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left text-base leading-150 text-dark dark:text-light">
               <ReactMarkdown
                 className={cn(
@@ -67,7 +69,9 @@ export default function Home() {
       case "LEADERBOARD":
         return (
           <>
-            <Image src={AboutLeaderboard} alt="about leaderboard" />
+            <div className="h-[240px] w-[400px] overflow-hidden rounded-xl bg-light">
+              <Image src={AboutLeaderboard} alt="about leaderboard" />
+            </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left text-base leading-150 text-dark dark:text-light">
               <ReactMarkdown
                 className={cn(
@@ -91,7 +95,9 @@ export default function Home() {
       case "TIER":
         return (
           <>
-            <Image src={AboutTier} alt="about tier" />
+            <div className="h-[240px] w-[400px] overflow-hidden rounded-xl bg-light">
+              <Image src={AboutTier} alt="about tier" />
+            </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left text-base leading-150 text-dark dark:text-light">
               <ReactMarkdown
                 className={cn(
@@ -113,7 +119,9 @@ export default function Home() {
       case "REWARD":
         return (
           <>
-            <Image src={AboutReward} alt="about reward" />
+            <div className="h-[240px] w-[400px] overflow-hidden rounded-xl bg-light">
+              <Image src={AboutReward} alt="about reward" />
+            </div>
             <div className="flex flex-[1_0_0%] items-start self-stretch text-left text-base leading-150 text-dark dark:text-light">
               <ReactMarkdown
                 className={cn(
@@ -168,7 +176,7 @@ export default function Home() {
           <div className="flex flex-row items-start self-stretch max-desktop:justify-between max-desktop:gap-2 min-desktop:gap-10">
             <div
               className={cn(
-                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] min-desktop:text-xl dark:text-light",
+                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] max-desktop:text-sm min-desktop:text-xl dark:text-light",
                 tabState === "ARENA" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
@@ -178,17 +186,17 @@ export default function Home() {
             </div>
             <div
               className={cn(
-                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] min-desktop:text-xl dark:text-light",
+                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] max-desktop:text-sm min-desktop:text-xl dark:text-light",
                 tabState === "LEADERBOARD" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
               onClick={() => setTabState("LEADERBOARD")}
             >
-              LeaderBoard
+              Leaderboard
             </div>
             <div
               className={cn(
-                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] min-desktop:text-xl dark:text-light",
+                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] max-desktop:text-sm min-desktop:text-xl dark:text-light",
                 tabState === "TIER" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}
@@ -198,7 +206,7 @@ export default function Home() {
             </div>
             <div
               className={cn(
-                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] min-desktop:text-xl dark:text-light",
+                "cursor-pointer pb-[10px] font-medium leading-10 text-dark max-desktop:flex-[1_0_0%] max-desktop:text-sm min-desktop:text-xl dark:text-light",
                 tabState === "REWARD" &&
                   "border-b-2 border-b-dark font-bold dark:border-b-light",
               )}

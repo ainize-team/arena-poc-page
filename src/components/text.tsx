@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { useRecoilState } from "recoil";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 import { themeAtom, userInfoState } from "../lib/recoil";
 import { cn } from "../utils/cn";
@@ -102,12 +104,11 @@ export default function TextBox({
             style={{
               overflowX: "hidden",
               wordBreak: "break-word",
-              // whiteSpace: "pre-wrap",
             }}
           >
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeHighlight, rehypeKatex]}
               className={cn(
                 currentTheme === "light"
                   ? "markdown-content"

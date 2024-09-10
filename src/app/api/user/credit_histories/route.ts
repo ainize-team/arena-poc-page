@@ -8,13 +8,13 @@ export async function GET(req: NextRequest) {
     const count = searchParams.get("count") || "15"; // 기본값 10
 
     const endpoint = `${process.env.SERVER_URL}/user/me/credit_histories?count=${count}${last_doc_id ? `&last_doc_id=${last_doc_id}` : ""}`;
-    const accessToken = req.cookies.get("access_token");
+    const accessToken = req.cookies.get("access_token")?.value;
 
     const res = await fetch(endpoint, {
       method: "GET",
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        Cookie: `access_token=${accessToken?.value};`,
+        Cookie: `access_token=${accessToken};`,
         "x-api-key": process.env.SERVER_API_KEY!,
       },
       cache: "no-cache",
