@@ -11,9 +11,10 @@ const JS_PYTHON_TIMESTAMP_GAP = 1000;
  * refresh token 으로 Backend 에 access token 재발급 요청
  */
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const endpoint = `${process.env.SERVER_URL}/auth/refresh`;
   const refreshToken = req.cookies.get("refresh_token");
+  console.log('refreshToken :>> ', refreshToken);
   try {
     const result = await fetch(endpoint, {
       method: "GET",

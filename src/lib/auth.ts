@@ -29,7 +29,7 @@ export default function useAuth() {
 
   const refreshAccessToken = async () => {
     const res = await fetch("/api/auth/refresh", {
-      method: "POST",
+      method: "GET",
     });
     const accessToken = await res.json();
     await update({ accessToken });
