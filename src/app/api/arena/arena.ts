@@ -1,5 +1,11 @@
 import { NextRequest } from "next/server";
 
+export type BattleEvaluateResponse = {
+  reward: number;
+  exp: number;
+  message: string;
+};
+
 export const battleInit = async (req: NextRequest): Promise<string> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
   const accessToken = req.cookies.get("access_token");
@@ -91,7 +97,7 @@ export const chatEvaluate = async (req: NextRequest) => {
     },
   };
   const res = await fetch(endpoint, params);
-  const rewardData = await res.json();
+  const rewardData: BattleEvaluateResponse = await res.json();
   return rewardData;
 };
 

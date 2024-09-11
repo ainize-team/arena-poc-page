@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { cn } from "@/src/utils/cn";
 import { themeAtom } from "@/src/lib/recoil";
 
@@ -15,8 +18,6 @@ import AINetworkLogo from "@/public/images/logo/AINetworkLogo.svg";
 import XLogo from "@/public/images/logo/XLogo.svg";
 import DiscordLogo from "@/public/images/logo/DiscordLogo.svg";
 import TelegramLogo from "@/public/images/logo/TelegramLogo.svg";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
@@ -287,7 +288,11 @@ export default function Home() {
                 "flex h-[100px] flex-[1_0_0%] items-center gap-4 rounded-2xl bg-light px-5 py-[10px] max-desktop:w-full dark:bg-dark-b3",
               )}
             >
-              <Image src={XLogo} alt="x logo" className="h-16 w-16" />
+              <Image
+                src={XLogo}
+                alt="x logo"
+                className="m-[5px] h-[54px] w-[54px]"
+              />
               <div className="flex flex-col items-start gap-[6px]">
                 <div className="feading-150 text-base font-bold text-dark dark:text-light">
                   Twitter
@@ -332,7 +337,7 @@ export default function Home() {
               <Image
                 src={TelegramLogo}
                 alt="telegram logo"
-                className="h-16 w-16"
+                className="m-[5px] h-[54px] w-[54px]"
               />
               <div className="flex flex-col items-start gap-[6px]">
                 <div className="feading-150 text-base font-bold text-dark dark:text-light">
