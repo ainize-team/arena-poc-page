@@ -12,6 +12,8 @@ import { useSession } from "next-auth/react";
 import useAuth from "@/src/lib/auth";
 import { toast } from "sonner";
 import { processNumber } from "../constant/constant";
+import { BattleEvaluateResponse } from "../app/api/arena/arena";
+import useInfo from "../utils/handleGetInfo";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -45,6 +47,7 @@ export default function ArenaChat() {
 
   const { data: session, update } = useSession();
   const { authFetch, checkAuth } = useAuth();
+  const { getInfo } = useInfo();
 
   const testCaptcha = async () => {
     if (!executeRecaptcha) {
@@ -70,18 +73,18 @@ export default function ArenaChat() {
     }
   };
 
-  const openNotification = (rewardData: any) => {
+  const openNotification = (rewardData: BattleEvaluateResponse) => {
     console.log("rewardData :>> ", rewardData);
-    const { reward } = rewardData;
+    const { reward, exp, message } = rewardData;
     const isZeroReward = !reward || reward === 0;
 
-    if (!session?.user.tier || session?.user.tier === 0) {
-      toast.info("Tier 0 has no rewards.");
+    if ((!session?.user.tier || session?.user.tier === 0) && exp > 0) {
+      toast.info("Tier 0 has no reward.");
       return;
     }
 
     isZeroReward
-      ? toast.error("Reward Failed.")
+      ? toast.error(`${message}`)
       : toast.success(`Reward Success! ${processNumber(reward)} AIN`);
   };
 
@@ -187,8 +190,9 @@ export default function ArenaChat() {
         body: JSON.stringify({ battleId }),
       }).then(async (res) => {
         if (res.ok) {
-          const rewardData = await res.json();
+          const rewardData: BattleEvaluateResponse = await res.json();
           openNotification(rewardData);
+          await getInfo();
         }
       });
       setStatus(ArenaStatus.END);

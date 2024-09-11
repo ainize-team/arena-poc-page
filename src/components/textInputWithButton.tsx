@@ -10,7 +10,6 @@ import { modalState, themeAtom } from "../lib/recoil";
 import { ArenaStatus } from "../types/type";
 import { cn } from "../utils/cn";
 import Modal from "./modal";
-import ErrorModalChildren from "./errorModalChildren";
 import { isDesktopBrowser } from "../constant/constant";
 import onClickLoginBtn from "../utils/handleLogin";
 
@@ -44,11 +43,21 @@ const TextInputWithButton = ({
   const [isOpen, setIsOpen] = useRecoilState(modalState);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [text, setText] = useState("");
   const [currentTheme, setCurrentTheme] = useState("light");
   const [isFocused, setIsFocused] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
   const [isComponentMounted, setIsComponentMounted] = useState(false);
+
+  useEffect(() => {
+    setIsComponentMounted(true);
+  }, []);
+
+  useEffect(() => {
+    checkTheme(theme);
+  }, [theme]);
+
+  useEffect(() => {
+    autoResize();
+  }, [value]);
 
   const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
     if (status === ArenaStatus.NOTCONNECTED) {
@@ -73,16 +82,7 @@ const TextInputWithButton = ({
     }
   };
 
-  useEffect(() => {
-    setIsComponentMounted(true);
-  }, []);
-
-  useEffect(() => {
-    checkTheme(theme);
-  }, [theme]);
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // setText(e.target.value);
     handlePrompt(e);
     autoResize();
   };
@@ -104,10 +104,6 @@ const TextInputWithButton = ({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   };
-
-  useEffect(() => {
-    autoResize();
-  }, [value]);
 
   const openModal = () => {
     setIsOpen(true);
