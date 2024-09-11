@@ -50,9 +50,9 @@ const TextInputWithButton = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isComponentMounted, setIsComponentMounted] = useState(false);
 
-  const handleFocus = () => {
+  const handleFocus = (event: React.FocusEvent<HTMLTextAreaElement>) => {
     if (status === ArenaStatus.NOTCONNECTED) {
-      textareaRef.current?.blur();
+      event.target.blur();
       openModal();
     } else {
       setIsFocused(true);
