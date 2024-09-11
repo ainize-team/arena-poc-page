@@ -67,6 +67,7 @@ const ClaimModal = ({
     defaultClaimResponseData,
   );
   const [isModalButtonDisabled, setIsModalButtonDisabled] = useState(false);
+  const [isComponentMounted, setIsComponentMounted] = useState(false);
 
   const initializeModal = () => {
     setClaimResponseData(defaultClaimResponseData);
@@ -75,6 +76,10 @@ const ClaimModal = ({
     setClaimInputPlaceholder("0");
     setIsClaimableError(false);
   };
+
+  useEffect(() => {
+    setIsComponentMounted(true);
+  }, []);
 
   useEffect(() => {
     checkTheme(theme);
@@ -232,7 +237,7 @@ const ClaimModal = ({
     }
   };
 
-  return (
+  return isComponentMounted ? (
     <Modal
       onRequestClose={() => {
         onCloseFunction();
@@ -507,6 +512,8 @@ const ClaimModal = ({
         </div>
       )}
     </Modal>
+  ) : (
+    <></>
   );
 };
 

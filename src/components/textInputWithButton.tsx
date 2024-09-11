@@ -48,6 +48,7 @@ const TextInputWithButton = ({
   const [currentTheme, setCurrentTheme] = useState("light");
   const [isFocused, setIsFocused] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isComponentMounted, setIsComponentMounted] = useState(false);
 
   const handleFocus = () => {
     if (status === ArenaStatus.NOTCONNECTED) {
@@ -71,6 +72,10 @@ const TextInputWithButton = ({
       setCurrentTheme(theme);
     }
   };
+
+  useEffect(() => {
+    setIsComponentMounted(true);
+  }, []);
 
   useEffect(() => {
     checkTheme(theme);
@@ -184,38 +189,40 @@ const TextInputWithButton = ({
         )}
       </div>
 
-      <Modal
-        onRequestClose={closeModal}
-        bottomButtonHandler={onClickLoginBtn}
-        isDesktop={isDesktopBrowser()}
-        isAuthModal={true}
-      >
-        <div className="flex flex-col items-center justify-start self-stretch max-desktop:gap-5 min-desktop:gap-9">
-          <div className="w-full max-desktop:h-5 min-desktop:h-9"></div>
-          <div className="flex max-w-[500px] flex-col items-center justify-center max-desktop:gap-4 min-desktop:gap-[30px]">
-            <div className="text-center text-dark max-desktop:text-base max-desktop:leading-8 min-desktop:text-2.5xl min-desktop:leading-150 dark:text-light">
-              <ReactMarkdown>{"**Please log in to continue**"}</ReactMarkdown>
+      {isComponentMounted && (
+        <Modal
+          onRequestClose={closeModal}
+          bottomButtonHandler={onClickLoginBtn}
+          isDesktop={isDesktopBrowser()}
+          isAuthModal={true}
+        >
+          <div className="flex flex-col items-center justify-start self-stretch max-desktop:gap-5 min-desktop:gap-9">
+            <div className="w-full max-desktop:h-5 min-desktop:h-9"></div>
+            <div className="flex max-w-[500px] flex-col items-center justify-center max-desktop:gap-4 min-desktop:gap-[30px]">
+              <div className="text-center text-dark max-desktop:text-base max-desktop:leading-8 min-desktop:text-2.5xl min-desktop:leading-150 dark:text-light">
+                <ReactMarkdown>{"**Please log in to continue**"}</ReactMarkdown>
+              </div>
+              <div className="text-center font-normal text-dark max-desktop:text-xs min-desktop:text-xl dark:text-light">
+                <ReactMarkdown
+                  components={{
+                    a: (props: any) => (
+                      <a
+                        style={{ fontWeight: 700, textDecoration: "underline" }}
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    ),
+                  }}
+                >
+                  {`Log in with Google and experience even smarter\n\nAI responses on AI Network LLM Arena.`}
+                </ReactMarkdown>
+              </div>
             </div>
-            <div className="text-center font-normal text-dark max-desktop:text-xs min-desktop:text-xl dark:text-light">
-              <ReactMarkdown
-                components={{
-                  a: (props: any) => (
-                    <a
-                      style={{ fontWeight: 700, textDecoration: "underline" }}
-                      {...props}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  ),
-                }}
-              >
-                {`Log in with Google and experience even smarter\n\nAI responses on AI Network LLM Arena.`}
-              </ReactMarkdown>
-            </div>
+            <div className="w-full max-desktop:h-14 min-desktop:h-24"></div>
           </div>
-          <div className="w-full max-desktop:h-14 min-desktop:h-24"></div>
-        </div>
-      </Modal>
+        </Modal>
+      )}
     </div>
   );
 };
