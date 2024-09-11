@@ -41,6 +41,7 @@ const Navbar = () => {
     if (!session) {
       setUserInfo(null);
       deleteCookie("access_token");
+      deleteCookie("refresh_token");
       return;
     }
     const { access_token, refresh_token } = getCookies();

@@ -229,7 +229,6 @@ export default function ArenaChat() {
     setStatus(ArenaStatus.READY);
     resetStates();
     router.refresh();
-    update();
   };
 
   const handlePrompt = async (prompt: string) => {
