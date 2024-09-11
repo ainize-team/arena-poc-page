@@ -1,3 +1,4 @@
+import { getCookie, getCookies, setCookie } from "cookies-next";
 import { useSession } from "next-auth/react";
 
 export default function useAuth() {
@@ -12,22 +13,29 @@ export default function useAuth() {
   }
 
   const checkAuth = async () => {
-      if (!session || !session.accessToken || Date.now() - session.accessToken.expire > 1000 * 60 ) {
-      if (!session?.refreshToken || Date.now() - session.refreshToken.expire > 1000 * 60) {
+    if (!session) {
+      // need login action?
+      return;
+    }
+    const { access_token: accessToken, refresh_token: refreshToken } = getCookies();
+    if (!accessToken) {
+      if (!refreshToken) {
         // NOTE(yoojin): re-login? do something. Need test but not critical because of session expired.
       } else {
-        await refreshToken();
+        await refreshAccessToken();
       }
     }
   }
 
-  const refreshToken = async () => {
+  const refreshAccessToken = async () => {
     const res = await fetch("/api/auth/refresh", {
       method: "POST",
     });
     const accessToken = await res.json();
     await update({ accessToken });
-    console.log('refresh Date.now() :>> ', Date.now());
+    setCookie("access_token", accessToken.token, {
+      expires: new Date(accessToken.expire),
+    });
   }
 
   return {

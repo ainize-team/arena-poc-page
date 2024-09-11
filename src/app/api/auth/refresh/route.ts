@@ -5,6 +5,8 @@ const failedRefresh = {
   expire: undefined,
 };
 
+const JS_PYTHON_TIMESTAMP_GAP = 1000;
+
 /**
  * refresh token 으로 Backend 에 access token 재발급 요청
  */
@@ -22,7 +24,7 @@ export async function POST(req: NextRequest) {
     });
     const refreshResult = await result.json();
     const { access_token } = refreshResult;
-    access_token.expire = Math.round(access_token.expire * 1000);
+    access_token.expire = Math.round(access_token.expire * JS_PYTHON_TIMESTAMP_GAP);
     return Response.json(access_token, { status: 200 });
   } catch (e) {
     console.log("Refresh Error", e);
