@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import "@/src/styles/globals.css";
 import RecoilRootWrapper from "@/src/containers/recoilRootWrapper";
-import { getGAId } from "@/src/constant/constant";
+import { getGAId, getGTMId } from "@/src/constant/constant";
 import GoogleCaptchaWrapper from "@/src/containers/googleCaptchaWrapper";
 import AuthContext from "@/src/containers/authContext";
 import { Manrope } from "next/font/google";
@@ -10,6 +10,7 @@ import { Manrope } from "next/font/google";
 export const metadata: Metadata = {
   title: "Chatbot Arena",
   description: "Chatbot Arena powerd by AI Network.",
+  keywords: ["llm leaderboard", "arena leaderbord llm"],
 };
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
@@ -44,6 +45,7 @@ export default function RootLayout({
         </body>
       </AuthContext>
       <GoogleAnalytics gaId={getGAId()} />
+      <GoogleTagManager gtmId={getGTMId()} />
     </html>
   );
 }

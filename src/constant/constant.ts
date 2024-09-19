@@ -14,6 +14,16 @@ export const getGAId = () => {
   return PUBLIC_ENV.APP_ENV === "production" ? "G-TFVPRQGF0M" : "G-WHKH2Q8EJY";
 };
 
+export const getGTMId = () => {
+  return PUBLIC_ENV.APP_ENV === "production" ? "GTM-P32LK9WW" : "GTM-5P5Q5W6K";
+};
+
+export const getCurrentURL = () => {
+  return PUBLIC_ENV.APP_ENV === "production"
+    ? "https://arena.ainetwork.ai"
+    : "https://testnet-arena.ainetwork.ai";
+};
+
 export const parseUserExp = (
   userTier: number = 0,
   userExp: number = 0,
