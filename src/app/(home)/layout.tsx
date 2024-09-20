@@ -10,7 +10,14 @@ import { Manrope } from "next/font/google";
 export const metadata: Metadata = {
   title: "Chatbot Arena",
   description: "Chatbot Arena powerd by AI Network.",
-  keywords: ["llm leaderboard", "arena leaderbord llm"],
+  keywords: [
+    "llm leaderboard",
+    "arena leaderbord llm",
+    "lmsys排行榜",
+    "chatbot-arena",
+    "chatbot arena",
+    "lmsys leaderboard",
+  ],
 };
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
