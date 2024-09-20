@@ -1,18 +1,19 @@
 "use client";
 
-import ChatBox from "@/components/chatBox";
-import PromptInput from "@/components/promptInput";
-import { Button, Col, Flex, Modal, Row, Space, notification } from "antd";
-import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import ChatBox from "@/src/components/chatBox";
+import PromptInput from "@/src/components/promptInput";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ArenaStatus, CaptchaStatus, ChatResultReqBody, ChoiceType } from "@/type";
-import ChoiceButton from "@/components/choiceButton";
-import { useRecoilState } from "recoil";
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { addressAtom } from "@/lib/recoil";
-import useWallet from "@/lib/wallet";
+import { ArenaStatus, CaptchaStatus, Chat, ChoiceType } from "@/src/types/type";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import React from "react";
+import { useSession } from "next-auth/react";
+import useAuth from "@/src/lib/auth";
+import { toast } from "sonner";
+import { processNumber } from "../constant/constant";
+import { BattleEvaluateResponse } from "../app/api/arena/arena";
+import useInfo from "../utils/handleGetInfo";
 
 const LeftCardStyle: React.CSSProperties = {
   textAlign: "center",
@@ -20,41 +21,39 @@ const LeftCardStyle: React.CSSProperties = {
   minHeight: "40vh",
   marginLeft: "3rem",
   marginRight: "3px",
-}
+};
 const RightCardStyle: React.CSSProperties = {
   textAlign: "center",
   width: "100%",
   minHeight: "40vh",
   marginLeft: "3px",
   marginRight: "3rem",
-}
+};
 
 export default function ArenaChat() {
   const router = useRouter();
   const { executeRecaptcha } = useGoogleReCaptcha();
   const [prompt, setPrompt] = useState("");
-  const [address, setAddress] = useRecoilState<string>(addressAtom);
   const [status, setStatus] = useState<ArenaStatus>(ArenaStatus.NOTCONNECTED);
+  const [battleId, setBattleId] = useState<string | null>(null);
   const [modelA, setModelA] = useState("");
   const [modelB, setModelB] = useState("");
-  const [modelAName, setModelAName] = useState("");
-  const [modelBName, setModelBName] = useState("");
-  const [resultA, setResultA] = useState("");
-  const [resultB, setResultB] = useState("");
-  const [notiApi, notiContextHolder] = notification.useNotification();
-  const [modalOpen, setModalOpen] = useState(true);
-  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);  
+  const [modelAName, setModelAName] = useState("Model A");
+  const [modelBName, setModelBName] = useState("Model B");
+  const [captcha, setCaptcha] = useState(CaptchaStatus.YET);
+  const [modelAChatList, setModelAChatList] = useState<Chat[]>([]);
+  const [modelBChatList, setModelBChatList] = useState<Chat[]>([]);
+  const [turn, setTurn] = useState(0);
 
-  const {
-    isValidChain,
-    setWalletEventHandler,
-  } = useWallet();
+  const { data: session, update } = useSession();
+  const { authFetch, checkAuth } = useAuth();
+  const { getInfo } = useInfo();
 
-  const testCaptcha = async() => {
+  const testCaptcha = async () => {
     if (!executeRecaptcha) {
       return;
     }
-    const gRecaptchaToken = await executeRecaptcha('inquirySubmit');
+    const gRecaptchaToken = await executeRecaptcha("inquirySubmit");
     const response = await axios({
       method: "post",
       url: "/api/arena/recaptchaSubmit",
@@ -68,32 +67,44 @@ export default function ArenaChat() {
     });
 
     if (response.data && response.data.success === true) {
-      setCaptcha(CaptchaStatus.TRUE)
+      setCaptcha(CaptchaStatus.TRUE);
     } else {
-      setCaptcha(CaptchaStatus.FALSE)
+      setCaptcha(CaptchaStatus.FALSE);
     }
   };
 
-  const openNotification = (rewardData: any) => {
-    const isZeroReward = rewardData.reward === 0;
-    notiApi.info({
-      message: isZeroReward ? "Reward Failed." : "Reward Success!",
-      description:
-        isZeroReward ? rewardData.reason : `Reward: ${rewardData.reward} AIN`,
-      placement: "topRight",
-      duration: 0,
-    });
+  const openNotification = (rewardData: BattleEvaluateResponse) => {
+    console.log("rewardData :>> ", rewardData);
+    const { reward, exp, message } = rewardData;
+    const isZeroReward = !reward || reward === 0;
+
+    if ((!session?.user.tier || session?.user.tier === 0) && exp > 0) {
+      toast.info("Tier 0 has no reward.");
+      return;
+    }
+
+    isZeroReward
+      ? toast.error(`${message}`)
+      : toast.success(`Reward Success! ${processNumber(reward)} AIN`);
   };
 
-  const pickAndSetModels = async () => {
-    await fetch("/api/arena/init", {
-      method: "GET",
-    }).then(async (res) => {
-      const result = await res.json();
-      setModelA(result[0]);
-      setModelB(result[1]);
-    });
-  }
+  const battleInit = async () => {
+    await authFetch("/api/arena/init", {
+      method: "POST",
+    })
+      .then(async (res) => {
+        try {
+          const result = await res.json();
+          setBattleId(result);
+        } catch (e) {
+          console.log("e :>> ", e);
+        }
+      })
+      .catch((e) => {
+        alert("Init failed.");
+        router.refresh();
+      });
+  };
 
   const isMobile = () => {
     return /Mobi/i.test(window.navigator.userAgent);
@@ -101,196 +112,232 @@ export default function ArenaChat() {
 
   useEffect(() => {
     if (isMobile()) {
-      router.push("/m");
+      // router.push("/m");
       return;
-    } 
-
-    const setModels = async () => {
-      await pickAndSetModels();
     }
-    setModels();
-    setWalletEventHandler();
-  }, [])
+  }, []);
 
-  useEffect(()=>{
-    testCaptcha();
-  },[executeRecaptcha])
-
-  useEffect(()=>{
-    if(captcha == CaptchaStatus.FALSE){
-      redirect("/leaderboard")
-    }
-  },[captcha])
   useEffect(() => {
-    switch(status) {
+    testCaptcha();
+  }, [executeRecaptcha]);
+
+  useEffect(() => {
+    if (
+      status === ArenaStatus.NOTCONNECTED &&
+      captcha === CaptchaStatus.TRUE &&
+      session
+    ) {
+      resetStates();
+    } else if (!session || !session.accessToken) {
+      setStatus(ArenaStatus.NOTCONNECTED);
+    }
+  }, [captcha, session]);
+
+  useEffect(() => {
+    setModelAName("Model A");
+    setModelBName("Model B");
+    switch (status) {
       case ArenaStatus.NOTCONNECTED:
+        break;
       case ArenaStatus.READY:
-      case ArenaStatus.COMPETING: 
-        setModelAName("Model A");
-        setModelBName("Model B");
+        if (!battleId) battleInit();
+      case ArenaStatus.COMPETING:
         break;
       case ArenaStatus.END:
         setModelAName(modelA);
         setModelBName(modelB);
     }
-  }, [status])
-
-  useEffect(()=> {
-    resetStates();
-    if (address !== "" && captcha === CaptchaStatus.TRUE) {
-      setStatus(ArenaStatus.READY);
-    } else {
-      setStatus(ArenaStatus.NOTCONNECTED);
-    }
-  }, [address, captcha])
+  }, [status]);
 
   useEffect(() => {
-    if (resultA !== "" && resultB !== "") {
+    if (
+      turn > 0 &&
+      modelAChatList.length / 2 === turn &&
+      modelBChatList.length / 2 === turn
+    ) {
       setStatus(ArenaStatus.COMPETING);
     }
-  }, [resultA, resultB])
+  }, [modelAChatList.length, modelBChatList.length]);
 
   const resetStates = () => {
-    setPrompt("");
-    pickAndSetModels();
     setStatus(ArenaStatus.READY);
-    setResultA("");
-    setResultB("");
-  }
+    setBattleId(null);
+    setTurn(0);
+    setModelAChatList([]);
+    setModelBChatList([]);
+    setPrompt("");
+  };
 
   const onClickChoiceBtn = async (value: ChoiceType) => {
     setStatus(ArenaStatus.REGISTERING);
-    try {
-      const chatResultParams: ChatResultReqBody = {
-        userAddress: address,
-        choice: value,
-        modelA: modelA,
-        modelB: modelB,
-        turn: 1,
-        modelAResponse: [{
-          role: "user",
-          content: prompt,
-        }, {
-          role: "assistant",
-          content: resultA
-        }],
-        modelBResponse: [{
-          role: "user",
-          content: prompt,
-        }, {
-          role: "assistant",
-          content: resultB,
-        }]
-      };
-      const battleId = await (await fetch("/api/arena/result", {
+    const reqBody = {
+      battleId,
+      choice: value,
+    };
+    const choiceRes = await authFetch("/api/arena/choice", {
+      method: "POST",
+      body: JSON.stringify(reqBody),
+    });
+    if (choiceRes.ok) {
+      const models = await choiceRes.json();
+      changeWinnerName(
+        value,
+        models[ChoiceType.MODELA],
+        models[ChoiceType.MODELB],
+      );
+      authFetch(`/api/arena/reward`, {
         method: "POST",
-        body: JSON.stringify(chatResultParams),
-      })).json();
-      changeWinnerName(value);
-      setStatus(ArenaStatus.END);
-      const reward = await fetch(`/api/arena/reward/${battleId}`, {
-        method: "GET",
+        body: JSON.stringify({ battleId }),
+      }).then(async (res) => {
+        if (res.ok) {
+          const rewardData: BattleEvaluateResponse = await res.json();
+          openNotification(rewardData);
+          await getInfo();
+        }
       });
-      const rewardData = await reward.json();
-      openNotification(rewardData);
-    } catch (err) {
-      alert(`${err}.\n If the error is repeated, please refresh the page.`);
+      setStatus(ArenaStatus.END);
     }
-  }
+  };
 
-  const changeWinnerName = (winner: ChoiceType) => {
-    const winnerMark = "🎉";
-    switch(winner) {
+  const changeWinnerName = (
+    winner: ChoiceType,
+    modelA: string,
+    modelB: string,
+  ) => {
+    const winnerMark = "👍";
+    const loserMark = "👎";
+    setModelA(modelA);
+    setModelB(modelB);
+
+    switch (winner) {
       case ChoiceType.MODELA:
-        setModelA(winnerMark + modelA);
+        setModelA(winnerMark + " " + modelA);
+        setModelB(loserMark + " " + modelB);
         break;
       case ChoiceType.MODELB:
-        setModelB(winnerMark + modelB);
+        setModelB(winnerMark + " " + modelB);
+        setModelA(loserMark + " " + modelA);
         break;
       case ChoiceType.TIE:
-        setModelA(winnerMark + modelA);
-        setModelB(winnerMark + modelB);
+        setModelA(winnerMark + " " + modelA);
+        setModelB(winnerMark + " " + modelB);
         break;
       case ChoiceType.NOTHING:
+        setModelA(loserMark + " " + modelA);
+        setModelB(loserMark + " " + modelB);
         break;
     }
-  }
+  };
 
   const onClickNextBtn = () => {
+    setStatus(ArenaStatus.READY);
     resetStates();
-    const rand = Math.floor(Math.random() * 20);
-    if (rand === 19) { 
-      testCaptcha();
-    }
     router.refresh();
-  }
+  };
 
   const handlePrompt = async (prompt: string) => {
-    if (status === ArenaStatus.READY) {
+    if (status === ArenaStatus.READY || status === ArenaStatus.COMPETING) {
       if (prompt.trim() === "") return;
       setStatus(ArenaStatus.INFERENCING);
+      setTurn(turn + 1);
       setPrompt(prompt);
+      const userChat: Chat = {
+        text: prompt,
+        type: "user",
+      };
+      setModelAChatList([...modelAChatList, userChat]);
+      setModelBChatList([...modelBChatList, userChat]);
       try {
+        // NOTE(yoojin): Inference 가 동시에 두 번 요청가기 때문에 미리 auth check 후 일반 fetch 사용
+        await checkAuth();
         fetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
-            modelName: modelA,
+            battleId,
+            modelName: "model_a",
             prompt: prompt,
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setResultA(result);
+          setModelAChatList((prev) => [
+            ...prev,
+            {
+              text: result,
+              type: "assistant",
+            },
+          ]);
         });
         fetch("/api/arena/chat", {
           method: "POST",
           body: JSON.stringify({
-            modelName: modelB,
+            battleId,
+            modelName: "model_b",
             prompt: prompt,
           }),
         }).then(async (res) => {
           const result = await res.json();
-          setResultB(result);
+          setModelBChatList((prev) => [
+            ...prev,
+            {
+              text: result,
+              type: "assistant",
+            },
+          ]);
         });
+        setPrompt("");
       } catch (err) {
         alert(err);
         resetStates();
         router.refresh();
       }
     }
-  }
+  };
+  const messageListContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      {/* {notiContextHolder} */}{/* NOTE(yoojin): Hide reward noti */}
-      <Flex justify="center" style={{marginTop: "10px"}}>
-        <ChatBox modelName={modelAName} status={status} style={LeftCardStyle} prompt={resultA} />
-        <ChatBox modelName={modelBName} status={status} style={RightCardStyle} prompt={resultB} />
-      </Flex>
-        {status !== ArenaStatus.END ? (
-          <>
-            <PromptInput setParentPrompt={handlePrompt} status={status} disabled={!isValidChain}/>
-            <Row justify="space-evenly">
-              <Col span={3} />
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELA} arenaStatus={status} disabled={!isValidChain}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.MODELB} arenaStatus={status} disabled={!isValidChain}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.TIE} arenaStatus={status} disabled={!isValidChain}  /></Col>
-              <Col span={3}><ChoiceButton onClick={onClickChoiceBtn} value={ChoiceType.NOTHING} arenaStatus={status} disabled={!isValidChain}/></Col>
-              <Col span={3} />
-            </Row>
-          </>
-        ) : (
-          <Flex justify="center" style={{width: "100%"}}>
-              <Button 
-                style={{
-                  height: "50px",
-                  width: "60%",
-                }}
-                onClick={onClickNextBtn}
-              >Next Challenge</Button>
-          </Flex>
-        )}
-      <div />
-    </Space>
-  )
-}
+    <div className="" ref={messageListContainerRef}>
+      <div className="flex flex-col gap-6 max-desktop:gap-4 max-desktop:px-4 min-desktop:px-0">
+        <div className="flex h-[100px] w-full items-center justify-center self-stretch rounded-xl bg-burning-fire bg-cover bg-center bg-no-repeat text-center text-2xl font-extrabold leading-120 text-light text-shadow max-desktop:h-[72px] max-desktop:bg-burning-fire-mobile max-desktop:text-base">
+          How about selecting the best answer?
+        </div>
+        <div className="relative flex w-full flex-row items-center gap-5 max-mobile:mb-[100px] max-mobile:flex-col">
+          <ChatBox
+            modelName={modelAName}
+            status={status}
+            style={LeftCardStyle}
+            chatList={modelAChatList}
+            boxClassName=""
+            titleClassName="bg-orange"
+            paragraphClassName=""
+            isLeftSide={true}
+          />
+          {status !== ArenaStatus.END && (
+            <div className="absolute left-1/2 top-5 z-10 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-light-b1 max-mobile:top-1/2 max-mobile:h-10 max-mobile:w-10 max-mobile:-translate-y-1/2 dark:bg-dark-b1">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-light-t2 text-base font-bold leading-4 text-light max-mobile:h-7 max-mobile:w-7 max-mobile:text-2xs max-mobile:leading-120 dark:bg-dark-t2">
+                VS
+              </div>
+            </div>
+          )}
 
+          <ChatBox
+            modelName={modelBName}
+            status={status}
+            style={RightCardStyle}
+            chatList={modelBChatList}
+            boxClassName=""
+            titleClassName="bg-blue"
+            paragraphClassName=""
+            isLeftSide={false}
+          />
+        </div>
+
+        <PromptInput
+          setParentPrompt={handlePrompt}
+          status={status}
+          onClickChoiceBtn={onClickChoiceBtn}
+          onClickNextBtn={onClickNextBtn}
+        />
+      </div>
+    </div>
+  );
+}

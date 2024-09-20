@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-export async function POST(request: Request, response: Response) {
+/**
+ * 캡차 확인.
+ */
+
+export async function POST(request: Request) {
   const secretKey = process.env.CAPTCHA_SECRET_KEY;
   const postData = await request.json();
   const { gRecaptchaToken } = postData;
@@ -16,11 +20,11 @@ export async function POST(request: Request, response: Response) {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-      }
+      },
     );
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ success: false })
+    return NextResponse.json({ success: false });
   }
 
   if (res && res.data?.success && res.data?.score > 0.5) {

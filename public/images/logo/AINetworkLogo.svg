@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="sns icon">
+    <g id="Social media icon_gray">
+      <circle id="Ellipse 1" cx="33" cy="33" r="27" fill="#583BCB"/>
+      <g id="Group 48">
+        <path id="Vector" d="M44.9356 33.7101L32.9868 16.5181V25.8311L38.4664 33.7101H44.9356Z" fill="white"/>
+        <path id="Vector_2" d="M26.5498 33.7101L32.0133 25.8311V16.5181L20.0645 33.7101H26.5498Z" fill="white"/>
+        <path id="Vector_3" d="M27.7407 33.7101H37.2837L32.5042 26.8381L27.7407 33.7101Z" fill="white"/>
+        <path id="Vector_4" d="M39.1504 34.6849L45.0001 43.1037V34.6849H39.1504Z" fill="white"/>
+        <path id="Vector_5" d="M37.9598 34.6849H27.065L20.6279 43.9818H44.421L37.9598 34.6849Z" fill="white"/>
+        <path id="Vector_6" d="M25.8738 34.6849H20V43.1682L25.8738 34.6849Z" fill="white"/>
+      </g>
+    </g>
+  </g>
+</svg>

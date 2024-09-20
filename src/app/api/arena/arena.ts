@@ -1,91 +1,109 @@
-import { ChatResultReqBody } from "../../../type"
+import { NextRequest } from "next/server";
 
-export const getPickedModels = async (): Promise<string[]> => {
+export type BattleEvaluateResponse = {
+  reward: number;
+  exp: number;
+  message: string;
+};
+
+export const battleInit = async (req: NextRequest): Promise<string> => {
   const endpoint = `${process.env.SERVER_URL}/battle/init`;
-  const res = await fetch(endpoint, {cache: "no-cache"});
+  const accessToken = req.cookies.get("access_token");
+  const res = await fetch(endpoint, {
+    method: "POST",
+    cache: "no-cache",
+    headers: {
+      Cookie: `access_token=${accessToken?.value};`,
+      "x-api-key": process.env.SERVER_API_KEY!,
+    },
+  });
+  const result = await res.json();
+  const battleId = result.battle_id;
   if (!res.ok) {
     throw new Error("Failed to pick models.");
   }
-  const models = await res.json();
-  return models;
-}
+  return battleId;
+};
 
-export const chatWithModel = async (
-  modelName: string, 
-  prompt: string, 
-  systemPrompt?: string
-): Promise<string> => {
+export const chatWithModel = async (req: NextRequest): Promise<string> => {
+  const { modelName, prompt, battleId } = await req.json();
   const endpoint = `${process.env.SERVER_URL}/battle/inference`;
+  const accessToken = req.cookies.get("access_token")?.value;
   const params = {
     method: "POST",
     body: JSON.stringify({
-      model_name: modelName.replace("🎉", ""),
+      battle_id: battleId,
+      model: modelName,
       user_prompt: prompt,
-      system_prompt: systemPrompt,
     }),
     headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
-  }
-  const slicedPrompt = prompt.length > 100 ? prompt.slice(0, 97) + `... (${prompt.length})` : prompt;
+      "Content-type": "application/json;",
+      Cookie: `access_token=${accessToken};`,
+      "x-api-key": process.env.SERVER_API_KEY!,
+    },
+  };
+  const slicedPrompt =
+    prompt.length > 100
+      ? prompt.slice(0, 97) + `... (${prompt.length})`
+      : prompt;
   const res = await fetch(endpoint, params);
   const result = await res.json();
   if (!res.ok) {
-    throw new Error(`Fetch failed. model ${modelName}, prompt: ${slicedPrompt}, systemPrompt: ${systemPrompt}\n${result.detail? `Error: ${result.detail}` : ""}`);
+    throw new Error(
+      `Fetch failed. model ${modelName}, prompt: ${slicedPrompt}, battleId: ${battleId}\n${result.detail ? `Error: ${result.detail}` : ""}`,
+    );
   }
   if (!result.response || result.response === "") {
-    throw new Error(`Response is empty. model ${modelName}, prompt: ${slicedPrompt}, systemPrompt: ${systemPrompt}`);
+    throw new Error(
+      `Response is empty. model ${modelName}, prompt: ${slicedPrompt}, battleId: ${battleId}`,
+    );
   }
   return result.response;
-}
+};
 
-export const chatResult = async ({ 
-  userAddress,
-  choice,
-  modelA,
-  modelB,
-  turn,
-  modelAResponse,
-  modelBResponse,
- }: ChatResultReqBody) => {
-  const endpoint = `${process.env.SERVER_URL}/battle/result`;
+export const choiceModel = async (req: NextRequest): Promise<string[]> => {
+  const { battleId, choice } = await req.json();
+  const endpoint = `${process.env.SERVER_URL}/battle/choice`;
+  const accessToken = req.cookies.get("access_token")?.value;
   const body = {
-    user_address: userAddress,
     choice,
-    model_a_name: modelA.replace("🎉", ""),
-    model_b_name: modelB.replace("🎉", ""),
-    turn,
-    model_a_response: modelAResponse,
-    model_b_response: modelBResponse,
-  }
+    battle_id: battleId,
+  };
   const params = {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
-  }
+      "Content-type": "application/json;",
+      Cookie: `access_token=${accessToken};`,
+      "x-api-key": process.env.SERVER_API_KEY!,
+    },
+  };
   const res = await fetch(endpoint, params);
-  const { battle_id } = await res.json();
-  return battle_id;
-}
+  const models = await res.json();
+  return models;
+};
 
-export const chatReward = async (battleId: string) => {
-  const endpoint = `${process.env.SERVER_URL}/battle/${battleId}/reward`;
+export const chatEvaluate = async (req: NextRequest) => {
+  const { battleId } = await req.json();
+  const accessToken = req.cookies.get("access_token")?.value;
+  const endpoint = `${process.env.SERVER_URL}/battle/evaluate`;
   const params = {
     method: "POST",
+    body: JSON.stringify({ battle_id: battleId }),
     headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
-  }
+      "Content-type": "application/json; charset=UTF-8",
+      Cookie: `access_token=${accessToken};`,
+      "x-api-key": process.env.SERVER_API_KEY!,
+    },
+  };
   const res = await fetch(endpoint, params);
-  const { score, reward, reason, tx_hash } = await res.json();
-  return { score, reward, reason, tx_hash };
-}
+  const rewardData: BattleEvaluateResponse = await res.json();
+  return rewardData;
+};
 
 export const getDailyRewardPercentage = async () => {
   const endpoint = `${process.env.SERVER_URL}/battle/reward`;
-  const res = await fetch(endpoint, {cache: "no-cache"});
+  const res = await fetch(endpoint, { cache: "no-cache" });
   const { date, percentage } = await res.json();
-  return { date, percentage }
-}
+  return { date, percentage };
+};

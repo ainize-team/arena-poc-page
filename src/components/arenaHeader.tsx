@@ -14,16 +14,20 @@ const headerStyle: React.CSSProperties = {
 export default function ArenaHeader() {
   return (
     <Header style={headerStyle}>
-      <div style={{
-        flex: "none",
-        fontSize: "32px",
-        fontWeight: "bold",
-        }}>AI Network LLM Arena</div>
-      <div style={{
-        marginLeft: "auto",
-      }}>
-        <WalletConnectBtn />
+      <div
+        style={{
+          flex: "none",
+          fontSize: "32px",
+          fontWeight: "bold",
+        }}
+      >
+        AI Network LLM Arena
       </div>
+      <div
+        style={{
+          marginLeft: "auto",
+        }}
+      ></div>
     </Header>
   );
 }

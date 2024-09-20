@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
 import Layout, { Footer } from "antd/lib/layout/layout";
 
 const footerStyle: React.CSSProperties = {
@@ -7,7 +7,7 @@ const footerStyle: React.CSSProperties = {
   // position: "fixed",
   height: "80px",
   bottom: 0,
-  width: "100%"
+  width: "100%",
 };
 
 const layoutStyle = {
@@ -18,7 +18,7 @@ const layoutStyle = {
   maxWidth: "100%",
 };
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export const metadata: Metadata = {
   title: "Chatbot Arena",
@@ -32,9 +32,9 @@ export default function MobileLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={manrope.className}>
         <Layout style={layoutStyle}>
-            {children}
+          {children}
           <Footer style={footerStyle}>Powered by AI Network © 2024</Footer>
         </Layout>
       </body>
