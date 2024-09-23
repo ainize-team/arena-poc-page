@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       },
     );
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     return NextResponse.json({ success: false });
   }
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       score: res.data.score,
     });
   } else {
-    console.debug("Recaptcha failed. res.data >>", res.data);
+    // console.debug("Recaptcha failed. res.data >>", res.data);
     return NextResponse.json({ success: false });
   }
 }

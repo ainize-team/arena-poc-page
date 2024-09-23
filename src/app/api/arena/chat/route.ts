@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       status: 200,
     });
   } catch (error) {
-    console.error(`${req.url}> ${error}`);
+    // console.error(`${req.url}> ${error}`);
     return Response.json(FAILED_INFERENCE_MSG, {
       status: 500,
     });
