@@ -17,19 +17,16 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.log("errorData : user/me/info >> ", errorData);
       return Response.json(errorData, {
         status: res.status,
       });
     }
 
     const resData = await res.json();
-    console.log("resData :>> ", resData);
     return Response.json(resData, {
       status: 200,
     });
   } catch (error) {
-    console.log("error :>> ", error);
     return Response.json("", {
       status: 500,
     });
