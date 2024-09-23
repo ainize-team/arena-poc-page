@@ -89,7 +89,6 @@ export default function WalletConnectBtn({
 
       if (res.ok) {
         const models = await res.json();
-        console.log("AIN CONNECT : ", models);
         setUserInfo((prevState) => {
           if (!prevState) return prevState;
           return {
