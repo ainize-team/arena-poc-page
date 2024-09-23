@@ -27,19 +27,16 @@ export async function POST(req: NextRequest) {
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.log("errorData : claim_ain >> ", errorData);
       return Response.json(errorData, {
         status: res.status,
       });
     }
 
     const resData: ClaimResponse = await res.json();
-    console.log("resData : claim_ain >> ", resData);
     return Response.json(resData, {
       status: 200,
     });
   } catch (error) {
-    console.log("error : claim_ain >> ", error);
     return Response.json(
       { message: "Internal Server Error" },
       {

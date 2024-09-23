@@ -22,19 +22,16 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.log("errorData : credit_histories >> ", errorData);
       return Response.json(errorData, {
         status: res.status,
       });
     }
 
     const resData: CreditHistoriesResponse = await res.json();
-    console.log("resData : credit_histories >> ", resData);
     return Response.json(resData, {
       status: 200,
     });
   } catch (error) {
-    console.log("error : credit_histories >> ", error);
     return Response.json(
       { message: "Internal Server Error" },
       {

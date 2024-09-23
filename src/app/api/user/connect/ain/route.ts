@@ -26,19 +26,16 @@ export async function POST(req: NextRequest) {
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.log("errorData : connect_ain >> ", errorData);
       return Response.json(errorData, {
         status: res.status,
       });
     }
 
     const resData: ConnectAinResponse = await res.json();
-    console.log("resData : connect_ain >> ", resData);
     return Response.json(resData, {
       status: 200,
     });
   } catch (error) {
-    console.log("error : connect_ain >> ", error);
     return Response.json(
       { message: "Internal Server Error" },
       {
