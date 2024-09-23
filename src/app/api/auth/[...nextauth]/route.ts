@@ -11,7 +11,6 @@ const JS_PYTHON_TIMESTAMP_GAP = 1000;
 
 const getJWTFromServer = async (accessToken: string) => {
   const endpoint = `${process.env.SERVER_URL}/auth/login`;
-  console.log("get Token");
   const params = {
     method: "POST",
     body: JSON.stringify({

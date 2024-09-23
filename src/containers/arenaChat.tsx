@@ -74,7 +74,6 @@ export default function ArenaChat() {
   };
 
   const openNotification = (rewardData: BattleEvaluateResponse) => {
-    console.log("rewardData :>> ", rewardData);
     const { reward, exp, message } = rewardData;
     const isZeroReward = !reward || reward === 0;
 
@@ -96,9 +95,7 @@ export default function ArenaChat() {
         try {
           const result = await res.json();
           setBattleId(result);
-        } catch (e) {
-          console.log("e :>> ", e);
-        }
+        } catch (e) {}
       })
       .catch((e) => {
         alert("Init failed.");

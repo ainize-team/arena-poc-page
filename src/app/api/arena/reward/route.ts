@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   try {
     const result = await getDailyRewardPercentage();
-    console.log("result :>> ", result);
+    // console.log("result :>> ", result);
     return Response.json(result.percentage, {
       status: 200,
     });

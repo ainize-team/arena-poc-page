@@ -24,7 +24,6 @@ export const getLeaderboard = async () => {
   const res = await fetch("/api/leaderboard", { cache: "no-cache" });
   const leaderboard: LeaderboardResponse = await res.json();
   const lastUpdatedTS = Date.parse(leaderboard.updated_at);
-  console.log("leaderboard :>> ", leaderboard);
   const lastUpdatedString = dateFormat(lastUpdatedTS);
   const tableData = leaderboardToTableData(leaderboard.leaderboard);
   return {
