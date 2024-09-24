@@ -18,8 +18,8 @@ export const theme = {
       DEFAULT: "0.699px 2.794px 5.589px rgba(0, 0, 0, 0.45)",
     },
     backgroundImage: {
-      "burning-fire": "url('../assets/images/burningBanner.png')",
-      "burning-fire-mobile": "url('../assets/images/burningBannerMobile.png')",
+      "burning-fire": "url('../assets/images/banner.svg')",
+      "burning-fire-mobile": "url('../assets/images/bannerMobile.svg')",
     },
     keyframes: {
       "slide-in": {

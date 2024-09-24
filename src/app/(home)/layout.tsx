@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Chatbot Arena powered by AI Network.",
   keywords: [
     "llm leaderboard",
-    "arena leaderbord llm",
+    "arena leaderboard llm",
     "lmsys排行榜",
     "chatbot-arena",
     "chatbot arena",
