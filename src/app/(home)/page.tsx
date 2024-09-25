@@ -9,7 +9,10 @@ import { getCurrentURL } from "@/src/constant/constant";
 export default function Home() {
   return (
     <>
-      <Meta description="AI Network LLM Arena" url={`${getCurrentURL()}`} />
+      <Meta
+        description="AI Network LLM Arena Home"
+        url={`${getCurrentURL()}`}
+      />
       <main className="">
         {process.env.IS_ARENA_MAINTENANCE === "true" ? (
           <MaintenanceMsg />
