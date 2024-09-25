@@ -37,7 +37,7 @@ export default function UserBadge({ userTier }: UserBadgeProps) {
         width={20}
         height={32}
         className=""
-        alt={"user profile badge image"}
+        alt={"chatbot arena user profile badge image"}
         src={renderTierBadge()}
       />
     </div>
