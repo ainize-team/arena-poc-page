@@ -16,16 +16,26 @@ export default function ThemeProvider({
     setTheme(theme);
   }, [theme, setTheme]);
 
+  const updateThemeColor = (theme: "light" | "dark") => {
+    const themeColor = theme === "dark" ? "#000000" : "#f1f3f7";
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", themeColor);
+    }
+  };
+
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark");
     if (theme !== "system") {
       document.documentElement.classList.add(theme);
+      updateThemeColor(theme === "light" ? "light" : "dark");
     } else {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
         : "light";
       document.documentElement.classList.add(systemTheme);
+      updateThemeColor(systemTheme);
     }
   }, [theme]);
 

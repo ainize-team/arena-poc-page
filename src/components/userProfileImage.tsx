@@ -63,7 +63,7 @@ export default function UserProfileImage({
         width={width}
         height={height}
         className={cn("cursor-pointer rounded-full", className)}
-        alt={"user profile image"}
+        alt={"chatbot arena llm user profile image"}
         src={imageUrl ?? DefaultUserProfile}
       />
       {hasBadge && (
@@ -71,7 +71,7 @@ export default function UserProfileImage({
           width={badgeWidth}
           height={badgeHeight}
           className={cn(`absolute z-10`, badgeClassName)}
-          alt={"user profile badge image"}
+          alt={"chatbot arena llm user profile badge image"}
           src={renderTierBadge()}
         />
       )}

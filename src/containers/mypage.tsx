@@ -622,7 +622,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
                     width={16}
                     height={16}
                     className=""
-                    alt={"leaderboard ChevronLeft"}
+                    alt={"chatbot arena llm leaderboard ChevronLeft"}
                     src={ChevronLeft}
                   />
                 </button>
@@ -680,7 +680,7 @@ export default function Mypage({ userInfo, getInfo }: MypageProps) {
                     width={16}
                     height={16}
                     className=""
-                    alt={"leaderboard ChevronRight"}
+                    alt={"chatbot arena llm leaderboard ChevronRight"}
                     src={ChevronRight}
                   />
                 </button>

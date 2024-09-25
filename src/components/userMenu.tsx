@@ -210,7 +210,7 @@ const UserMenu = () => {
                   height={24}
                   className={cn("cursor-pointer")}
                   style={{ width: 24, height: 24 }}
-                  alt={"modal close button"}
+                  alt={"chatbot arena modal close button"}
                   src={CloseButton}
                   {...getFloatingProps({
                     onClick: () => setOpen(false),
@@ -219,14 +219,14 @@ const UserMenu = () => {
               </div>
             ) : (
               <div className="flex h-[5.5rem] w-full items-center justify-between self-stretch px-4 py-6">
-                <p className="text-lg font-bold leading-120 text-dark">
+                <h1 className="text-lg font-bold leading-120 text-dark">
                   AI Network LLM Arena
-                </p>
+                </h1>
                 <Image
                   width={24}
                   height={24}
                   className={cn("cursor-pointer")}
-                  alt={"modal close button"}
+                  alt={"chatbot arena modal close button"}
                   style={{ width: 24, height: 24 }}
                   src={CloseButton}
                   {...getFloatingProps({
@@ -248,7 +248,7 @@ const UserMenu = () => {
                   <Image
                     width={20}
                     height={20}
-                    alt={"mypage button"}
+                    alt={"chatbot arena llm mypage button"}
                     src={MypageButton}
                   />
                   <p className="text-base font-semibold leading-150 text-light-t2">
@@ -262,7 +262,7 @@ const UserMenu = () => {
                   <Image
                     width={20}
                     height={20}
-                    alt={"theme button"}
+                    alt={"chatbot arena llm theme button"}
                     src={ThemeButton}
                   />
                   <p className="text-base font-semibold leading-150 text-light-t2">
@@ -312,7 +312,7 @@ const UserMenu = () => {
                   <Image
                     width={20}
                     height={20}
-                    alt={"logout button"}
+                    alt={"chatbot arena llm logout button"}
                     src={LogoutButton}
                     style={{ width: 20, height: 20 }}
                   />
@@ -331,7 +331,7 @@ const UserMenu = () => {
                   <Image
                     width={20}
                     height={20}
-                    alt={"login button"}
+                    alt={"chatbot arena llm login button"}
                     src={GoogleIcon}
                   />
                 </div>
