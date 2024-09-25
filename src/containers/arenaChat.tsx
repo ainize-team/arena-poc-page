@@ -294,9 +294,9 @@ export default function ArenaChat() {
   return (
     <div className="" ref={messageListContainerRef}>
       <div className="flex flex-col gap-6 max-desktop:gap-4 max-desktop:px-4 min-desktop:px-0">
-        <div className="flex h-[100px] w-full items-center justify-center self-stretch rounded-xl bg-burning-fire bg-cover bg-center bg-no-repeat text-center text-2xl font-extrabold leading-120 text-light text-shadow max-desktop:h-[72px] max-desktop:bg-burning-fire-mobile max-desktop:text-base">
-          How about selecting the best answer?
-        </div>
+        <h1 className="flex h-[100px] w-full items-center justify-center self-stretch rounded-xl bg-burning-fire bg-cover bg-center bg-no-repeat text-center text-2xl font-extrabold leading-120 text-light text-shadow max-desktop:h-[72px] max-desktop:bg-burning-fire-mobile max-desktop:text-base">
+          How about selecting the best ai model?
+        </h1>
         <div className="relative flex w-full flex-row items-center gap-5 max-mobile:mb-[100px] max-mobile:flex-col">
           <ChatBox
             modelName={modelAName}

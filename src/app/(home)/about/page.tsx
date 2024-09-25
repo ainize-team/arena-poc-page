@@ -65,7 +65,7 @@ export default function Home() {
             <div className="flex overflow-hidden rounded-xl bg-light">
               <Image
                 src={AboutArena}
-                alt="about arena"
+                alt="about arena leaderboard llm"
                 width={400}
                 height={240}
                 className="h-[240px] w-[400px]"
@@ -95,7 +95,7 @@ export default function Home() {
             <div className="flex overflow-hidden rounded-xl bg-light">
               <Image
                 src={AboutLeaderboard}
-                alt="about leaderboard"
+                alt="about arena leaderboard llm chatbot leaderboard"
                 width={400}
                 height={240}
                 className="h-[240px] w-[400px]"
@@ -125,7 +125,7 @@ export default function Home() {
             <div className="flex overflow-hidden rounded-xl bg-light">
               <Image
                 src={AboutTier}
-                alt="about tier"
+                alt="about arena leaderboard llm tier"
                 width={400}
                 height={240}
                 className="h-[240px] w-[400px]"
@@ -155,7 +155,7 @@ export default function Home() {
             <div className="flex overflow-hidden rounded-xl bg-light">
               <Image
                 src={AboutReward}
-                alt="about reward"
+                alt="about arena leaderboard llm reward"
                 width={400}
                 height={240}
                 className="h-[240px] w-[400px]"
